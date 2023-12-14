@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="LISTA GENERAL DE CAJAS"
+        android:textColor="@color/ColorWhite"
+        android:textStyle="bold"
+        android:textSize="20dp"
+        android:textAlignment="center"
+        android:background="@color/AzulBack"
+        android:layout_marginBottom="10dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="10dp">
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:hint="Caja"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:textColorHint="@color/Amarillo"
+                app:hintTextColor="@color/Amarillo"
+                app:boxBackgroundMode="outline"
+                app:boxCornerRadiusTopEnd="10dp"
+                app:boxCornerRadiusTopStart="10dp"
+                app:boxBackgroundColor="@color/ColorWhite"
+                app:boxStrokeColor="@color/colorPrimary"
+                android:layout_marginRight="5dp">
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                    android:id="@+id/spCajaNom"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="15sp"
+                    android:focusable="false"
+                    android:fontFamily="sans-serif-condensed"
+                    android:textStyle="italic|bold"
+                    android:textColor="@color/colorBlack"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnCambiar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/btn_background2"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="5dp"
+                    android:text="Cambiar de caja"
+                    android:textColor="@color/ColorWhite"
+                    android:textSize="12dp"
+                    app:icon="@drawable/icon_tranf"
+                    app:iconTint="@color/ColorWhite"
+                    app:iconSize="20dp"
+                    app:backgroundTint="@null"
+                    app:backgroundTintMode="add"/>
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="* Seleccione el producto en caja"
+            android:textSize="15dp"
+            android:fontFamily="sans-serif-condensed-medium"
+            android:textStyle="italic"
+            android:textColor="@color/AzulBack"/>
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:background="@drawable/btn_background1"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:textStyle="bold"
+                    android:textColor="@color/ColorWhite"
+                    android:text="PRODUCTO"/>
+
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:gravity="center"
+                    android:text="@string/cant"
+                    android:textColor="@color/ColorWhite"
+                    android:textStyle="bold" />
+
+
+            </LinearLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvListaCajas"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:background="@color/ColorGris"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="10dp">
+
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnBack"
+                    android:layout_width="21dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1.5"
+                    android:layout_marginRight="2dp"
+                    android:background="@drawable/btn_background3"
+                    app:backgroundTint="@color/ColorGris"
+                    android:enabled="false"
+                    android:maxLines="1"
+                    android:text="Anterior"
+                    android:textAlignment="textStart"
+                    android:textColor="@color/cardview_light_background"
+                    android:textSize="8dp"
+                    app:icon="@drawable/ic_baseline_arrow_back_24"
+                    app:iconGravity="start"
+                    app:iconTint="@null"/>
+
+
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnNext"
+                    android:layout_width="21dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1.5"
+                    android:maxLines="1"
+                    android:layout_marginLeft="2dp"
+                    android:background="@drawable/btn_background3"
+                    android:textSize="8dp"
+                    android:text="Siguiente"
+                    android:textColor="@color/ColorWhite"
+                    android:textAlignment="textStart"
+                    app:icon="@drawable/ic_baseline_arrow_forward_24"
+                    app:iconTint="@null"
+                    app:iconGravity="end"
+                    app:backgroundTint="@color/ColorGris"
+                    android:enabled="false"/>
+            </LinearLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnImprimirTicket"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_background3"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="5dp"
+            android:text="Imprimir"
+            android:textColor="@color/ColorWhite"
+            android:textSize="12dp"
+            app:icon="@drawable/icons8_puerta_abierta_impresora_48"
+            app:iconTint="@null"
+            app:iconSize="20dp"
+            app:backgroundTint="@null"
+            app:backgroundTintMode="add"/>
+        </LinearLayout>
+
+
+</LinearLayout>

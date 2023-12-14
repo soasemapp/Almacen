@@ -1,0 +1,767 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context=".ActivityMenu"
+    android:orientation="vertical"
+    android:theme="@style/Theme.MaterialComponents"
+    app:layout_behavior= "@string/appbar_scrolling_view_behavior">
+
+    <include layout="@layout/action_bar_toolbar"></include>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:layout_marginTop="5dp"
+                android:background="@color/AzulBack" />
+
+            <LinearLayout
+                android:id="@+id/ContImage"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/productoImag"
+                    android:layout_width="match_parent"
+                    android:layout_height="103dp"
+                    android:layout_margin="10dp"
+                    android:padding="16dp"
+                    android:src="@drawable/logokepler"/>
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:layout_marginBottom="5dp"
+                android:background="@color/AzulBack"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                   android:layout_margin="5dp"
+                    android:background="@drawable/btn_background1"
+                    android:gravity="center"
+                    android:onClick="Perfildelusuario"
+                    android:orientation="vertical"
+                    android:padding="2dp"
+                    app:backgroundTint="@null"
+                    app:backgroundTintMode="add">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:maxLines="1"
+                        android:padding="5dp"
+                        android:text="PERFIL"
+                        android:textColor="@color/ColorWhite"
+                        android:textSize="15sp"
+                        android:textStyle="bold"/>
+
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="35dp"
+                        android:layout_margin="5dp"
+                        android:contentDescription="Manos"
+                        android:src="@drawable/icon_user"/>
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_margin="5dp"
+                        android:background="@drawable/btn_background1"
+                        android:gravity="center"
+                        android:onClick="ConsultaProductoMenu"
+                        android:orientation="vertical"
+                        android:padding="2dp"
+                        app:backgroundTint="@null">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:lines="2"
+                            android:maxLines="2"
+                            android:padding="5dp"
+                            android:text="Consulta de Productos"
+                            android:textColor="@color/ColorWhite"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="35dp"
+                            android:layout_margin="5dp"
+                            android:contentDescription="Manos"
+                            android:src="@drawable/icons8_lista_64" />
+
+
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_margin="5dp"
+                        android:background="@drawable/btn_background1"
+                        android:gravity="center"
+                        android:onClick="LiberacionesMenu"
+                        android:orientation="vertical"
+                        android:padding="2dp"
+                        app:backgroundTint="@null">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:lines="2"
+                            android:maxLines="2"
+                            android:padding="5dp"
+                            android:text="Surtido de Pedidos"
+                            android:textColor="@color/ColorWhite"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="35dp"
+                            android:layout_margin="5dp"
+                            android:contentDescription="Manos"
+                            android:src="@drawable/entregar" />
+
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/btn_background1"
+                        android:gravity="center"
+                        android:layout_margin="5dp"
+                        android:onClick="trasladoUbiMenu"
+                        android:orientation="vertical"
+                        app:backgroundTint="@null">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:lines="2"
+                            android:maxLines="2"
+                            android:padding="5dp"
+                            android:text="Cambio de Ubicación"
+                            android:textColor="@color/ColorWhite"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="35dp"
+                            android:layout_margin="5dp"
+                            android:contentDescription="Manos"
+                            android:src="@drawable/icons_carro_de_elevaci_n_aqu_" />
+
+
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/btn_background1"
+                        android:gravity="center"
+                        android:layout_margin="5dp"
+                        android:onClick="RepcionCompras"
+                        android:orientation="vertical"
+                        app:backgroundTint="@null">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:lines="2"
+                            android:maxLines="2"
+                            android:padding="5dp"
+                            android:text="Recepcion de Compras"
+                            android:textColor="@color/ColorWhite"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="35dp"
+                            android:layout_margin="5dp"
+                            android:contentDescription="Manos"
+                            android:src="@drawable/icons_muro_de_pago" />
+
+
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/lyAdicSPR"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:orientation="horizontal">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@drawable/btn_background1"
+                            android:gravity="center"
+                            android:layout_margin="5dp"
+                            android:onClick="invXFolComp"
+                            android:orientation="vertical"
+                            app:backgroundTint="@null">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="5dp"
+                                android:lines="2"
+                                android:maxLines="2"
+                                android:padding="5dp"
+                                android:textAlignment="center"
+                                android:text="Inventariario por folio de compra"
+                                android:textColor="@color/ColorWhite"
+                                android:textSize="12sp"
+                                android:textStyle="bold" />
+
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="35dp"
+                                android:layout_margin="5dp"
+                                android:contentDescription="Manos"
+                                android:src="@drawable/icons_ubica_inv" />
+
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@drawable/btn_background1"
+                            android:gravity="center"
+                            android:layout_margin="5dp"
+                            android:onClick="invXProd"
+                            android:orientation="vertical"
+                            app:backgroundTint="@null">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="5dp"
+                                android:lines="2"
+                                android:maxLines="2"
+                                android:padding="5dp"
+                                android:textAlignment="center"
+                                android:text="Inventario de localización por producto"
+                                android:textColor="@color/ColorWhite"
+                                android:textSize="12sp"
+                                android:textStyle="bold" />
+
+
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="35dp"
+                                android:layout_margin="5dp"
+                                android:contentDescription="Manos"
+                                android:src="@drawable/icons8_paquete" />
+
+
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:orientation="horizontal">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@drawable/btn_background1"
+                            android:gravity="center"
+                            android:layout_margin="5dp"
+                            android:orientation="vertical"
+                            android:onClick="resurtPick"
+                            app:backgroundTint="@null">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="5dp"
+                                android:lines="2"
+                                android:maxLines="2"
+                                android:padding="5dp"
+                                android:textAlignment="center"
+                                android:text="Resurtido de Picking"
+                                android:textColor="@color/ColorWhite"
+                                android:textSize="12sp"
+                                android:textStyle="bold" />
+
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="35dp"
+                                android:layout_margin="5dp"
+                                android:contentDescription="Manos"
+                                android:src="@drawable/icons8_caja_vac_a_96" />
+
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@drawable/btn_background1"
+                            android:gravity="center"
+                            android:layout_margin="5dp"
+                            android:orientation="vertical"
+                            android:onClick="inventario"
+                            app:backgroundTint="@null">
+
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="5dp"
+                                android:lines="2"
+                                android:maxLines="2"
+                                android:padding="5dp"
+                                android:text="Inventario"
+                                android:textAlignment="center"
+                                android:textColor="@color/ColorWhite"
+                                android:textSize="12sp"
+                                android:textStyle="bold" />
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="35dp"
+                                android:layout_margin="5dp"
+                                android:contentDescription="Manos"
+                                android:src="@drawable/icon_inventario" />
+
+
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:orientation="horizontal"
+                        android:visibility="visible">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@drawable/btn_background1"
+                            android:gravity="center"
+                            android:layout_margin="5dp"
+                            android:orientation="vertical"
+                            android:onClick="difUbiExis"
+                            app:backgroundTint="@null">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="5dp"
+                                android:lines="2"
+                                android:maxLines="2"
+                                android:padding="5dp"
+                                android:textAlignment="center"
+                                android:textColor="@color/ColorWhite"
+                                android:textSize="12sp"
+                                android:textStyle="bold"
+                                android:text="Diferencias entre ubicaciones y existencias"/>
+
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="35dp"
+                                android:layout_margin="5dp"
+                                android:contentDescription="Manos"
+                                android:src="@drawable/icon_dif" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@drawable/btn_background1"
+                            android:gravity="center"
+                            android:layout_margin="5dp"
+                            android:orientation="vertical"
+                            android:onClick="traspasos"
+                            app:backgroundTint="@null">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="5dp"
+                                android:lines="2"
+                                android:maxLines="2"
+                                android:padding="5dp"
+                                android:textAlignment="center"
+                                android:text="Recepción de traspasos multisucursal"
+                                android:textColor="@color/ColorWhite"
+                                android:textSize="12sp"
+                                android:textStyle="bold" />
+
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="35dp"
+                                android:layout_margin="5dp"
+                                android:contentDescription="Manos"
+                                android:src="@drawable/icon_traspaso" />
+
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@drawable/btn_background1"
+                            android:gravity="center"
+                            android:layout_margin="5dp"
+                            android:orientation="vertical"
+                            android:onClick="envRecepTrasp"
+                            app:backgroundTint="@null">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="5dp"
+                                android:lines="2"
+                                android:maxLines="2"
+                                android:padding="5dp"
+                                android:textAlignment="center"
+                                android:text="Envios Traspaso Multisucursal"
+                                android:textColor="@color/ColorWhite"
+                                android:textSize="12sp"
+                                android:textStyle="bold" />
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="35dp"
+                                android:layout_margin="5dp"
+                                android:src="@drawable/icon_carrito_trasp" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@drawable/btn_background1"
+                            android:gravity="center"
+                            android:layout_margin="5dp"
+                            android:orientation="vertical"
+                            app:backgroundTint="@null"
+                            android:onClick="reportInci">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="5dp"
+                                android:lines="2"
+                                android:maxLines="2"
+                                android:padding="5dp"
+                                android:textAlignment="center"
+                                android:textColor="@color/ColorWhite"
+                                android:textSize="12sp"
+                                android:textStyle="bold"
+                                android:text="Reportar Incidencias"/>
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="35dp"
+                                android:layout_margin="5dp"
+                                android:contentDescription="Manos"
+                                android:src="@drawable/icons8_error_52"/>
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:orientation="horizontal"
+                        android:visibility="gone">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@drawable/btn_background1"
+                            android:gravity="center"
+                            android:layout_margin="5dp"
+                            android:orientation="vertical"
+                            android:onClick="recepCont"
+                            app:backgroundTint="@null">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="5dp"
+                                android:lines="2"
+                                android:maxLines="2"
+                                android:padding="5dp"
+                                android:textAlignment="center"
+                                android:text="Recepción Contenedores por producto"
+                                android:textColor="@color/ColorWhite"
+                                android:textSize="12sp"
+                                android:textStyle="bold" />
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="35dp"
+                                android:layout_margin="5dp"
+                                android:src="@drawable/contenedor" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@drawable/btn_background1"
+                            android:gravity="center"
+                            android:layout_margin="5dp"
+                            android:orientation="vertical"
+                            android:onClick="recolectMontCarg"
+                            app:backgroundTint="@null">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="5dp"
+                                android:lines="2"
+                                android:maxLines="2"
+                                android:padding="5dp"
+                                android:text="Resurtido Balanceo"
+                                android:textAlignment="center"
+                                android:textColor="@color/ColorWhite"
+                                android:textSize="12sp"
+                                android:textStyle="bold" />
+
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="35dp"
+                                android:layout_margin="5dp"
+                                android:contentDescription="Manos"
+                                android:src="@drawable/icon_montacarga"/>
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+                <!--PARA MOSTRAR EN VIPLA Y DEMAS-->
+                <LinearLayout
+                    android:id="@+id/ly2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:orientation="horizontal">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@drawable/btn_background1"
+                            android:gravity="center"
+                            android:layout_margin="5dp"
+                            android:orientation="vertical"
+                            android:onClick="inventario"
+                            app:backgroundTint="@null">
+
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="5dp"
+                                android:lines="2"
+                                android:maxLines="2"
+                                android:padding="5dp"
+                                android:text="Inventario"
+                                android:textAlignment="center"
+                                android:textColor="@color/ColorWhite"
+                                android:textSize="12sp"
+                                android:textStyle="bold" />
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="35dp"
+                                android:layout_margin="5dp"
+                                android:contentDescription="Manos"
+                                android:src="@drawable/icon_inventario" />
+
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@drawable/btn_background1"
+                            android:gravity="center"
+                            android:layout_margin="5dp"
+                            android:orientation="vertical"
+                            android:onClick="difUbiExis"
+                            app:backgroundTint="@null">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="5dp"
+                                android:lines="2"
+                                android:maxLines="2"
+                                android:padding="5dp"
+                                android:textAlignment="center"
+                                android:textColor="@color/ColorWhite"
+                                android:textSize="12sp"
+                                android:textStyle="bold"
+                                android:text="Diferencias entre ubicaciones y existencias"/>
+
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="35dp"
+                                android:layout_margin="5dp"
+                                android:contentDescription="Manos"
+                                android:src="@drawable/icon_dif" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:orientation="horizontal"
+                        android:visibility="gone">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@drawable/btn_background1"
+                            android:gravity="center"
+                            android:layout_margin="5dp"
+                            android:orientation="vertical"
+                            android:onClick="traspasos"
+                            app:backgroundTint="@null"
+                            android:visibility="gone">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="5dp"
+                                android:lines="2"
+                                android:maxLines="2"
+                                android:padding="5dp"
+                                android:textAlignment="center"
+                                android:text="Recepción de traspasos multisucursal"
+                                android:textColor="@color/ColorWhite"
+                                android:textSize="12sp"
+                                android:textStyle="bold" />
+
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="35dp"
+                                android:layout_margin="5dp"
+                                android:contentDescription="Manos"
+                                android:src="@drawable/icon_traspaso" />
+
+
+                        </LinearLayout>
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:visibility="invisible">
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

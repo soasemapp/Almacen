@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tvTit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="CAMBIO DE CAJA"
+        android:textColor="@color/ColorWhite"
+        android:textStyle="bold"
+        android:textSize="20dp"
+        android:textAlignment="center"
+        android:fontFamily="sans-serif-condensed-medium"
+        android:background="@color/AzulBack"
+        android:layout_marginBottom="10dp"/>
+
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:hint="@string/producto"
+        android:layout_marginTop="5dp"
+        android:textColorHint="@color/AzulBack"
+        app:hintTextColor="@color/AzulBack"
+        android:maxLines="1"
+        app:boxBackgroundMode="outline"
+        app:boxCornerRadiusTopEnd="10dp"
+        app:boxCornerRadiusTopStart="10dp"
+        app:boxBackgroundColor="@color/ColorWhite"
+        app:boxStrokeColor="@color/colorPrimary"
+        android:layout_marginRight="2.5dp">
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/txtBuscaP"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:textSize="15dp"
+            android:inputType="textCapCharacters"
+            android:fontFamily="sans-serif-condensed-medium"
+            android:textStyle="bold"
+            android:textColor="@color/colorBlack"
+            android:maxLength="20"
+            android:imeOptions="actionDone"
+            android:layout_margin="5dp"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <Button
+        android:id="@+id/btnB"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/buscar"
+        android:fontFamily="sans-serif-condensed-medium"
+        android:background="@drawable/btn_background3"
+        app:backgroundTint="@null"
+        app:backgroundTintMode="add"
+        android:layout_margin="10dp"/>
+
+
+</LinearLayout>

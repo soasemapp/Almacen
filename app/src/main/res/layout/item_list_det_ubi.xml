@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@color/ColorWhite">
+    <LinearLayout
+        android:id="@+id/lyUbi"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:onClick="onClickCelda">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/tvUb"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.5"
+                android:text="Ubicacion"
+                android:textStyle="bold"
+                android:lines="3"
+                android:maxLines="3"
+                android:padding="5dp"
+                android:textSize="12dp"
+                android:textAlignment="textStart"
+                android:textColor="@color/AzulBack"/>
+
+            <View
+                android:layout_width="2dp"
+                android:layout_height="match_parent"
+                android:background="@color/AzulBack"/>
+            <TextView
+                android:id="@+id/tvMax"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:text="0"
+                android:padding="5dp"
+                android:textColor="@color/AzulBack"
+                android:textStyle="bold"
+                android:maxLines="1"
+                android:textSize="12dp"
+                android:textAlignment="textStart"/>
+            <View
+                android:layout_width="2dp"
+                android:layout_height="match_parent"
+                android:background="@color/AzulBack"/>
+            <TextView
+                android:id="@+id/tvMin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:text="0"
+                android:padding="5dp"
+                android:textColor="@color/AzulBack"
+                android:textStyle="bold"
+                android:maxLines="1"
+                android:textSize="12dp"
+                android:textAlignment="textStart"/>
+            <View
+                android:layout_width="2dp"
+                android:layout_height="match_parent"
+                android:background="@color/AzulBack"/>
+            <TextView
+                android:id="@+id/tvCant"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:text="0"
+                android:padding="5dp"
+                android:textColor="@color/ColorFinalizado"
+                android:textStyle="bold"
+                android:maxLines="1"
+                android:textSize="12dp"
+                android:textAlignment="textStart"/>
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:background="@color/AzulBack" />
+    </LinearLayout>
+</LinearLayout>
+
+
+

@@ -1,0 +1,601 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context=".Activity.ActivityResurtBal">
+
+    <include layout="@layout/action_bar_toolbar"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_margin="10dp">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/txtEscanP"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:maxLength="40"
+                android:textSize="15dp"
+                android:inputType="text"
+                android:imeOptions="actionNext"
+                tools:ignore="TextContrastCheck"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/producto"
+                android:textColorHint="@color/AzulBack"
+                android:maxLines="1"
+                app:boxBackgroundMode="outline"
+                app:boxCornerRadiusTopEnd="10dp"
+                app:boxCornerRadiusTopStart="10dp"
+                app:startIconTint="@null"
+                android:layout_marginTop="5dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/txtEscanVi"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:autoSizeTextType="uniform"
+                    android:enabled="false"
+                    android:inputType="text"
+                    android:textColor="@color/colorBlack"
+                    android:maxLines="1" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="10dp">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="RECOLECCIÓN SUCURSALES"
+                    android:textAlignment="center"
+                    android:textSize="18dp"
+                    android:textColor="@color/AzulBack"
+                    android:textStyle="bold"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@color/AzulBack"
+                            android:gravity="center"
+                            android:text="MATRIZ"
+                            android:textColor="@color/ColorWhite"
+                            android:textSize="10dp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tvRepMtz"
+                            android:layout_width="match_parent"
+                            android:layout_height="30dp"
+                            android:layout_weight="1"
+                            android:background="@color/ColorTenue"
+                            android:gravity="center"
+                            android:textStyle="bold"
+                            android:textSize="12dp"
+                            android:text="0"/>
+                    </LinearLayout>
+
+
+                    <View
+                        android:layout_width="2dp"
+                        android:layout_height="match_parent"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:textStyle="bold"
+                            android:textSize="10dp"
+                            android:textColor="@color/ColorWhite"
+                            android:background="@color/AzulBack"
+                            android:text="CDMX"/>
+                        <TextView
+                            android:id="@+id/tvRepCdmx"
+                            android:layout_width="match_parent"
+                            android:layout_height="30dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/drawable_border"
+                            android:gravity="center"
+                            android:textStyle="bold"
+                            android:textSize="12dp"
+                            android:text="0"/>
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="2dp"
+                        android:layout_height="match_parent"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:textStyle="bold"
+                            android:textSize="10dp"
+                            android:textColor="@color/ColorWhite"
+                            android:background="@color/AzulBack"
+                            android:text="CUL"/>
+                        <TextView
+                            android:id="@+id/tvRepCul"
+                            android:layout_width="match_parent"
+                            android:layout_height="30dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/drawable_border"
+                            android:gravity="center"
+                            android:textStyle="bold"
+                            android:textSize="12dp"
+                            android:text="0"/>
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="2dp"
+                        android:layout_height="match_parent"/>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:textStyle="bold"
+                            android:textSize="10dp"
+                            android:textColor="@color/ColorWhite"
+                            android:background="@color/AzulBack"
+                            android:text="MTY"/>
+
+                        <TextView
+                            android:id="@+id/tvRepMty"
+                            android:layout_width="match_parent"
+                            android:layout_height="30dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/drawable_border"
+                            android:gravity="center"
+                            android:textStyle="bold"
+                            android:textSize="12dp"
+                            android:text="0"/>
+                    </LinearLayout>
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="CELDA"
+                android:textSize="18dp"
+                android:textAlignment="center"
+                android:textColor="@color/AzulBack"
+                android:textStyle="bold"
+                android:layout_marginTop="10dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/colorPrimary"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1.5"
+                        android:textStyle="bold"
+                        android:textColor="@color/ColorWhite"
+                        android:textSize="12dp"
+                        android:text="@string/ubicacion"
+                        android:lines="1"/>
+                    <View
+                        android:layout_width="2dp"
+                        android:layout_height="match_parent"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:textStyle="bold"
+                        android:textSize="12dp"
+                        android:textColor="@color/ColorWhite"
+                        android:text="@string/maximo"
+                        android:lines="1"/>
+                    <View
+                        android:layout_width="2dp"
+                        android:layout_height="match_parent"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:textStyle="bold"
+                        android:textSize="12dp"
+                        android:textColor="@color/ColorWhite"
+                        android:text="@string/minimo"
+                        android:lines="1"/>
+                    <View
+                        android:layout_width="2dp"
+                        android:layout_height="match_parent"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:textStyle="bold"
+                        android:textSize="12dp"
+                        android:textColor="@color/ColorWhite"
+                        android:text="@string/cant"
+                        android:lines="1"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:id="@+id/tvUbic"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1.5"
+                        android:textStyle="bold"
+                        android:textSize="12dp"
+                        android:textColor="@color/AzulBack"
+                        android:text=" "
+                        android:lines="2"/>
+                    <View
+                        android:layout_width="2dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/AzulBack"/>
+
+                    <TextView
+                        android:id="@+id/tvMaxi"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:textSize="12dp"
+                        android:text="0"
+                        android:textColor="@color/colorBlack"
+                        android:lines="1"/>
+                    <View
+                        android:layout_width="2dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/AzulBack"/>
+
+                    <TextView
+                        android:id="@+id/tvMini"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:textSize="12dp"
+                        android:text="0"
+                        android:textColor="@color/colorBlack"
+                        android:lines="1"/>
+                    <View
+                        android:layout_width="2dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/AzulBack"/>
+
+                    <TextView
+                        android:id="@+id/tvCantU"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:textStyle="bold"
+                        android:textSize="12dp"
+                        android:text="0"
+                        android:textColor="@color/colorBlack"
+                        android:lines="1"/>
+                </LinearLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@color/AzulBack"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="center_vertical">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="Total Recolectar"
+                    android:textColorHint="@color/colorAzz"
+                    android:maxLines="1"
+                    app:boxBackgroundMode="outline"
+                    app:boxCornerRadiusTopEnd="10dp"
+                    app:boxCornerRadiusTopStart="10dp"
+                    app:startIconTint="@null"
+                    android:layout_marginRight="5dp">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/txtRecolect"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:maxLines="1"
+                        android:focusable="false"
+                        android:textSize="20dp"
+                        android:textStyle="bold"
+                        android:text="0"
+                        android:textColor="@color/colorAzz"
+                        android:enabled="false"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="@string/rellenar"
+                    android:textColorHint="@color/AzulBack"
+                    android:maxLines="1"
+                    app:boxBackgroundMode="outline"
+                    app:boxCornerRadiusTopEnd="10dp"
+                    app:boxCornerRadiusTopStart="10dp"
+                    app:startIconTint="@null">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/txtRellenar"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="text"
+                        android:clickable="true"
+                        android:maxLines="1"
+                        android:focusable="false"
+                        android:textSize="20dp"
+                        android:text="0"
+                        android:textStyle="bold"
+                        android:textColor="@color/ColorFinalizado"
+                        android:enabled="false"
+                        android:layout_marginRight="5dp"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/ivProdMont"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:src="@drawable/logokepler"
+                    android:layout_marginRight="10dp"/>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                        android:hint="Ubicaciones"
+                        android:textColorHint="@color/AzulBack">
+                        <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                            android:id="@+id/spUbic"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/AzulBack"
+                            android:textSize="15dp"
+                            android:inputType="none"
+                            android:focusable="false"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:hint="@string/cantidad"
+                        android:textColorHint="@color/AzulBack"
+                        android:maxLines="1"
+                        app:boxBackgroundMode="outline"
+                        app:boxCornerRadiusTopEnd="10dp"
+                        app:boxCornerRadiusTopStart="10dp"
+                        app:startIconTint="@null">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/txtCantUb"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="text"
+                            android:clickable="true"
+                            android:maxLines="1"
+                            android:focusable="false"
+                            android:textSize="20dp"
+                            android:text="0"
+                            android:textStyle="bold"
+                            android:textColor="@color/AzulBack"
+                            android:enabled="false"
+                            android:layout_marginRight="5dp"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="Restantes"
+                    android:textColorHint="@color/colorVerdeAzul"
+                    app:boxBackgroundMode="outline"
+                    app:boxCornerRadiusTopEnd="10dp"
+                    app:boxCornerRadiusTopStart="10dp"
+                    app:startIconTint="@null"
+                    android:layout_marginRight="5dp">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/txtRest"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:maxLines="1"
+                        android:textSize="20dp"
+                        android:textColor="@color/colorVerdeAzul"
+                        android:textStyle="bold"
+                        android:text="0"
+                        android:enabled="false"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="@string/surtir"
+                    android:textColorHint="@color/colorPrimary"
+                    app:boxBackgroundMode="outline"
+                    app:boxCornerRadiusTopEnd="10dp"
+                    app:boxCornerRadiusTopStart="10dp"
+                    app:startIconTint="@null">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/txtSurt"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clickable="true"
+                        android:inputType="phone"
+                        android:digits="0123456789"
+                        android:maxLength="5"
+                        android:maxLines="1"
+                        android:imeOptions="actionDone"
+                        android:textSize="20dp"
+                        android:textColor="@color/colorBlack"
+                        android:text="0"
+                        android:textStyle="bold"
+                        android:enabled="false"/>
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnSurtir"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:layout_gravity="center"
+                    android:background="@drawable/roundbutton"
+                    android:text="@string/surtir"
+                    android:textColor="@color/ColorWhite"
+                    android:textSize="10dp"
+                    android:layout_marginTop="10dp"
+                    app:backgroundTint="@color/ColorFinalizado"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="10dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/AzulBack"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1.5"
+                        android:textStyle="bold"
+                        android:textColor="@color/ColorWhite"
+                        android:textSize="12dp"
+                        android:text="@string/clave"
+                        android:lines="1"/>
+                    <View
+                        android:layout_width="2dp"
+                        android:layout_height="match_parent"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:textStyle="bold"
+                        android:textSize="12dp"
+                        android:textColor="@color/ColorWhite"
+                        android:text="@string/cant"
+                        android:lines="1"/>
+                    <View
+                        android:layout_width="2dp"
+                        android:layout_height="match_parent"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:textStyle="bold"
+                        android:textSize="12dp"
+                        android:textColor="@color/ColorWhite"
+                        android:text="@string/surtido"
+                        android:lines="1"/>
+
+                </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvSurt"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:background="@color/ColorGris"/>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

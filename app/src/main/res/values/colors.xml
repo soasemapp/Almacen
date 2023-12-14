@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#2196F3</color>
+    <color name="colorAccent">#03DAC5</color>
+    <color name="AzulBack">#043B72</color>
+    <color name="Amarillo">#ECBF15</color>
+    <color name="ColorWhite">#FFFFFF</color>
+    <color name="ColorGris">#D3D6D8</color>
+    <color name="ColorFinalizado">#32997C</color>
+    <color name="ColorSinc">#5AC3A5</color>
+    <color name="ColorTenue">#E9ECFF</color>
+    <color name="colorBlack">#0E0E0E</color>
+    <color name="colorRed">#B61B1B</color>
+    <color name="colorRedD">#65152C</color>
+    <color name="colorAzz">#223CCA</color>
+    <color name="colorSelec">#5BC5D8</color>
+    <color name="colorVerdeAzul">#1E739A</color>
+
+</resources>
