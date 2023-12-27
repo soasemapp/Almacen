@@ -284,20 +284,33 @@ public class ActivityRecepTraspMultSuc extends AppCompatActivity {
             }//onclick
         });//btnCorr
 
+
         btnBackC.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                CONTCAJA--;
-                spCaja.setText(CONTCAJA+"",false);
-                new AsyncReceCon(strbran,Folio,CONTCAJA+"",true).execute();
+                if(listaTrasp.get(posicion).isSincronizado()==false){
+                    posicion2=posicion;
+                    new AsyncActualizar(Folio,listaTrasp.get(posicion).getProducto(),
+                            listaTrasp.get(posicion).getCantSurt()+"","change",false,Producto).execute();
+                }else {
+                    CONTCAJA--;
+                    spCaja.setText(CONTCAJA+"",false);
+                    new AsyncReceCon(strbran,Folio,CONTCAJA+"",true).execute();
+                }//else
             }
         });
         btnNextC.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                CONTCAJA++;
-                spCaja.setText(CONTCAJA+"",false);
-                new AsyncReceCon(strbran,Folio,CONTCAJA+"",true).execute();
+                if(listaTrasp.get(posicion).isSincronizado()==false){
+                    posicion2=posicion;
+                    new AsyncActualizar(Folio,listaTrasp.get(posicion).getProducto(),
+                            listaTrasp.get(posicion).getCantSurt()+"","change",false,Producto).execute();
+                }else {
+                    CONTCAJA++;
+                    spCaja.setText(CONTCAJA+"",false);
+                    new AsyncReceCon(strbran,Folio,CONTCAJA+"",true).execute();
+                }//else
             }
         });
 
