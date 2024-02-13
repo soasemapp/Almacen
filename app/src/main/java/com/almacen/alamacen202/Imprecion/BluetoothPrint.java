@@ -530,49 +530,47 @@ public class BluetoothPrint extends AppCompatActivity {
 
             for (int i = 0; i < listaTraspFiltro.size(); i++) {
                 msg = "";
-                if(listaTraspFiltro.get(i).isSincronizado()==true){//solo los producto sincronizados
-                    String Producto = listaTraspFiltro.get(i).getProducto();
-                    String Cantidad = listaTraspFiltro.get(i).getCantSurt();
-                    String ubi=listaTraspFiltro.get(i).getUbic();
-                    if (Producto.length() < 11) {
-                        int espacios = Producto.length();
-                        int opera = 0;
-                        opera = 11 - espacios;
+                String Producto = listaTraspFiltro.get(i).getProducto();
+                String Cantidad = listaTraspFiltro.get(i).getCantSurt();
+                String ubi=listaTraspFiltro.get(i).getUbic();
+                if (Producto.length() < 11) {
+                    int espacios = Producto.length();
+                    int opera = 0;
+                    opera = 11 - espacios;
 
-                        for (int k = 0; k < opera; k++) {
-                            Producto += " ";
-                        }
+                    for (int k = 0; k < opera; k++) {
+                        Producto += " ";
                     }
+                }
 
-                    if (Cantidad.length() < 3) {
+                if (Cantidad.length() < 3) {
 
-                        int espacios = Cantidad.length();
-                        int opera = 0;
-                        opera = 3 - espacios;
+                    int espacios = Cantidad.length();
+                    int opera = 0;
+                    opera = 3 - espacios;
 
-                        for (int k = 0; k < opera; k++) {
+                    for (int k = 0; k < opera; k++) {
 
-                            Cantidad += " ";
+                        Cantidad += " ";
 
-                        }
                     }
-                    if (ubi.length() < 13) {
+                }
+                if (ubi.length() < 13) {
 
-                        int espacios = ubi.length();
-                        int opera = 0;
-                        opera = 13 - espacios;
+                    int espacios = ubi.length();
+                    int opera = 0;
+                    opera = 13 - espacios;
 
-                        for (int k = 0; k < opera; k++) {
-                            ubi += " ";
-                        }//for
-                    }//if
+                    for (int k = 0; k < opera; k++) {
+                        ubi += " ";
+                    }//for
+                }//if
 
 
 
-                    msg += Producto + Cantidad +ubi+"\n";
-                    outputStream.write(msg.getBytes());
-                    outputStream.flush();
-                }//if sincronizado
+                msg += Producto + Cantidad +ubi+"\n";
+                outputStream.write(msg.getBytes());
+                outputStream.flush();
             }//for
 
             msg = "\n";

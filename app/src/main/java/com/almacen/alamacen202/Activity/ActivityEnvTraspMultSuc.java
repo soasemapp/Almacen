@@ -133,7 +133,7 @@ public class ActivityEnvTraspMultSuc extends AppCompatActivity {
     private AlertDialog.Builder builder6;
     private Context context = this;
     private AlertDialog dialog6 = null;
-    AlertDialog alertDialog=null;
+    private AlertDialog alertDialog=null;
     private boolean escan=false,mover=false;
     private ScrollView scrollView;
     private CheckBox chbConten,chTipoS;
@@ -892,7 +892,6 @@ public class ActivityEnvTraspMultSuc extends AppCompatActivity {
             btnGuarMan.setVisibility(View.VISIBLE);
 
             //chTipoS.setVisibility(View.VISIBLE);
-
         }else{
             escan=true;
             txtProducto.setInputType(InputType.TYPE_NULL);
@@ -1861,7 +1860,6 @@ public class ActivityEnvTraspMultSuc extends AppCompatActivity {
     //Reporte de Incidencias
     private class AsyncIncid extends AsyncTask<Void, Void, Void> {
         boolean conn;
-        ArrayList<ListaIncidenciasSandG>listaIncidencias = new ArrayList<>();
         @Override
         protected void onPreExecute() {
             mDialog.show();
@@ -1871,6 +1869,7 @@ public class ActivityEnvTraspMultSuc extends AppCompatActivity {
         protected Void doInBackground(Void... params) {
             conn=firtMet();
             if(conn==true){
+                listaIncidencias.clear();
                 HttpHandler sh = new HttpHandler();
                 String url = "http://"+strServer+"/MensaInci";
                 String jsonStr = sh.makeServiceCall(url,strusr,strpass);
@@ -1912,7 +1911,7 @@ public class ActivityEnvTraspMultSuc extends AppCompatActivity {
             super.onPostExecute(result);
             mDialog.dismiss();
             if(listaIncidencias.size() > 0) {
-                String[] opciones = new String[listaIncidencias.size()];
+                /*String[] opciones = new String[listaIncidencias.size()];
                 for (int i = 0; i < listaIncidencias.size(); i++) {
                     opciones[i] = listaIncidencias.get(i).getClave() + ".-" + listaIncidencias.get(i).getMensaje();
                 }//for
@@ -1923,11 +1922,12 @@ public class ActivityEnvTraspMultSuc extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         String Producto =lista.get(posicion).getProducto();
                         String RazonSuper = opciones[which];
-                        new AsyncReporteInici(Producto,RazonSuper,Folio,lista.get(posicion).getCantSurt()).execute();
+                        new AsyncReporteInici(Producto,RazonSuper,Folio,lista.get(posicion).getCantidad()).execute();
                     }//onclclick
                 });
                 AlertDialog dialog = builder.create();
-                dialog.show();
+                dialog.show();*/
+                alertIncid();
             }else {
                 AlertDialog.Builder builder = new AlertDialog.Builder(ActivityEnvTraspMultSuc.this);
                 builder.setTitle("AVISO");
@@ -1944,12 +1944,14 @@ public class ActivityEnvTraspMultSuc extends AppCompatActivity {
     private class AsyncReporteInici extends AsyncTask<Void, Void, Void> {
         boolean conn;
         private String prod,razon,fol,cant;
+        private AlertDialog alertD;
 
-        public AsyncReporteInici(String prod, String razon, String fol,String cant) {
+        public AsyncReporteInici(String prod, String razon, String fol,String cant,AlertDialog alertD) {
             this.prod = prod;
             this.razon = razon;
             this.fol = fol;
             this.cant=cant;
+            this.alertD=alertD;
         }//
         @Override
         protected void onPreExecute() {
@@ -1961,7 +1963,8 @@ public class ActivityEnvTraspMultSuc extends AppCompatActivity {
             if(conn==true){
                 String parametros="k_Producto="+prod+"&k_Usuario="+strusr+
                         "&k_Razon="+razon+"&k_Sucursal="+strbran+
-                        "&k_Folio="+fol+"&k_com=TRASPASO-"+fol+"-"+cant;
+                        "&k_Folio="+fol+"&k_com=TRASPASO-"+fol+"-"+cant+
+                        "&k_tipo=SUCENV&k_cant="+cant+"&k_cants="+cant;
                 String url = "http://"+strServer+"/ReportInci?"+parametros;
                 String jsonStr = new HttpHandler().makeServiceCall(url,strusr,strpass);
                 if (jsonStr != null) {
@@ -1999,6 +2002,9 @@ public class ActivityEnvTraspMultSuc extends AppCompatActivity {
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
             mDialog.dismiss();
+            if(mensaje.equals("Reporte Realizado")){
+                alertD.dismiss();
+            }
             AlertDialog.Builder builder = new AlertDialog.Builder(ActivityEnvTraspMultSuc.this);
             builder.setTitle("AVISO");
             builder.setMessage(mensaje);
@@ -2116,6 +2122,65 @@ public class ActivityEnvTraspMultSuc extends AppCompatActivity {
         alert2.show();
     }//cambiarCajas
 
+    public void alertIncid(){
+        AlertDialog.Builder alert = new AlertDialog.Builder(ActivityEnvTraspMultSuc.this);
+        LayoutInflater inflater = ActivityEnvTraspMultSuc.this.getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_incid, null);
+        alert.setView(dialogView);
+        alert.setCancelable(false);
+        alert.setNegativeButton("CANCELAR",null);
+
+        Button btnEnviar =  dialogView.findViewById(R.id.btnEnviar);
+        EditText txtIncidProd = dialogView.findViewById(R.id.txtIncidProd);
+        EditText txtCantidad =  dialogView.findViewById(R.id.txtCantidad);
+        AutoCompleteTextView spListIncid = dialogView.findViewById(R.id.spListIncid);
+
+        txtIncidProd.setText(lista.get(posicion).getProducto());
+        txtCantidad.setText((Integer.parseInt(lista.get(posicion).getCantidad())-
+                Integer.parseInt(lista.get(posicion).getCantSurt()))+"");
+        AlertDialog alertD = alert.create();
+
+        ArrayList<String> listaInc=new ArrayList<>();
+        for(int k=0;k<listaIncidencias.size();k++){
+            listaInc.add(listaIncidencias.get(k).getClave() + ".-" + listaIncidencias.get(k).getMensaje());
+        }//for
+
+        if(listaInc.size()>0){
+            ArrayAdapter<String> adaptador = new ArrayAdapter<>(
+                    ActivityEnvTraspMultSuc.this,R.layout.drop_down_item,listaInc);
+            spListIncid.setAdapter(adaptador);
+            spListIncid.setText(listaInc.get(0),false);
+        }//if
+
+        btnEnviar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String Producto= txtIncidProd.getText().toString();
+                String Razon=spListIncid.getText().toString();
+                String Cant=txtCantidad.getText().toString();
+                if(Producto.equals("") || Razon.equals("") || Cant.equals("")){
+                    Toast.makeText(ActivityEnvTraspMultSuc.this, "Campos vacíos", Toast.LENGTH_SHORT).show();
+                }else if((Integer.parseInt(Cant)+Integer.parseInt(lista.get(posicion).getCantSurt()))>
+                        Integer.parseInt(lista.get(posicion).getCantidad())){
+                    Toast.makeText(ActivityEnvTraspMultSuc.this, "Excede cantidad", Toast.LENGTH_SHORT).show();
+                }else{
+                    AlertDialog.Builder builder = new AlertDialog.Builder(ActivityEnvTraspMultSuc.this);
+                    builder.setPositiveButton("ACEPTAR", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            new AsyncReporteInici(Producto,Razon,Folio,Cant,alertD).execute();
+                        }//onclick
+                    });
+                    builder.setNegativeButton("CANCELAR",null);
+                    builder.setCancelable(false);
+                    builder.setTitle("AVISO").
+                            setMessage("¿Desea enviar incidencia de "+Razon+" de "+Producto+"?").create().show();
+                }//else
+            }//onclick
+        });//btnEnviar
+        alertD.show();
+    }//alertIncid
+
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menuoverflow4, menu);
         return true;
@@ -2187,8 +2252,7 @@ public class ActivityEnvTraspMultSuc extends AppCompatActivity {
                     editor.commit();
                     impresora = preference.getString("Impresora", "null");
 
-                    Intent intent = new Intent(Settings.
-                            ACTION_BLUETOOTH_SETTINGS);
+                    Intent intent = new Intent(Settings.ACTION_BLUETOOTH_SETTINGS);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(intent);
                 }

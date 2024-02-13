@@ -277,7 +277,8 @@ public class ActivityRecepTraspMultSuc extends AppCompatActivity {
                 if(listaTrasp.get(posicion).isSincronizado()==false){
                     posicion2=posicion;
                     new AsyncActualizar(Folio,listaTrasp.get(posicion).getProducto(),
-                            listaTrasp.get(posicion).getCantSurt()+"","change",false,Producto).execute();
+                            listaTrasp.get(posicion).getCantSurt()+"",
+                            "change",false,Producto,0).execute();
                 }else {
                     Toast.makeText(ActivityRecepTraspMultSuc.this, "Sin cambios", Toast.LENGTH_SHORT).show();
                 }
@@ -291,7 +292,8 @@ public class ActivityRecepTraspMultSuc extends AppCompatActivity {
                 if(listaTrasp.get(posicion).isSincronizado()==false){
                     posicion2=posicion;
                     new AsyncActualizar(Folio,listaTrasp.get(posicion).getProducto(),
-                            listaTrasp.get(posicion).getCantSurt()+"","change",false,Producto).execute();
+                            listaTrasp.get(posicion).getCantSurt()+"",
+                            "change",false,Producto,0).execute();
                 }else {
                     CONTCAJA--;
                     spCaja.setText(CONTCAJA+"",false);
@@ -305,7 +307,8 @@ public class ActivityRecepTraspMultSuc extends AppCompatActivity {
                 if(listaTrasp.get(posicion).isSincronizado()==false){
                     posicion2=posicion;
                     new AsyncActualizar(Folio,listaTrasp.get(posicion).getProducto(),
-                            listaTrasp.get(posicion).getCantSurt()+"","change",false,Producto).execute();
+                            listaTrasp.get(posicion).getCantSurt()+"",
+                            "change",false,Producto,0).execute();
                 }else {
                     CONTCAJA++;
                     spCaja.setText(CONTCAJA+"",false);
@@ -325,15 +328,22 @@ public class ActivityRecepTraspMultSuc extends AppCompatActivity {
         btnImpr.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(listaTrasp.size()>0){
-                    ImprimirTicket(RECEP);
+                if(listaTrasp.size()>0){//si hay datos para imprimir
+                    if(listaTrasp.get(posicion).isSincronizado()==false){
+                        posicion2=posicion;
+                        new AsyncActualizar(Folio,listaTrasp.get(posicion).getProducto(),
+                                listaTrasp.get(posicion).getCantSurt()+"",
+                                "change",false,Producto,0).execute();
+                    }else{
+                        ImprimirTicketRec(RECEP);
+                    }//else
                 }else{
                     AlertDialog.Builder builder = new AlertDialog.Builder(ActivityRecepTraspMultSuc.this);
                     builder.setPositiveButton("ACEPTAR",null);
                     builder.setCancelable(false);
                     builder.setTitle("AVISO").setMessage("Sin datos para imprimir").create().show();
-                }
-            }
+                }//else
+            }//onclick
         });
 
     }//onCreate
@@ -458,7 +468,8 @@ public class ActivityRecepTraspMultSuc extends AppCompatActivity {
     public void cambio(String var,boolean sumar){
         if(!listaTrasp.get(posicion2).getProducto().equals(Producto) && posG!=-1 && listaTrasp.get(posicion2).isSincronizado()==false){//identificando que prod anterior no se sincronizó
             //new AsyncAct(listaTrasp.get(posicion2).getProducto(),listaTrasp.get(posicion2).getCantSurt(),var,sumar,Producto).execute();
-            new AsyncActualizar(Folio,listaTrasp.get(posicion2).getProducto(),listaTrasp.get(posicion2).getCantSurt(),var,sumar,Producto).execute();
+            new AsyncActualizar(Folio,listaTrasp.get(posicion2).getProducto(),
+                    listaTrasp.get(posicion2).getCantSurt(),var,sumar,Producto,0).execute();
         }else{//cuando se escanea o por botones de adelante, atras y onclick en lista
             if(sumar==true){//al escanear
                 evaluarEscaneo(Producto);
@@ -575,21 +586,7 @@ public class ActivityRecepTraspMultSuc extends AppCompatActivity {
                     modificados=true;
                     if(cantS==cant){
                         posicion2=i;
-                        new AsyncActualizar(Folio,prod,cantS+"","change",false,Producto).execute();
-                        if(surtTodos()==true){
-                            if(CONTCAJA<TOTCAJAS){//PASAR DE CAJA SI TODAS LAS CAJAS YA ESTAN LLENAS
-                                ImprimirTicket(listaTrasp.size());
-                                AlertDialog.Builder builder = new AlertDialog.Builder(ActivityRecepTraspMultSuc.this);
-                                builder.setPositiveButton("ACEPTAR",null);
-                                builder.setCancelable(false);
-                                builder.setTitle("SIGUIENTE CAJA").create().show();
-                                CONTCAJA++;
-                                spCaja.setText(CONTCAJA+"",false);
-                                //cambiaCajas();
-                                posicion=0;
-                                new AsyncReceCon(strbran,Folio,CONTCAJA+"",true).execute();
-                            }
-                        }//
+                        new AsyncActualizar(Folio,prod,cantS+"","change",false,Producto,1).execute();
                     }
                 }else{
                     bepp.play(sonido_error, 1, 1, 1, 0, 0);
@@ -822,13 +819,16 @@ public class ActivityRecepTraspMultSuc extends AppCompatActivity {
 
         private String folio,producto,cantidad,var,ProductoActual;
         private boolean conn=true,sumar;
-        public AsyncActualizar(String folio,String producto, String cantidad,String var,boolean sumar,String ProductoActual) {
+        private int alTerm;
+        public AsyncActualizar(String folio,String producto, String cantidad,
+                               String var,boolean sumar,String ProductoActual,int alTerm) {
             this.folio=folio;
             this.producto = producto;
             this.cantidad = cantidad;
             this.var=var;
             this.sumar=sumar;
             this.ProductoActual=ProductoActual;
+            this.alTerm=alTerm;
         }
 
         @Override
@@ -896,11 +896,12 @@ public class ActivityRecepTraspMultSuc extends AppCompatActivity {
                 if(sumar==true){
                     evaluarEscaneo(ProductoActual);
                 }else{
-                    if((posicion+1)<listaTrasp.size()){
+                    if((posicion+1)<listaTrasp.size()){//para que cambie al siguiente codigo siempre y cuando no sea el ultimo
                         var="next";
-                    }
+                    }//if
                     tipoCambio(var);
                     mostrarDetalleProd();
+                    alTerminar(alTerm);
                 }
             }else{
                 AlertDialog.Builder builder = new AlertDialog.Builder(ActivityRecepTraspMultSuc.this);
@@ -910,6 +911,29 @@ public class ActivityRecepTraspMultSuc extends AppCompatActivity {
             }//else
         }//onPost
     }//AsyncActualizar
+
+    public void alTerminar(int opc){
+        switch (opc){
+            case 1:
+                if(surtTodos()==true){
+                    if(CONTCAJA<TOTCAJAS){//PASAR DE CAJA SI TODAS LOS CODIGOS YA ESTAN
+                        ImprimirTicketRec(listaTrasp.size());
+                        AlertDialog.Builder builder = new AlertDialog.Builder(ActivityRecepTraspMultSuc.this);
+                        builder.setPositiveButton("ACEPTAR",null);
+                        builder.setCancelable(false);
+                        builder.setTitle("SIGUIENTE CAJA").create().show();
+                        CONTCAJA++;
+                        spCaja.setText(CONTCAJA+"",false);
+                        //cambiaCajas();
+                        posicion=0;
+                        new AsyncReceCon(strbran,Folio,CONTCAJA+"",true).execute();
+                    }else if(CONTCAJA==TOTCAJAS){
+                        ImprimirTicketRec(listaTrasp.size());
+                    }//else if
+                }//if surtio todos
+                break;
+        }//switch
+    }//alTerminar
 
     @Override
     public void onBackPressed() {
@@ -927,9 +951,75 @@ public class ActivityRecepTraspMultSuc extends AppCompatActivity {
         }else{
             finish();
         }
-    }
+    }//onBackPressed
 
-    public void ImprimirTicket(int Cont) {
+
+
+
+    public void imprimir(int Cont,BluetoothPrint imprimir){
+        String empresa;
+        int imagen;
+        switch (strServer) {
+            case "jacve.dyndns.org:9085":
+                empresa="JACVE";imagen=R.drawable.jacveprint;
+                break;
+            case "sprautomotive.servehttp.com:9085":
+                empresa="VIPLA";imagen=R.drawable.viplaprint;
+                break;
+            case "cecra.ath.cx:9085":
+                empresa="CECRA";imagen=R.drawable.cecraprint;
+                break;
+            case "guvi.ath.cx:9085":
+                empresa="GUVI";imagen=R.drawable.guviprint;
+                break;
+            case "cedistabasco.ddns.net:9085":
+                empresa="PRESSA";imagen=R.drawable.pressaprint;
+                break;
+            case "autodis.ath.cx:9085":
+                empresa="AUTODIS";imagen=R.drawable.autodisprint;
+                break;
+            case "sprautomotive.servehttp.com:9090":
+                empresa="RODATECH";imagen=R.drawable.rodaprint;
+                break;
+            case "sprautomotive.servehttp.com:9095":
+                empresa="PARTECH";imagen=R.drawable.partechprint;
+                break;
+            case "sprautomotive.servehttp.com:9080":
+                empresa="SHARK";imagen=R.drawable.sharkprint;
+                break;
+            case "vazlocolombia.dyndns.org:9085":
+                empresa="VAZLO COLOMBIA";imagen=R.drawable.bhpprint;
+                break;
+            default:
+                empresa="PRUEBAS";imagen=R.drawable.aboutlogo;
+                break;
+        }//swicth
+        if (imprimir.checkConnection() == true) {
+            imprimir.printListRecepT(empresa, strusr, Folio,  listaTrasp, String.valueOf(Cont), R.drawable.aboutlogo,spCaja.getText().toString());
+            imprimir.disconnectBT();
+        } else {
+            AlertDialog.Builder alerta = new AlertDialog.Builder(ActivityRecepTraspMultSuc.this);
+            alerta.setMessage("Verifique que la impresora este encendida \n o que tenga el bluetooth hablitado").setCancelable(false).setNegativeButton("Ok", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.cancel();
+                    editor.putString("Impresora", "null");
+                    editor.commit();
+                    impresora = preference.getString("Impresora", "null");
+
+                    Intent intent = new Intent(Settings.
+                            ACTION_BLUETOOTH_SETTINGS);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(intent);
+                }
+            });//alerta
+            AlertDialog titulo = alerta.create();
+            titulo.setTitle("¡AVISO!");
+            titulo.show();
+        }//else
+    }//imprimir
+
+    public void ImprimirTicketRec(int Cont) {
 
         builder6 = new AlertDialog.Builder(this);
         LayoutInflater inflater = this.getLayoutInflater();
@@ -940,7 +1030,7 @@ public class ActivityRecepTraspMultSuc extends AppCompatActivity {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
         dialog6.show();
-        //String Cliente=listaTrasp.get(0).get;
+
 
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -949,1126 +1039,47 @@ public class ActivityRecepTraspMultSuc extends AppCompatActivity {
             }
         }, 3000);
 
-
-        switch (strServer) {
-            case "jacve.dyndns.org:9085":
-                BluetoothPrint imprimir = new BluetoothPrint(context, getResources());
-                BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-                Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
-
-                List<String> listDevices = new ArrayList<String>();
-
-                for (BluetoothDevice btd : pairedDevices) {
-                    listDevices.add(btd.getName());
-                }
-                String[] opciones = new String[listDevices.size()];
-
-                for (int i = 0; i < listDevices.size(); i++) {
-                    opciones[i] = listDevices.get(i);
-                }
-
+        BluetoothPrint imprimir = new BluetoothPrint(context, getResources());
+        if (!impresora.equals("null")) {
+            imprimir.FindBluetoothDevice(impresora);
+            imprimir.openBluetoothPrinter();
+            imprimir(Cont,imprimir);
+        }else {
+            BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+            Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
+            List<String> listDevices = new ArrayList<String>();
+            for (BluetoothDevice btd : pairedDevices) {
+                listDevices.add(btd.getName());
+            }
+            String[] opciones = new String[listDevices.size()];
+            for (int i = 0; i < listDevices.size(); i++) {
+                opciones[i] = listDevices.get(i);
+            }
+            if (opciones.length > 0) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(ActivityRecepTraspMultSuc.this);
-                if (!impresora.equals("null")) {
-                    imprimir.FindBluetoothDevice(impresora);
-                    imprimir.openBluetoothPrinter();
-                    if (imprimir.checkConnection() == true) {
-                        imprimir.printListRecepT("JACVE", strusr, Folio,  listaTrasp, String.valueOf(Cont), R.drawable.jacveprint,spCaja.getText().toString());
-                        imprimir.disconnectBT();
-                    } else {
-                        AlertDialog.Builder alerta = new AlertDialog.Builder(ActivityRecepTraspMultSuc.this);
-                        alerta.setMessage("Verifique que la impresora este encendida \n o que tenga el bluetooth hablitado").setCancelable(false).setNegativeButton("Ok", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                dialogInterface.cancel();
-                                editor.putString("Impresora", "null");
-                                editor.commit();
-                                impresora = preference.getString("Impresora", "null");
+                builder.setTitle("Seleccione una impresoras emparejada");
+                BluetoothPrint finalImprimir = imprimir;
+                builder.setItems(opciones, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        editor.putString("Impresora", opciones[which]);
+                        editor.commit();
+                        impresora = preference.getString("Impresora", "null");
+
+                        finalImprimir.FindBluetoothDevice(opciones[which]);
+                        finalImprimir.openBluetoothPrinter();
+                        imprimir(Cont,finalImprimir);
+                    }//onclick
+                });//setitem
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            } else {
+                Intent intent = new Intent(Settings.
+                        ACTION_BLUETOOTH_SETTINGS);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent);
+            }
+        }//else
+    }//ImprimirTicket
 
-                                Intent intent = new Intent(Settings.
-                                        ACTION_BLUETOOTH_SETTINGS);
-                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                context.startActivity(intent);
-                            }
-                        });
-
-                        AlertDialog titulo = alerta.create();
-                        titulo.setTitle("¡AVISO!");
-                        titulo.show();
-                    }
-                } else {
-                    if (opciones.length > 0) {
-                        builder.setTitle("Seleccione una impresoras emparejada");
-                        builder.setItems(opciones, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                                editor.putString("Impresora", opciones[which]);
-                                editor.commit();
-                                impresora = preference.getString("Impresora", "null");
-
-                                imprimir.FindBluetoothDevice(opciones[which]);
-                                imprimir.openBluetoothPrinter();
-                                if (imprimir.checkConnection() == true) {
-                                    imprimir.printListRecepT("JACVE", strusr, Folio,  listaTrasp, String.valueOf(Cont), R.drawable.jacveprint,spCaja.getText().toString());
-                                    imprimir.disconnectBT();
-                                } else {
-                                    AlertDialog.Builder alerta = new AlertDialog.Builder(ActivityRecepTraspMultSuc.this);
-                                    alerta.setMessage("Verifique que la impresora este encendida \n o que tenga el bluetooth habilitado").setCancelable(false).setNegativeButton("Ok", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialogInterface, int i) {
-                                            dialogInterface.cancel();
-                                            editor.putString("Impresora", "null");
-                                            editor.commit();
-                                            impresora = preference.getString("Impresora", "null");
-
-                                            Intent intent = new Intent(Settings.
-                                                    ACTION_BLUETOOTH_SETTINGS);
-                                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                            context.startActivity(intent);
-
-                                        }
-                                    });
-
-                                    AlertDialog titulo = alerta.create();
-                                    titulo.setTitle("¡AVISO!");
-                                    titulo.show();
-                                }
-
-
-                            }
-                        });
-// create and show the alert dialog
-                        AlertDialog dialog = builder.create();
-                        dialog.show();
-                    } else {
-                        Intent intent = new Intent(Settings.
-                                ACTION_BLUETOOTH_SETTINGS);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        context.startActivity(intent);
-                    }
-                }
-
-                break;
-            case "sprautomotive.servehttp.com:9085":
-
-                imprimir = new BluetoothPrint(context, getResources());
-
-
-                mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-                pairedDevices = mBluetoothAdapter.getBondedDevices();
-
-                listDevices = new ArrayList<String>();
-
-                for (BluetoothDevice btd : pairedDevices) {
-                    listDevices.add(btd.getName());
-                }
-                opciones = new String[listDevices.size()];
-
-                for (int i = 0; i < listDevices.size(); i++) {
-                    opciones[i] = listDevices.get(i);
-                }
-
-                builder = new AlertDialog.Builder(ActivityRecepTraspMultSuc.this);
-                if (!impresora.equals("null")) {
-                    imprimir.FindBluetoothDevice(impresora);
-                    imprimir.openBluetoothPrinter();
-                    if (imprimir.checkConnection() == true) {
-                        imprimir.printListRecepT("JACVE", strusr, Folio,  listaTrasp, String.valueOf(Cont), R.drawable.viplaprint,spCaja.getText().toString());
-                        imprimir.disconnectBT();
-                    } else {
-                        AlertDialog.Builder alerta = new AlertDialog.Builder(ActivityRecepTraspMultSuc.this);
-                        alerta.setMessage("Verifique que la impresora este encendida \n o que tenga el bluetooth hablitado").setCancelable(false).setNegativeButton("Ok", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                dialogInterface.cancel();
-                                editor.putString("Impresora", "null");
-                                editor.commit();
-                                impresora = preference.getString("Impresora", "null");
-
-                                Intent intent = new Intent(Settings.
-                                        ACTION_BLUETOOTH_SETTINGS);
-                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                context.startActivity(intent);
-                            }
-                        });
-
-                        AlertDialog titulo = alerta.create();
-                        titulo.setTitle("¡AVISO!");
-                        titulo.show();
-                    }
-                } else {
-                    if (opciones.length > 0) {
-                        builder.setTitle("Seleccione una impresoras emparejada");
-                        builder.setItems(opciones, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                                editor.putString("Impresora", opciones[which]);
-                                editor.commit();
-                                impresora = preference.getString("Impresora", "null");
-
-                                imprimir.FindBluetoothDevice(opciones[which]);
-                                imprimir.openBluetoothPrinter();
-                                if (imprimir.checkConnection() == true) {
-                                    imprimir.printListRecepT("VIPLA", strusr, Folio,  listaTrasp, String.valueOf(Cont), R.drawable.viplaprint,spCaja.getText().toString());
-                                    imprimir.disconnectBT();
-                                } else {
-                                    AlertDialog.Builder alerta = new AlertDialog.Builder(ActivityRecepTraspMultSuc.this);
-                                    alerta.setMessage("Verifique que la impresora este encendida \n o que tenga el bluetooth habilitado").setCancelable(false).setNegativeButton("Ok", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialogInterface, int i) {
-                                            dialogInterface.cancel();
-                                            editor.putString("Impresora", "null");
-                                            editor.commit();
-                                            impresora = preference.getString("Impresora", "null");
-
-                                            Intent intent = new Intent(Settings.
-                                                    ACTION_BLUETOOTH_SETTINGS);
-                                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                            context.startActivity(intent);
-
-                                        }
-                                    });
-
-                                    AlertDialog titulo = alerta.create();
-                                    titulo.setTitle("¡AVISO!");
-                                    titulo.show();
-                                }
-
-
-                            }
-                        });
-// create and show the alert dialog
-                        AlertDialog dialog = builder.create();
-                        dialog.show();
-                    } else {
-                        Intent intent = new Intent(Settings.
-                                ACTION_BLUETOOTH_SETTINGS);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        context.startActivity(intent);
-                    }
-                }
-
-
-                break;
-            case "cecra.ath.cx:9085":
-
-
-
-                imprimir = new BluetoothPrint(context, getResources());
-
-
-                mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-                pairedDevices = mBluetoothAdapter.getBondedDevices();
-
-                listDevices = new ArrayList<String>();
-
-                for (BluetoothDevice btd : pairedDevices) {
-                    listDevices.add(btd.getName());
-                }
-                opciones = new String[listDevices.size()];
-
-                for (int i = 0; i < listDevices.size(); i++) {
-                    opciones[i] = listDevices.get(i);
-                }
-
-                builder = new AlertDialog.Builder(ActivityRecepTraspMultSuc.this);
-                if (!impresora.equals("null")) {
-                    imprimir.FindBluetoothDevice(impresora);
-                    imprimir.openBluetoothPrinter();
-                    if (imprimir.checkConnection() == true) {
-                        imprimir.printListRecepT("CECRA", strusr, Folio,  listaTrasp, String.valueOf(Cont), R.drawable.cecra,spCaja.getText().toString());
-                        imprimir.disconnectBT();
-                    } else {
-                        AlertDialog.Builder alerta = new AlertDialog.Builder(ActivityRecepTraspMultSuc.this);
-                        alerta.setMessage("Verifique que la impresora este encendida \n o que tenga el bluetooth hablitado").setCancelable(false).setNegativeButton("Ok", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                dialogInterface.cancel();
-                                editor.putString("Impresora", "null");
-                                editor.commit();
-                                impresora = preference.getString("Impresora", "null");
-
-                                Intent intent = new Intent(Settings.
-                                        ACTION_BLUETOOTH_SETTINGS);
-                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                context.startActivity(intent);
-                            }
-                        });
-
-                        AlertDialog titulo = alerta.create();
-                        titulo.setTitle("¡AVISO!");
-                        titulo.show();
-                    }
-                } else {
-                    if (opciones.length > 0) {
-                        builder.setTitle("Seleccione una impresoras emparejada");
-                        builder.setItems(opciones, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                                editor.putString("Impresora", opciones[which]);
-                                editor.commit();
-                                impresora = preference.getString("Impresora", "null");
-
-                                imprimir.FindBluetoothDevice(opciones[which]);
-                                imprimir.openBluetoothPrinter();
-                                if (imprimir.checkConnection() == true) {
-                                    imprimir.printListRecepT("CECRA", strusr, Folio,  listaTrasp, String.valueOf(Cont), R.drawable.cecraprint,spCaja.getText().toString());
-                                    imprimir.disconnectBT();
-                                } else {
-                                    AlertDialog.Builder alerta = new AlertDialog.Builder(ActivityRecepTraspMultSuc.this);
-                                    alerta.setMessage("Verifique que la impresora este encendida \n o que tenga el bluetooth habilitado").setCancelable(false).setNegativeButton("Ok", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialogInterface, int i) {
-                                            dialogInterface.cancel();
-                                            editor.putString("Impresora", "null");
-                                            editor.commit();
-                                            impresora = preference.getString("Impresora", "null");
-
-                                            Intent intent = new Intent(Settings.
-                                                    ACTION_BLUETOOTH_SETTINGS);
-                                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                            context.startActivity(intent);
-
-                                        }
-                                    });
-
-                                    AlertDialog titulo = alerta.create();
-                                    titulo.setTitle("¡AVISO!");
-                                    titulo.show();
-                                }
-
-
-                            }
-                        });
-// create and show the alert dialog
-                        AlertDialog dialog = builder.create();
-                        dialog.show();
-                    } else {
-                        Intent intent = new Intent(Settings.
-                                ACTION_BLUETOOTH_SETTINGS);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        context.startActivity(intent);
-                    }
-                }
-                break;
-            case "guvi.ath.cx:9085":
-
-
-
-                imprimir = new BluetoothPrint(context, getResources());
-
-
-                mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-                pairedDevices = mBluetoothAdapter.getBondedDevices();
-
-                listDevices = new ArrayList<String>();
-
-                for (BluetoothDevice btd : pairedDevices) {
-                    listDevices.add(btd.getName());
-                }
-                opciones = new String[listDevices.size()];
-
-                for (int i = 0; i < listDevices.size(); i++) {
-                    opciones[i] = listDevices.get(i);
-                }
-
-                builder = new AlertDialog.Builder(ActivityRecepTraspMultSuc.this);
-                if (!impresora.equals("null")) {
-                    imprimir.FindBluetoothDevice(impresora);
-                    imprimir.openBluetoothPrinter();
-                    if (imprimir.checkConnection() == true) {
-                        imprimir.printListRecepT("GUVI", strusr, Folio,  listaTrasp, String.valueOf(Cont), R.drawable.guviprint,spCaja.getText().toString());
-                        imprimir.disconnectBT();
-                    } else {
-                        AlertDialog.Builder alerta = new AlertDialog.Builder(ActivityRecepTraspMultSuc.this);
-                        alerta.setMessage("Verifique que la impresora este encendida \n o que tenga el bluetooth hablitado").setCancelable(false).setNegativeButton("Ok", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                dialogInterface.cancel();
-                                editor.putString("Impresora", "null");
-                                editor.commit();
-                                impresora = preference.getString("Impresora", "null");
-
-                                Intent intent = new Intent(Settings.
-                                        ACTION_BLUETOOTH_SETTINGS);
-                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                context.startActivity(intent);
-                            }
-                        });
-
-                        AlertDialog titulo = alerta.create();
-                        titulo.setTitle("¡AVISO!");
-                        titulo.show();
-                    }
-                } else {
-                    if (opciones.length > 0) {
-                        builder.setTitle("Seleccione una impresoras emparejada");
-                        builder.setItems(opciones, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                                editor.putString("Impresora", opciones[which]);
-                                editor.commit();
-                                impresora = preference.getString("Impresora", "null");
-
-                                imprimir.FindBluetoothDevice(opciones[which]);
-                                imprimir.openBluetoothPrinter();
-                                if (imprimir.checkConnection() == true) {
-                                    imprimir.printListRecepT("GUVI", strusr, Folio,  listaTrasp, String.valueOf(Cont), R.drawable.guviprint,spCaja.getText().toString());
-                                    imprimir.disconnectBT();
-                                } else {
-                                    AlertDialog.Builder alerta = new AlertDialog.Builder(ActivityRecepTraspMultSuc.this);
-                                    alerta.setMessage("Verifique que la impresora este encendida \n o que tenga el bluetooth habilitado").setCancelable(false).setNegativeButton("Ok", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialogInterface, int i) {
-                                            dialogInterface.cancel();
-                                            editor.putString("Impresora", "null");
-                                            editor.commit();
-                                            impresora = preference.getString("Impresora", "null");
-
-                                            Intent intent = new Intent(Settings.
-                                                    ACTION_BLUETOOTH_SETTINGS);
-                                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                            context.startActivity(intent);
-
-                                        }
-                                    });
-
-                                    AlertDialog titulo = alerta.create();
-                                    titulo.setTitle("¡AVISO!");
-                                    titulo.show();
-                                }
-
-
-                            }
-                        });
-// create and show the alert dialog
-                        AlertDialog dialog = builder.create();
-                        dialog.show();
-                    } else {
-                        Intent intent = new Intent(Settings.
-                                ACTION_BLUETOOTH_SETTINGS);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        context.startActivity(intent);
-                    }
-                }
-
-
-                break;
-            case "cedistabasco.ddns.net:9085":
-
-
-
-                imprimir = new BluetoothPrint(context, getResources());
-
-
-                mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-                pairedDevices = mBluetoothAdapter.getBondedDevices();
-
-                listDevices = new ArrayList<String>();
-
-                for (BluetoothDevice btd : pairedDevices) {
-                    listDevices.add(btd.getName());
-                }
-                opciones = new String[listDevices.size()];
-
-                for (int i = 0; i < listDevices.size(); i++) {
-                    opciones[i] = listDevices.get(i);
-                }
-
-                builder = new AlertDialog.Builder(ActivityRecepTraspMultSuc.this);
-                if (!impresora.equals("null")) {
-                    imprimir.FindBluetoothDevice(impresora);
-                    imprimir.openBluetoothPrinter();
-                    if (imprimir.checkConnection() == true) {
-                        imprimir.printListRecepT("PRESSA", strusr, Folio,  listaTrasp, String.valueOf(Cont), R.drawable.pressaprint,spCaja.getText().toString());
-                        imprimir.disconnectBT();
-                    } else {
-                        AlertDialog.Builder alerta = new AlertDialog.Builder(ActivityRecepTraspMultSuc.this);
-                        alerta.setMessage("Verifique que la impresora este encendida \n o que tenga el bluetooth hablitado").setCancelable(false).setNegativeButton("Ok", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                dialogInterface.cancel();
-                                editor.putString("Impresora", "null");
-                                editor.commit();
-                                impresora = preference.getString("Impresora", "null");
-
-                                Intent intent = new Intent(Settings.
-                                        ACTION_BLUETOOTH_SETTINGS);
-                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                context.startActivity(intent);
-                            }
-                        });
-
-                        AlertDialog titulo = alerta.create();
-                        titulo.setTitle("¡AVISO!");
-                        titulo.show();
-                    }
-                } else {
-                    if (opciones.length > 0) {
-                        builder.setTitle("Seleccione una impresoras emparejada");
-                        builder.setItems(opciones, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                                editor.putString("Impresora", opciones[which]);
-                                editor.commit();
-                                impresora = preference.getString("Impresora", "null");
-
-                                imprimir.FindBluetoothDevice(opciones[which]);
-                                imprimir.openBluetoothPrinter();
-                                if (imprimir.checkConnection() == true) {
-                                    imprimir.printListRecepT("PRESSA", strusr, Folio,  listaTrasp, String.valueOf(Cont), R.drawable.pressaprint,spCaja.getText().toString());
-                                    imprimir.disconnectBT();
-                                } else {
-                                    AlertDialog.Builder alerta = new AlertDialog.Builder(ActivityRecepTraspMultSuc.this);
-                                    alerta.setMessage("Verifique que la impresora este encendida \n o que tenga el bluetooth habilitado").setCancelable(false).setNegativeButton("Ok", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialogInterface, int i) {
-                                            dialogInterface.cancel();
-                                            editor.putString("Impresora", "null");
-                                            editor.commit();
-                                            impresora = preference.getString("Impresora", "null");
-
-                                            Intent intent = new Intent(Settings.
-                                                    ACTION_BLUETOOTH_SETTINGS);
-                                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                            context.startActivity(intent);
-
-                                        }
-                                    });
-
-                                    AlertDialog titulo = alerta.create();
-                                    titulo.setTitle("¡AVISO!");
-                                    titulo.show();
-                                }
-
-
-                            }
-                        });
-// create and show the alert dialog
-                        AlertDialog dialog = builder.create();
-                        dialog.show();
-                    } else {
-                        Intent intent = new Intent(Settings.
-                                ACTION_BLUETOOTH_SETTINGS);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        context.startActivity(intent);
-                    }
-                }
-                break;
-            case "autodis.ath.cx:9085":
-
-
-
-                imprimir = new BluetoothPrint(context, getResources());
-
-
-                mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-                pairedDevices = mBluetoothAdapter.getBondedDevices();
-
-                listDevices = new ArrayList<String>();
-
-                for (BluetoothDevice btd : pairedDevices) {
-                    listDevices.add(btd.getName());
-                }
-                opciones = new String[listDevices.size()];
-
-                for (int i = 0; i < listDevices.size(); i++) {
-                    opciones[i] = listDevices.get(i);
-                }
-
-                builder = new AlertDialog.Builder(ActivityRecepTraspMultSuc.this);
-                if (!impresora.equals("null")) {
-                    imprimir.FindBluetoothDevice(impresora);
-                    imprimir.openBluetoothPrinter();
-                    if (imprimir.checkConnection() == true) {
-                        imprimir.printListRecepT("AUTODIS", strusr, Folio,  listaTrasp, String.valueOf(Cont), R.drawable.autodisprint,spCaja.getText().toString());
-                        imprimir.disconnectBT();
-                    } else {
-                        AlertDialog.Builder alerta = new AlertDialog.Builder(ActivityRecepTraspMultSuc.this);
-                        alerta.setMessage("Verifique que la impresora este encendida \n o que tenga el bluetooth hablitado").setCancelable(false).setNegativeButton("Ok", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                dialogInterface.cancel();
-                                editor.putString("Impresora", "null");
-                                editor.commit();
-                                impresora = preference.getString("Impresora", "null");
-
-                                Intent intent = new Intent(Settings.
-                                        ACTION_BLUETOOTH_SETTINGS);
-                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                context.startActivity(intent);
-                            }
-                        });
-
-                        AlertDialog titulo = alerta.create();
-                        titulo.setTitle("¡AVISO!");
-                        titulo.show();
-                    }
-                } else {
-                    if (opciones.length > 0) {
-                        builder.setTitle("Seleccione una impresoras emparejada");
-                        builder.setItems(opciones, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                                editor.putString("Impresora", opciones[which]);
-                                editor.commit();
-                                impresora = preference.getString("Impresora", "null");
-
-                                imprimir.FindBluetoothDevice(opciones[which]);
-                                imprimir.openBluetoothPrinter();
-                                if (imprimir.checkConnection() == true) {
-                                    imprimir.printListRecepT("AUTODIS", strusr, Folio,  listaTrasp, String.valueOf(Cont), R.drawable.autodisprint,spCaja.getText().toString());
-                                    imprimir.disconnectBT();
-                                } else {
-                                    AlertDialog.Builder alerta = new AlertDialog.Builder(ActivityRecepTraspMultSuc.this);
-                                    alerta.setMessage("Verifique que la impresora este encendida \n o que tenga el bluetooth habilitado").setCancelable(false).setNegativeButton("Ok", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialogInterface, int i) {
-                                            dialogInterface.cancel();
-                                            editor.putString("Impresora", "null");
-                                            editor.commit();
-                                            impresora = preference.getString("Impresora", "null");
-
-                                            Intent intent = new Intent(Settings.
-                                                    ACTION_BLUETOOTH_SETTINGS);
-                                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                            context.startActivity(intent);
-
-                                        }
-                                    });
-
-                                    AlertDialog titulo = alerta.create();
-                                    titulo.setTitle("¡AVISO!");
-                                    titulo.show();
-                                }
-
-
-                            }
-                        });
-// create and show the alert dialog
-                        AlertDialog dialog = builder.create();
-                        dialog.show();
-                    } else {
-                        Intent intent = new Intent(Settings.
-                                ACTION_BLUETOOTH_SETTINGS);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        context.startActivity(intent);
-                    }
-                }
-                break;
-            case "sprautomotive.servehttp.com:9090":
-
-
-
-                imprimir = new BluetoothPrint(context, getResources());
-
-
-                mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-                pairedDevices = mBluetoothAdapter.getBondedDevices();
-
-                listDevices = new ArrayList<String>();
-
-                for (BluetoothDevice btd : pairedDevices) {
-                    listDevices.add(btd.getName());
-                }
-                opciones = new String[listDevices.size()];
-
-                for (int i = 0; i < listDevices.size(); i++) {
-                    opciones[i] = listDevices.get(i);
-                }
-
-                builder = new AlertDialog.Builder(ActivityRecepTraspMultSuc.this);
-                if (!impresora.equals("null")) {
-                    imprimir.FindBluetoothDevice(impresora);
-                    imprimir.openBluetoothPrinter();
-                    if (imprimir.checkConnection() == true) {
-                        imprimir.printListRecepT("RODATECH", strusr, Folio,  listaTrasp, String.valueOf(Cont), R.drawable.rodaprint,spCaja.getText().toString());
-                        imprimir.disconnectBT();
-                    } else {
-                        AlertDialog.Builder alerta = new AlertDialog.Builder(ActivityRecepTraspMultSuc.this);
-                        alerta.setMessage("Verifique que la impresora este encendida \n o que tenga el bluetooth hablitado").setCancelable(false).setNegativeButton("Ok", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                dialogInterface.cancel();
-                                editor.putString("Impresora", "null");
-                                editor.commit();
-                                impresora = preference.getString("Impresora", "null");
-
-                                Intent intent = new Intent(Settings.
-                                        ACTION_BLUETOOTH_SETTINGS);
-                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                context.startActivity(intent);
-                            }
-                        });
-
-                        AlertDialog titulo = alerta.create();
-                        titulo.setTitle("¡AVISO!");
-                        titulo.show();
-                    }
-                } else {
-                    if (opciones.length > 0) {
-                        builder.setTitle("Seleccione una impresoras emparejada");
-                        builder.setItems(opciones, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                                editor.putString("Impresora", opciones[which]);
-                                editor.commit();
-                                impresora = preference.getString("Impresora", "null");
-
-                                imprimir.FindBluetoothDevice(opciones[which]);
-                                imprimir.openBluetoothPrinter();
-                                if (imprimir.checkConnection() == true) {
-                                    imprimir.printListRecepT("RODATECH", strusr, Folio,  listaTrasp, String.valueOf(Cont), R.drawable.rodaprint,spCaja.getText().toString());
-                                    imprimir.disconnectBT();
-                                } else {
-                                    AlertDialog.Builder alerta = new AlertDialog.Builder(ActivityRecepTraspMultSuc.this);
-                                    alerta.setMessage("Verifique que la impresora este encendida \n o que tenga el bluetooth habilitado").setCancelable(false).setNegativeButton("Ok", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialogInterface, int i) {
-                                            dialogInterface.cancel();
-                                            editor.putString("Impresora", "null");
-                                            editor.commit();
-                                            impresora = preference.getString("Impresora", "null");
-
-                                            Intent intent = new Intent(Settings.
-                                                    ACTION_BLUETOOTH_SETTINGS);
-                                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                            context.startActivity(intent);
-
-                                        }
-                                    });
-
-                                    AlertDialog titulo = alerta.create();
-                                    titulo.setTitle("¡AVISO!");
-                                    titulo.show();
-                                }
-
-
-                            }
-                        });
-// create and show the alert dialog
-                        AlertDialog dialog = builder.create();
-                        dialog.show();
-                    } else {
-                        Intent intent = new Intent(Settings.
-                                ACTION_BLUETOOTH_SETTINGS);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        context.startActivity(intent);
-                    }
-                }
-                break;
-            case "sprautomotive.servehttp.com:9095":
-
-
-
-                imprimir = new BluetoothPrint(context, getResources());
-
-
-                mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-                pairedDevices = mBluetoothAdapter.getBondedDevices();
-
-                listDevices = new ArrayList<String>();
-
-                for (BluetoothDevice btd : pairedDevices) {
-                    listDevices.add(btd.getName());
-                }
-                opciones = new String[listDevices.size()];
-
-                for (int i = 0; i < listDevices.size(); i++) {
-                    opciones[i] = listDevices.get(i);
-                }
-
-                builder = new AlertDialog.Builder(ActivityRecepTraspMultSuc.this);
-                if (!impresora.equals("null")) {
-                    imprimir.FindBluetoothDevice(impresora);
-                    imprimir.openBluetoothPrinter();
-                    if (imprimir.checkConnection() == true) {
-                        imprimir.printListRecepT("PARTECH", strusr, Folio,  listaTrasp, String.valueOf(Cont), R.drawable.partechprint,spCaja.getText().toString());
-                        imprimir.disconnectBT();
-                    } else {
-                        AlertDialog.Builder alerta = new AlertDialog.Builder(ActivityRecepTraspMultSuc.this);
-                        alerta.setMessage("Verifique que la impresora este encendida \n o que tenga el bluetooth hablitado").setCancelable(false).setNegativeButton("Ok", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                dialogInterface.cancel();
-                                editor.putString("Impresora", "null");
-                                editor.commit();
-                                impresora = preference.getString("Impresora", "null");
-
-                                Intent intent = new Intent(Settings.
-                                        ACTION_BLUETOOTH_SETTINGS);
-                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                context.startActivity(intent);
-                            }
-                        });
-
-                        AlertDialog titulo = alerta.create();
-                        titulo.setTitle("¡AVISO!");
-                        titulo.show();
-                    }
-                } else {
-                    if (opciones.length > 0) {
-                        builder.setTitle("Seleccione una impresoras emparejada");
-                        builder.setItems(opciones, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                                editor.putString("Impresora", opciones[which]);
-                                editor.commit();
-                                impresora = preference.getString("Impresora", "null");
-
-                                imprimir.FindBluetoothDevice(impresora);
-                                imprimir.openBluetoothPrinter();
-                                if (imprimir.checkConnection() == true) {
-                                    imprimir.printListRecepT("PARTECH", strusr, Folio,  listaTrasp, String.valueOf(Cont), R.drawable.partechprint,spCaja.getText().toString());
-                                    imprimir.disconnectBT();
-                                } else {
-                                    AlertDialog.Builder alerta = new AlertDialog.Builder(ActivityRecepTraspMultSuc.this);
-                                    alerta.setMessage("Verifique que la impresora este encendida \n o que tenga el bluetooth habilitado").setCancelable(false).setNegativeButton("Ok", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialogInterface, int i) {
-                                            dialogInterface.cancel();
-                                            editor.putString("Impresora", "null");
-                                            editor.commit();
-                                            impresora = preference.getString("Impresora", "null");
-
-                                            Intent intent = new Intent(Settings.
-                                                    ACTION_BLUETOOTH_SETTINGS);
-                                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                            context.startActivity(intent);
-
-                                        }
-                                    });
-
-                                    AlertDialog titulo = alerta.create();
-                                    titulo.setTitle("¡AVISO!");
-                                    titulo.show();
-                                }
-
-
-                            }
-                        });
-// create and show the alert dialog
-                        AlertDialog dialog = builder.create();
-                        dialog.show();
-                    } else {
-                        Intent intent = new Intent(Settings.
-                                ACTION_BLUETOOTH_SETTINGS);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        context.startActivity(intent);
-                    }
-                }
-                break;
-            case "sprautomotive.servehttp.com:9080":
-
-
-
-                imprimir = new BluetoothPrint(context, getResources());
-
-
-                mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-                pairedDevices = mBluetoothAdapter.getBondedDevices();
-
-                listDevices = new ArrayList<String>();
-
-                for (BluetoothDevice btd : pairedDevices) {
-                    listDevices.add(btd.getName());
-                }
-                opciones = new String[listDevices.size()];
-
-                for (int i = 0; i < listDevices.size(); i++) {
-                    opciones[i] = listDevices.get(i);
-                }
-
-                builder = new AlertDialog.Builder(ActivityRecepTraspMultSuc.this);
-                if (!impresora.equals("null")) {
-                    imprimir.FindBluetoothDevice(impresora);
-                    imprimir.openBluetoothPrinter();
-                    if (imprimir.checkConnection() == true) {
-                        imprimir.printListRecepT("SHARK", strusr, Folio,  listaTrasp, String.valueOf(Cont), R.drawable.sharkprint,spCaja.getText().toString());
-                        imprimir.disconnectBT();
-                    } else {
-                        AlertDialog.Builder alerta = new AlertDialog.Builder(ActivityRecepTraspMultSuc.this);
-                        alerta.setMessage("Verifique que la impresora este encendida \n o que tenga el bluetooth hablitado").setCancelable(false).setNegativeButton("Ok", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                dialogInterface.cancel();
-                                editor.putString("Impresora", "null");
-                                editor.commit();
-                                impresora = preference.getString("Impresora", "null");
-
-                                Intent intent = new Intent(Settings.
-                                        ACTION_BLUETOOTH_SETTINGS);
-                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                context.startActivity(intent);
-                            }
-                        });
-
-                        AlertDialog titulo = alerta.create();
-                        titulo.setTitle("¡AVISO!");
-                        titulo.show();
-                    }
-                } else {
-                    if (opciones.length > 0) {
-                        builder.setTitle("Seleccione una impresoras emparejada");
-                        builder.setItems(opciones, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                                editor.putString("Impresora", opciones[which]);
-                                editor.commit();
-                                impresora = preference.getString("Impresora", "null");
-
-                                imprimir.FindBluetoothDevice(opciones[which]);
-                                imprimir.openBluetoothPrinter();
-                                if (imprimir.checkConnection() == true) {
-                                    imprimir.printListRecepT("SHARK", strusr, Folio,  listaTrasp, String.valueOf(Cont), R.drawable.sharkprint,spCaja.getText().toString());
-                                    imprimir.disconnectBT();
-                                } else {
-                                    AlertDialog.Builder alerta = new AlertDialog.Builder(ActivityRecepTraspMultSuc.this);
-                                    alerta.setMessage("Verifique que la impresora este encendida \n o que tenga el bluetooth habilitado").setCancelable(false).setNegativeButton("Ok", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialogInterface, int i) {
-                                            dialogInterface.cancel();
-                                            editor.putString("Impresora", "null");
-                                            editor.commit();
-                                            impresora = preference.getString("Impresora", "null");
-
-                                            Intent intent = new Intent(Settings.
-                                                    ACTION_BLUETOOTH_SETTINGS);
-                                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                            context.startActivity(intent);
-
-                                        }
-                                    });
-
-                                    AlertDialog titulo = alerta.create();
-                                    titulo.setTitle("¡AVISO!");
-                                    titulo.show();
-                                }
-
-
-                            }
-                        });
-// create and show the alert dialog
-                        AlertDialog dialog = builder.create();
-                        dialog.show();
-                    } else {
-                        Intent intent = new Intent(Settings.
-                                ACTION_BLUETOOTH_SETTINGS);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        context.startActivity(intent);
-                    }
-                }
-                break;
-            case "vazlocolombia.dyndns.org:9085":
-
-
-
-                imprimir = new BluetoothPrint(context, getResources());
-
-
-                mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-                pairedDevices = mBluetoothAdapter.getBondedDevices();
-
-                listDevices = new ArrayList<String>();
-
-                for (BluetoothDevice btd : pairedDevices) {
-                    listDevices.add(btd.getName());
-                }
-                opciones = new String[listDevices.size()];
-
-                for (int i = 0; i < listDevices.size(); i++) {
-                    opciones[i] = listDevices.get(i);
-                }
-
-                builder = new AlertDialog.Builder(ActivityRecepTraspMultSuc.this);
-                if (!impresora.equals("null")) {
-                    imprimir.FindBluetoothDevice(impresora);
-                    imprimir.openBluetoothPrinter();
-                    if (imprimir.checkConnection() == true) {
-                        imprimir.printListRecepT("VAZLO COLOMBIA", strusr, Folio,  listaTrasp, String.valueOf(Cont), R.drawable.bhpprint,spCaja.getText().toString());
-                        imprimir.disconnectBT();
-                    } else {
-                        AlertDialog.Builder alerta = new AlertDialog.Builder(ActivityRecepTraspMultSuc.this);
-                        alerta.setMessage("Verifique que la impresora este encendida \n o que tenga el bluetooth hablitado").setCancelable(false).setNegativeButton("Ok", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                dialogInterface.cancel();
-                                editor.putString("Impresora", "null");
-                                impresora = preference.getString("Impresora", "null");
-                                editor.commit();
-                                impresora = preference.getString("Impresora", "null");
-                                Intent intent = new Intent(Settings.
-                                        ACTION_BLUETOOTH_SETTINGS);
-                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                context.startActivity(intent);
-                            }
-                        });
-
-                        AlertDialog titulo = alerta.create();
-                        titulo.setTitle("¡AVISO!");
-                        titulo.show();
-                    }
-                } else {
-                    if (opciones.length > 0) {
-                        builder.setTitle("Seleccione una impresoras emparejada");
-                        builder.setItems(opciones, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                                editor.putString("Impresora", opciones[which]);
-                                editor.commit();
-                                impresora = preference.getString("Impresora", "null");
-
-                                imprimir.FindBluetoothDevice(opciones[which]);
-                                imprimir.openBluetoothPrinter();
-                                if (imprimir.checkConnection() == true) {
-                                    imprimir.printListRecepT("VAZLO COLOMBIA", strusr, Folio,  listaTrasp, String.valueOf(Cont), R.drawable.bhpprint,spCaja.getText().toString());imprimir.disconnectBT();
-                                } else {
-                                    AlertDialog.Builder alerta = new AlertDialog.Builder(ActivityRecepTraspMultSuc.this);
-                                    alerta.setMessage("Verifique que la impresora este encendida \n o que tenga el bluetooth habilitado").setCancelable(false).setNegativeButton("Ok", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialogInterface, int i) {
-                                            dialogInterface.cancel();
-                                            editor.putString("Impresora", "null");
-                                            editor.commit();
-                                            impresora = preference.getString("Impresora", "null");
-                                            Intent intent = new Intent(Settings.
-                                                    ACTION_BLUETOOTH_SETTINGS);
-                                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                            context.startActivity(intent);
-
-                                        }
-                                    });
-
-                                    AlertDialog titulo = alerta.create();
-                                    titulo.setTitle("¡AVISO!");
-                                    titulo.show();
-                                }
-
-
-                            }
-                        });
-// create and show the alert dialog
-                        AlertDialog dialog = builder.create();
-                        dialog.show();
-                    } else {
-                        Intent intent = new Intent(Settings.
-                                ACTION_BLUETOOTH_SETTINGS);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        context.startActivity(intent);
-                    }
-                }
-                break;
-            default:
-
-
-
-                imprimir = new BluetoothPrint(context, getResources());
-
-
-                mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-                pairedDevices = mBluetoothAdapter.getBondedDevices();
-
-                listDevices = new ArrayList<String>();
-
-                for (BluetoothDevice btd : pairedDevices) {
-                    listDevices.add(btd.getName());
-                }
-                opciones = new String[listDevices.size()];
-
-                for (int i = 0; i < listDevices.size(); i++) {
-                    opciones[i] = listDevices.get(i);
-                }
-
-                builder = new AlertDialog.Builder(ActivityRecepTraspMultSuc.this);
-                if (!impresora.equals("null")) {
-                    imprimir.FindBluetoothDevice(impresora);
-                    imprimir.openBluetoothPrinter();
-                    if (imprimir.checkConnection() == true) {
-                        imprimir.printListRecepT("PRUEBAS", strusr, Folio,  listaTrasp, String.valueOf(Cont), R.drawable.aboutlogo,spCaja.getText().toString());
-                        imprimir.disconnectBT();
-                    } else {
-                        AlertDialog.Builder alerta = new AlertDialog.Builder(ActivityRecepTraspMultSuc.this);
-                        alerta.setMessage("Verifique que la impresora este encendida \n o que tenga el bluetooth hablitado").setCancelable(false).setNegativeButton("Ok", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                dialogInterface.cancel();
-                                editor.putString("Impresora", "null");
-                                impresora = preference.getString("Impresora", "null");
-                                editor.commit();
-                                impresora = preference.getString("Impresora", "null");
-                                Intent intent = new Intent(Settings.
-                                        ACTION_BLUETOOTH_SETTINGS);
-                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                context.startActivity(intent);
-                            }
-                        });
-
-                        AlertDialog titulo = alerta.create();
-                        titulo.setTitle("¡AVISO!");
-                        titulo.show();
-                    }
-                } else {
-                    if (opciones.length > 0) {
-                        builder.setTitle("Seleccione una impresoras emparejada");
-                        builder.setItems(opciones, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                                editor.putString("Impresora", opciones[which]);
-                                editor.commit();
-                                impresora = preference.getString("Impresora", "null");
-
-                                imprimir.FindBluetoothDevice(opciones[which]);
-                                imprimir.openBluetoothPrinter();
-                                if (imprimir.checkConnection() == true) {
-                                    imprimir.printListRecepT("PRUEBAS", strusr, Folio,  listaTrasp, String.valueOf(Cont), R.drawable.aboutlogo,spCaja.getText().toString());
-                                    imprimir.disconnectBT();
-                                } else {
-                                    AlertDialog.Builder alerta = new AlertDialog.Builder(ActivityRecepTraspMultSuc.this);
-                                    alerta.setMessage("Verifique que la impresora este encendida \n o que tenga el bluetooth habilitado").setCancelable(false).setNegativeButton("Ok", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialogInterface, int i) {
-                                            dialogInterface.cancel();
-
-                                            editor.putString("Impresora", "null");
-                                            editor.commit();
-                                            impresora = preference.getString("Impresora", "null");
-
-                                            Intent intent = new Intent(Settings.
-                                                    ACTION_BLUETOOTH_SETTINGS);
-                                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                            context.startActivity(intent);
-                                        }
-                                    });
-
-                                    AlertDialog titulo = alerta.create();
-                                    titulo.setTitle("¡AVISO!");
-                                    titulo.show();
-                                }
-
-
-                            }
-                        });
-// create and show the alert dialog
-                        AlertDialog dialog = builder.create();
-                        dialog.show();
-                    } else {
-                        Intent intent = new Intent(Settings.
-                                ACTION_BLUETOOTH_SETTINGS);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        context.startActivity(intent);
-                    }
-                }
-                break;
-        }
-    }
 }//ActivityInventario

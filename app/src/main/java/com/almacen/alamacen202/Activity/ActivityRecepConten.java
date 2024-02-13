@@ -152,11 +152,11 @@ public class ActivityRecepConten extends AppCompatActivity {
                 setMessage("Espere un momento...").build();
         mDialog.setCancelable(false);
 
-        lvFolios        = findViewById(R.id.lvFolios);
+        //lvFolios        = findViewById(R.id.lvFolios);
         txtProdR        = findViewById(R.id.txtProdR);
         txtCantRec      = findViewById(R.id.txtCantRec);
         txtPalet        = findViewById(R.id.txtPalet);
-        btnBuscaFolio   = findViewById(R.id.btnBuscaFolio);
+        //btnBuscaFolio   = findViewById(R.id.btnBuscaFolio);
         tvRepMatr       = findViewById(R.id.tvRepMatr);
         tvRepCdmx       = findViewById(R.id.tvRepCdmx);
         tvRepCul        = findViewById(R.id.tvRepCul);

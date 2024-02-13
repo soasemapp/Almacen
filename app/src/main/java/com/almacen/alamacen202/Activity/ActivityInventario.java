@@ -27,6 +27,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -47,6 +48,7 @@ import com.almacen.alamacen202.Adapter.AdaptadorListaFolios;
 import com.almacen.alamacen202.Adapter.AdapterInventario;
 import com.almacen.alamacen202.MainActivity;
 import com.almacen.alamacen202.R;
+import com.almacen.alamacen202.SetterandGetters.EnvTraspasos;
 import com.almacen.alamacen202.SetterandGetters.Folios;
 import com.almacen.alamacen202.SetterandGetters.Inventario;
 import com.almacen.alamacen202.SetterandGetters.ListProAduSandG;
@@ -56,9 +58,13 @@ import com.almacen.alamacen202.XML.XMLFolios;
 import com.almacen.alamacen202.XML.XMLValdiSuper;
 import com.almacen.alamacen202.XML.XMLValidEsc;
 import com.almacen.alamacen202.XML.XMLlistInv;
+import com.almacen.alamacen202.includes.HttpHandler;
 import com.almacen.alamacen202.includes.MyToolbar;
 import com.google.android.material.textfield.TextInputLayout;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.ksoap2.SoapEnvelope;
 import org.ksoap2.SoapFault;
 import org.ksoap2.serialization.SoapObject;
@@ -67,6 +73,10 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Vector;
 
 import dmax.dialog.SpotsDialog;
@@ -77,7 +87,7 @@ public class ActivityInventario extends AppCompatActivity {
     private SharedPreferences preference,preferenceF;
     private SharedPreferences.Editor editor;
     private boolean comprobar=false;
-    private int posicion=0,contInsert=0;
+    private int posicion=0,posicionAnt=0,contInsert=0;
     private String strusr,strpass,strServer,strbran,codeBar,ProductoAct="",folio="",fecha="",hora="",mensaje,bandAutori,mensajeAutoriza,UserSuper;
     private ArrayList<Inventario> listaInv = new ArrayList<>();
     private ArrayList<Inventario> listaPSincro = new ArrayList<>();
@@ -95,7 +105,7 @@ public class ActivityInventario extends AppCompatActivity {
     private AlertDialog dialog;
     private LinearLayout lyInsert,lyEscanea;
     private Button btnAutoriza;
-    private int sonido_de_reproduccion1;
+    private int sonido_correcto,sonido_error;
     private SoundPool bepp;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,6 +130,10 @@ public class ActivityInventario extends AppCompatActivity {
         mDialog = new SpotsDialog.Builder().setContext(ActivityInventario.this).
                 setMessage("Espere un momento...").build();
 
+        bepp = new SoundPool(1, AudioManager.STREAM_MUSIC, 1);
+        sonido_correcto = bepp.load(ActivityInventario.this, R.raw.sonido_correct, 1);
+        sonido_error = bepp.load(ActivityInventario.this, R.raw.error, 1);
+
         progressDialog = new ProgressDialog(ActivityInventario.this);//parala barra de
         progressDialog.setMessage("Procesando datos....");
         progressDialog.setIndeterminate(false);
@@ -136,8 +150,6 @@ public class ActivityInventario extends AppCompatActivity {
         btnSincronizar  = findViewById(R.id.btnSincronizar);
         chbMan          = findViewById(R.id.chbMan);
         rvInventario    = findViewById(R.id.rvInventario);
-        bepp = new SoundPool(1, AudioManager.STREAM_MUSIC, 1);
-        sonido_de_reproduccion1 = bepp.load(ActivityInventario.this, R.raw.error, 1);
 
         conn = new ConexionSQLiteHelper(ActivityInventario.this, "bd_INVENTARIO", null, 1);
         db = conn.getReadableDatabase();
@@ -276,6 +288,18 @@ public class ActivityInventario extends AppCompatActivity {
         }//else
 
     }//onCreate
+
+    public boolean firtMet() {//firtMet
+        ConnectivityManager connectivityManager =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnected()) {//si hay conexion a internet
+            return true;
+        } else {
+            return false;
+        }//else
+    }//FirtMet saber si hay conexion a internet
+
     public void onClickInv(View v){//cada vez que se seleccione un producto en la lista
         posicion = rvInventario.getChildPosition(rvInventario.findContainingItemView(v));
         ProductoAct=listaInv.get(posicion).getProducto();
@@ -451,6 +475,167 @@ public class ActivityInventario extends AppCompatActivity {
         dialog.show();
     }//listaFolio
 
+    private class AsyncResListInv extends AsyncTask<Void, Void, Void> {
+        private String suc,folio;
+        private boolean conn;
+
+        public AsyncResListInv(String suc, String folio) {
+            this.suc = suc;
+            this.folio = folio;
+        }//constructor
+
+        @Override
+        protected void onPreExecute() {
+            mDialog.show();
+            listaInv.clear();
+            contInsert=0;
+            posicion=0;
+            txtProductoVi.setText("");
+            //txtEscan.setText("");
+        }//onPreExecute
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            conn=firtMet();
+            if(conn==true){
+                HttpHandler sh = new HttpHandler();
+                String parametros="k_suc="+suc+"&k_fol="+folio;
+                String url = "http://"+strServer+"/ListInv?"+parametros;
+                String jsonStr = sh.makeServiceCall(url,strusr,strpass);
+                //Log.e(TAG, "Respuesta de la url: " + jsonStr);
+                if (jsonStr != null) {
+                    try{
+                        JSONObject jsonObj = new JSONObject(jsonStr);
+                        JSONArray jsonArray = jsonObj.getJSONArray("Response");
+                        int num=1;
+                        for(int i=0;i<jsonArray.length();i++){
+                            JSONObject dato = jsonArray.getJSONObject(i);//Conjunto de datos
+                            String prod=dato.getString("k_prod");
+                            String cant=dato.getString("k_acum");
+                            String ubi=dato.getString("k_ubi");
+                            listaInv.add(new Inventario((i+1)+"", prod, cant,0+"",ubi,true));
+                            contInsert++;
+                        }//for
+                    }catch (final JSONException e) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                mensaje="Hubó un problema al consultar datos";
+                            }//run
+                        });
+                    }//catch JSON EXCEPTION
+                }else {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mensaje="No fue posible obtener datos del servidor";
+                        }//run
+                    });//runUniTthread
+                }//else
+                return null;
+            }else{
+                mensaje="Problemas de conexión";
+                return null;
+            }//else
+        }//doInBackground
+
+        @Override
+        protected void onPostExecute(Void aBoolean) {
+            super.onPostExecute(aBoolean);
+            mDialog.dismiss();
+            if (listaInv.size()>0) {
+                Toast.makeText(ActivityInventario.this, contInsert+" datos", Toast.LENGTH_SHORT).show();
+                mDialog.dismiss();
+                mostrarLista();
+            }else{
+                mDialog.dismiss();
+                Toast.makeText(ActivityInventario.this, mensaje, Toast.LENGTH_SHORT).show();
+            }
+            txtProducto.setText("");
+        }//onPost
+    }//AsyncResListInv
+
+    private class AsyncResActualizaInv extends AsyncTask<Void, Void, Void> {
+
+        private String folio,producto,cantidad;
+        private boolean conn=true,sumar;
+        public AsyncResActualizaInv(String folio,String producto, String cantidad,boolean sumar) {
+            this.folio=folio;
+            this.producto = producto;
+            this.cantidad = cantidad;
+            this.sumar=sumar;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mDialog.show();
+            mensaje="";
+        }//onPreExecute
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            conn=firtMet();
+            if(conn==true){
+                String parametros="k_folio="+folio+"&k_suc="+strbran+"&k_prod="+producto+
+                        "&k_cant="+cantidad+"&k_usu="+strusr+"&k_folio="+folio;
+                String url = "http://"+strServer+"/ActualizaInv?"+parametros;
+                String jsonStr = new HttpHandler().makeServiceCall(url,strusr,strpass);
+                if (jsonStr != null) {
+                    try {
+                        JSONObject jsonObj = new JSONObject(jsonStr);
+                        JSONArray jsonArray = jsonObj.getJSONArray("Response");
+                        JSONObject dato = jsonArray.getJSONObject(0);
+                        mensaje=dato.getString("k_estado");
+                    } catch (final JSONException e) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                mensaje="Sin sincronizar";
+                            }//run
+                        });
+                    }//catch JSON EXCEPTION
+                }else {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mensaje="Problemas de datos";
+                        }//run
+                    });//runUniTthread
+                }//else
+                return null;
+            }else{
+                mensaje="Problemas de conexión";
+                return null;
+            }//else
+        }//doInBackground
+
+        @Override
+        protected void onPostExecute(Void aBoolean) {
+            super.onPostExecute(aBoolean);
+            mDialog.dismiss();
+            if(conn==false){
+                Toast.makeText(ActivityInventario.this, "Sin conexión a internet\n"+
+                        "No se podrá seguir escaneando a menos que se actualice este producto", Toast.LENGTH_SHORT).show();
+            }else if (mensaje.equals("SINCRONIZADO")) {
+                Toast.makeText(ActivityInventario.this, producto+" Sincronizado", Toast.LENGTH_SHORT).show();
+                bepp.play(sonido_correcto, 1, 1, 1, 0, 0);
+                listaInv.get(posicionAnt).setSincronizado(true);
+                if(sumar==true){
+                    conteo(ProductoAct,"--1");
+                }else{
+                    posicion=posicionAnt;
+                    mostrarDetalleCod(posicion);
+                }//else
+            }else{
+                AlertDialog.Builder builder = new AlertDialog.Builder(ActivityInventario.this);
+                builder.setPositiveButton("ACEPTAR",null);
+                builder.setCancelable(false);
+                builder.setTitle("AVISO").setMessage("Producto "+producto+" no se actualizó, no se podrá seguir escaneando a menos que se actualice").create().show();
+            }//else
+        }//onPost
+    }//AsyncResActualizaInv
+
 
     private class AsyncFolios extends AsyncTask<Void, Void, Void> {
         @Override
@@ -614,7 +799,7 @@ public class ActivityInventario extends AppCompatActivity {
                 String prod=(response0.getPropertyAsString("k_prod").equals("anyType{}") ? " " : response0.getPropertyAsString("k_prod"));
                 String cant=(response0.getPropertyAsString("k_acum").equals("anyType{}") ? " " : response0.getPropertyAsString("k_acum"));
                 listaInv.add(new Inventario(
-                        (i+1)+"", prod, cant,0+""));
+                        (i+1)+"", prod, cant,0+"","",true));
                 if(insertarSql(prod,cant,0+"")==true){
                     contInsert++;
                 }
@@ -809,7 +994,7 @@ public class ActivityInventario extends AppCompatActivity {
                 || nuevo.equals("P06") || nuevo.equals("P07") || nuevo.equals("8") || nuevo.equals("P09") || nuevo.equals("P10")
                 || nuevo.equals("P11") || nuevo.equals("P12") || prod.substring(0,4).equals("http") || prod.substring(0,4).equals("HTTP")
                 || nuevo.equals("www") || nuevo.equals("WWW")){
-            bepp.play(sonido_de_reproduccion1, 1, 1, 1, 0, 0);
+            bepp.play(sonido_error, 1, 1, 1, 0, 0);
             AlertDialog.Builder alerta = new AlertDialog.Builder(ActivityInventario.this);
             alerta.setMessage("Producto no válido").setCancelable(false).setNegativeButton("Ok", new DialogInterface.OnClickListener() {
                 @Override
@@ -824,6 +1009,60 @@ public class ActivityInventario extends AppCompatActivity {
             actualizaGuarda(prod,cant);
         }//else
     }//buscar
+
+    class ComparadorLista implements Comparator<Inventario> {
+        public int compare(Inventario a, Inventario b) {
+            return a.getProducto().compareTo(b.getProducto());
+        }//compare
+    }//ComparadorLista
+
+    public int cantidad(String prod){
+        int c=0;
+        for(int i=0;i<listaInv.size();i++){
+            if(listaInv.get(i).getProducto().equals(prod)){
+                c=Integer.parseInt(listaInv.get(i).getEscan());
+                break;
+            }
+        }//for
+        return c;
+    }//cantidad
+
+    public void conteo(String prod,String canti){
+        boolean bandera=false;
+        int cant=0;
+        for(int i=0;i<listaInv.size();i++){
+            if(listaInv.get(i).getProducto().equals(prod)){
+                bandera=true;
+                posicion=i;
+                if(canti.equals("--1")){
+                    cant=Integer.parseInt(listaInv.get(i).getEscan())+1;
+                }else{
+                    cant=Integer.parseInt(canti);
+                }//else
+                listaInv.get(i).setEscan(cant+"");
+                txtProductoVi.setText(prod);
+                mostrarDetalleCod(i);
+                break;
+            }//if
+        }//for
+        if(bandera==false){
+            listaInv.add(new Inventario("0",prod,"0",cant+"","",false));
+            Collections.sort(listaInv, new ComparadorLista());
+            for(int i=0;i<listaInv.size();i++){
+                listaInv.get(i).setNum((i+1)+"");
+                if(listaInv.get(i).getProducto().equals(prod)){
+                    posicion=i;
+                    if(canti.equals("--1")){
+                        cant=1;
+                    }else{
+                        cant=Integer.parseInt(canti);
+                    }//else
+                    listaInv.get(i).setEscan(cant+"");
+                }//para tomar posicion
+            }//for
+            mostrarLista();
+        }//if bandera false
+    }//conteo
 
     public void actualizaGuarda(String prod, String cant){
         boolean bandera=false;
@@ -849,6 +1088,15 @@ public class ActivityInventario extends AppCompatActivity {
         }//if bandera false
     }//actualizaGuarda
 
+    public void mostrarLista(){
+        rvInventario.setAdapter(null);
+        adapter= new AdapterInventario(listaInv);
+        rvInventario.setAdapter(adapter);
+        if(posicion>=0){
+            mostrarDetalleCod(posicion);
+        }
+    }//mostrarLista
+
     public void mostrarDetalleCod(int pos){
         adapter.notifyDataSetChanged();
         adapter.index(pos);
@@ -865,7 +1113,7 @@ public class ActivityInventario extends AppCompatActivity {
                 || nuevo.equals("P06") || nuevo.equals("P07") || nuevo.equals("8") || nuevo.equals("P09") || nuevo.equals("P10")
                 || nuevo.equals("P11") || nuevo.equals("P12") || prod.substring(0,4).equals("http") || prod.substring(0,4).equals("HTTP")
                 || nuevo.equals("www") || nuevo.equals("WWW")){
-            bepp.play(sonido_de_reproduccion1, 1, 1, 1, 0, 0);
+            bepp.play(sonido_error, 1, 1, 1, 0, 0);
             AlertDialog.Builder alerta = new AlertDialog.Builder(ActivityInventario.this);
             alerta.setMessage("Producto no válido").setCancelable(false).setNegativeButton("Ok", new DialogInterface.OnClickListener() {
                 @Override
@@ -898,8 +1146,6 @@ public class ActivityInventario extends AppCompatActivity {
         }//else
     }//consultaSql
 
-
-
     public void consultaSql(){
         try{
             listaInv.clear();
@@ -912,7 +1158,7 @@ public class ActivityInventario extends AppCompatActivity {
                     if(ProductoAct.equals(fila.getString(0))){
                         posicion=j;
                     }
-                    listaInv.add(new Inventario((j+1)+"",fila.getString(0),fila.getString(1),fila.getString(2)));
+                    listaInv.add(new Inventario((j+1)+"",fila.getString(0),fila.getString(1),fila.getString(2),"",true));
                 }while (fila.moveToNext());
 
                 rvInventario.setAdapter(null);
@@ -935,7 +1181,7 @@ public class ActivityInventario extends AppCompatActivity {
             @SuppressLint("Recycle") Cursor fila = db.rawQuery("SELECT PRODUCTO,CANTIDAD,ESCAN FROM INVENTARIOALM WHERE ESCAN>0 ORDER BY PRODUCTO ", null);
             if (fila != null && fila.moveToFirst()) {
                 do {
-                    listaPSincro.add(new Inventario("",fila.getString(0),fila.getString(1),fila.getString(2)));
+                    listaPSincro.add(new Inventario("",fila.getString(0),fila.getString(1),fila.getString(2),"",true));
                 } while (fila.moveToNext());
             }//if
             fila.close();

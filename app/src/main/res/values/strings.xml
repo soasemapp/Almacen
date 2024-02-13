@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">Almacen Kepler</string>
     <string name="buscar">Buscar</string>
-    <string name="version_1_6">Version 1.11.3</string>
-    <string name="versionNum">1.11.3</string>
+    <string name="version_1_6">Version 1.11.5</string>
+    <string name="versionNum">1.11.5</string>
     <string name="usuario">Usuario</string>
     <string name="escanear">Escanear</string>
     <string name="comprometidas">COMPROMETIDAS</string>
@@ -62,4 +62,5 @@
     <string name="resRecepFolios">resRecepFolios</string>
     <string name="resDetUbi">resDetUbi</string>
     <string name="resConsEnvTrasp">resConsEnvTrasp</string>
+    <string name="resListInv">ListInv</string>
 </resources>

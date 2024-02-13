@@ -4481,7 +4481,6 @@ public class ActivityLiberaciones extends AppCompatActivity {
             }
 
         } else {
-
             AlertDialog.Builder alerta = new AlertDialog.Builder(ActivityLiberaciones.this);
             alerta.setMessage("NO SE PUEDEN INGRESAR MAS PIEZAS").setCancelable(false).setNegativeButton("Ok", new DialogInterface.OnClickListener() {
                 @Override
@@ -4538,10 +4537,7 @@ public class ActivityLiberaciones extends AppCompatActivity {
         String METHOD_NAME = "BitacoraSuper";
         String NAMESPACE = "http://" + StrServer + "/WSk75AlmacenesApp/";
         String URL = "http://" + StrServer + "/WSk75AlmacenesApp";
-
-
         try {
-
             SoapObject Request = new SoapObject(NAMESPACE, METHOD_NAME);
             XMLBitacoraSuper soapEnvelope = new XMLBitacoraSuper(SoapEnvelope.VER11);
             soapEnvelope.XMLBitacoraSupervi(strusr, strpass, UserSuper, Producto1, CantidadSuper, FolioLiberacion, RazonSuper);
@@ -4554,7 +4550,6 @@ public class ActivityLiberaciones extends AppCompatActivity {
             SoapObject response = (SoapObject) soapEnvelope.bodyIn;
             response = (SoapObject) response.getProperty("message");
             menbitacora = response.getPropertyAsString("k_menssage").equals("anyType{}") ? "" : response.getPropertyAsString("k_menssage");
-
         } catch (SoapFault soapFault) {
             soapFault.printStackTrace();
         } catch (XmlPullParserException e) {
@@ -4779,10 +4774,7 @@ public class ActivityLiberaciones extends AppCompatActivity {
         String METHOD_NAME = "ListFLNE";
         String NAMESPACE = "http://" + StrServer + "/WSk75AlmacenesApp/";
         String URL = "http://" + StrServer + "/WSk75AlmacenesApp";
-
-
         try {
-
             SoapObject Request = new SoapObject(NAMESPACE, METHOD_NAME);
             XMLListFolioMIS soapEnvelope = new XMLListFolioMIS(SoapEnvelope.VER11);
             soapEnvelope.XMLListFolioMIS(strusr, strpass, strcodBra);
@@ -6014,7 +6006,7 @@ public class ActivityLiberaciones extends AppCompatActivity {
 
             SoapObject Request = new SoapObject(NAMESPACE, METHOD_NAME);
             XMLReportInici soapEnvelope = new XMLReportInici(SoapEnvelope.VER11);
-            soapEnvelope.XMLReportInicide(strusr, strpass, strusr, Producto1, RazonSuper, strcodBra, FolioLiberacion);
+            soapEnvelope.XMLReportInicide(strusr, strpass, strusr, Producto1, RazonSuper, strcodBra, FolioLiberacion,Cantidad2);
 
             soapEnvelope.dotNet = true;
             soapEnvelope.implicitTypes = true;
@@ -6057,7 +6049,7 @@ public class ActivityLiberaciones extends AppCompatActivity {
         protected void onPostExecute(Void result) {
             if (listaProduAduana.size() > 0) {
 
-                String[] opciones = new String[listaIncidencias.size()];
+                /*String[] opciones = new String[listaIncidencias.size()];
 
                 for (int i = 0; i < listaIncidencias.size(); i++) {
                     opciones[i] = listaIncidencias.get(i).getClave() + ".-" + listaIncidencias.get(i).getMensaje();
@@ -6074,14 +6066,13 @@ public class ActivityLiberaciones extends AppCompatActivity {
                         RazonSuper = opciones[which];
                         ActivityLiberaciones.ReporteInici task = new ActivityLiberaciones.ReporteInici();
                         task.execute();
-
-
                     }
                 });
-
-// create and show the alert dialog
+                // create and show the alert dialog
                 AlertDialog dialog = builder.create();
-                dialog.show();
+                dialog.show();*/
+                alertIncid(listaProduAduana.get(contlis).getProducto(),
+                        listaProduAduana.get(contlis).getCantidad(),listaProduAduana.get(contlis).getCantidadSurtida());
             } else {
                 AlertDialog.Builder alerta = new AlertDialog.Builder(ActivityLiberaciones.this);
                 alerta.setMessage("No hay productos surtidos").setCancelable(false).setNegativeButton("Ok", new DialogInterface.OnClickListener() {
@@ -6096,7 +6087,64 @@ public class ActivityLiberaciones extends AppCompatActivity {
                 titulo.show();
             }
         }
-    }
+    }//MensajeList
+
+    public void alertIncid(String prod,String cant,String cantEsc){
+        AlertDialog.Builder alert = new AlertDialog.Builder(ActivityLiberaciones.this);
+        LayoutInflater inflater = ActivityLiberaciones.this.getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_incid, null);
+        alert.setView(dialogView);
+        alert.setCancelable(false);
+        alert.setNegativeButton("CANCELAR",null);
+
+        Button btnEnviar =  dialogView.findViewById(R.id.btnEnviar);
+        EditText txtIncidProd = dialogView.findViewById(R.id.txtIncidProd);
+        EditText txtCantidad =  dialogView.findViewById(R.id.txtCantidad);
+        AutoCompleteTextView spListIncid = dialogView.findViewById(R.id.spListIncid);
+
+        txtIncidProd.setText(prod);
+        txtCantidad.setText((Integer.parseInt(cant)-Integer.parseInt(cantEsc))+"");
+        AlertDialog alertD = alert.create();
+
+        ArrayList<String> listaInc=new ArrayList<>();
+        for(int k=0;k<listaIncidencias.size();k++){
+            listaInc.add(listaIncidencias.get(k).getClave() + ".-" + listaIncidencias.get(k).getMensaje());
+        }//for
+
+        if(listaInc.size()>0){
+            ArrayAdapter<String> adaptador = new ArrayAdapter<>(
+                    ActivityLiberaciones.this,R.layout.drop_down_item,listaInc);
+            spListIncid.setAdapter(adaptador);
+            spListIncid.setText(listaInc.get(0),false);
+        }//if
+
+        btnEnviar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String Producto= txtIncidProd.getText().toString();
+                String Razon=spListIncid.getText().toString();
+                String Cant=txtCantidad.getText().toString();
+                if(Producto.equals("") || Razon.equals("") || Cant.equals("")){
+                    Toast.makeText(ActivityLiberaciones.this, "Campos vacíos", Toast.LENGTH_SHORT).show();
+                }else if((Integer.parseInt(Cant)+Integer.parseInt(cantEsc))>Integer.parseInt(cant)){
+                    Toast.makeText(ActivityLiberaciones.this, "Excede cantidad", Toast.LENGTH_SHORT).show();
+                }else{
+                    AlertDialog.Builder builder = new AlertDialog.Builder(ActivityLiberaciones.this);
+                    builder.setPositiveButton("ACEPTAR", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            new AsyncReporteInici(Producto,Razon,FolioLiberacion,Cant,alertD).execute();
+                        }//onclick
+                    });
+                    builder.setNegativeButton("CANCELAR",null);
+                    builder.setCancelable(false);
+                    builder.setTitle("AVISO").
+                            setMessage("¿Desea enviar incidencia de "+Razon+" de "+Producto+"?").create().show();
+                }//else
+            }//onclick
+        });//btnEnviar
+        alertD.show();
+    }//alertIncid
 
 
     public void cambiarcajas(View view){
@@ -6112,7 +6160,6 @@ public class ActivityLiberaciones extends AppCompatActivity {
             alert.setView(dialogView);
             alert.setCancelable(false);
             alert.setNegativeButton("CANCELAR",null);
-
 
             Button btncambiar =  dialogView.findViewById(R.id.btnCambiar);
             EditText txtCajaProd = dialogView.findViewById(R.id.txtCajaProd);
@@ -6186,10 +6233,7 @@ public class ActivityLiberaciones extends AppCompatActivity {
         String METHOD_NAME = "MensaInci";
         String NAMESPACE = "http://" + StrServer + "/WSk75AlmacenesApp/";
         String URL = "http://" + StrServer + "/WSk75AlmacenesApp";
-
-
         try {
-
             SoapObject Request = new SoapObject(NAMESPACE, METHOD_NAME);
             XMLMensajeIncidencias soapEnvelope = new XMLMensajeIncidencias(SoapEnvelope.VER11);
             soapEnvelope.XMLMensajeInci(strusr, strpass);
@@ -6279,7 +6323,6 @@ public class ActivityLiberaciones extends AppCompatActivity {
         protected void onPostExecute(Void aBoolean) {
             super.onPostExecute(aBoolean);
             mDialog.dismiss();
-
         }//onPost
     }//AsyncConsultCA
 
@@ -6303,7 +6346,7 @@ public class ActivityLiberaciones extends AppCompatActivity {
         } else {
             CageNext.setVisibility(View.VISIBLE);
             CageBack.setVisibility(View.VISIBLE);
-        }
+        }//else
 
 
         if (contDialogCajas == contfiltrocajas) {
@@ -6481,7 +6524,103 @@ public class ActivityLiberaciones extends AppCompatActivity {
                 }
             }
         }
-    }
+    }//cuadrar
+
+    public boolean firtMet() {//firtMet
+        ConnectivityManager connectivityManager =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+
+        if (networkInfo != null && networkInfo.isConnected()) {//si hay conexion a internet
+            return true;
+        } else {
+            return false;
+        }//else
+    }//FirtMet saber si hay conexion a internet
+
+    //RES WEBSERVICES
+
+    //Registrar incidencia
+    private class AsyncReporteInici extends AsyncTask<Void, Void, Void> {
+        boolean conn;
+        private String prod,razon,fol,cant;
+        private AlertDialog alertD;
+
+        public AsyncReporteInici(String prod, String razon, String fol,String cant,AlertDialog alertD) {
+            this.prod = prod;
+            this.razon = razon;
+            this.fol = fol;
+            this.cant=cant;
+            this.alertD=alertD;
+        }//
+        @Override
+        protected void onPreExecute() {
+            mDialog.show();
+        }//onPreejecutive
+        @Override
+        protected Void doInBackground(Void... params) {
+            conn=firtMet();
+            if(conn==true){
+                String parametros="k_Producto="+prod+"&k_Usuario="+strusr+
+                        "&k_Razon="+razon+"&k_Sucursal="+strcodBra+
+                        "&k_Folio="+fol+"&k_com= "+
+                        "&k_tipo=LIBERACION&k_cant="+cant+"&k_cants="+cant;
+
+                String url = "http://"+StrServer+"/ReportInci?"+parametros;
+                String jsonStr = new HttpHandler().makeServiceCall(url,strusr,strpass);
+                if (jsonStr != null) {
+                    try {
+                        JSONObject jsonObj = new JSONObject(jsonStr);
+                        JSONArray jsonArray = jsonObj.getJSONArray("Response");
+                        JSONObject dato = jsonArray.getJSONObject(0);
+                        menbitacora=dato.getString("respuesta");
+                    }catch (final JSONException e) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                menbitacora="Problema al registrar";
+                            }//run
+                        });
+                    }//catch JSON EXCEPTION
+                }else {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            menbitacora="Problema en el servidor";
+                        }//run
+                    });//runUniTthread
+                }//else
+                return null;
+            }else{
+                menbitacora="Problemas de conexión";
+                return null;
+            }//else
+        }//doInbackground
+
+
+        @RequiresApi(api = Build.VERSION_CODES.P)
+        @Override
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+            mDialog.dismiss();
+            if(menbitacora.equals("Reporte Realizado")){
+                alertD.dismiss();
+            }
+            AlertDialog.Builder alerta = new AlertDialog.Builder(ActivityLiberaciones.this);
+            alerta.setMessage(menbitacora).setCancelable(false).setNegativeButton("Ok", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.cancel();
+                    GuardarInicidencias();
+                }
+            });
+            AlertDialog titulo = alerta.create();
+            titulo.setTitle("AVISO");
+            titulo.show();
+        }//onPost
+    }//AsyncReporteInici
+
+
 /*
     public void cuadrar(View view) {
 
@@ -6722,9 +6861,7 @@ public class ActivityLiberaciones extends AppCompatActivity {
             titulo.setTitle("!ERROR! CONEXION");
             titulo.show();
 
-        }
-
-
+        }//else
         return super.onOptionsItemSelected(item);
     }
 }

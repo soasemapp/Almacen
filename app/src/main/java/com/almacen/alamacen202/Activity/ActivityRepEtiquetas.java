@@ -60,7 +60,7 @@ public class ActivityRepEtiquetas extends AppCompatActivity {
     private String strusr,strpass,strbran,strServer,codeBar,mensaje="",claveInci="";
     private AdapterListProd adapter;
     private RecyclerView rvProd;
-    private EditText txtProdE,txtNomProd,txtDescProd,txtComentario;
+    private EditText txtProdE,txtNomProd,txtDescProd,txtComentario,txtCantS;
     private AutoCompleteTextView spInci;
     private ImageView ivProd;
     private Button btnEnviar,btnBuscP;
@@ -95,6 +95,7 @@ public class ActivityRepEtiquetas extends AppCompatActivity {
         spInci = findViewById(R.id.spInci);
         btnEnviar= findViewById(R.id.btnEnviar);
         btnBuscP =findViewById(R.id.btnBuscP);
+        txtCantS = findViewById(R.id.txtCantS);
 
         keyboard = (InputMethodManager) getSystemService(ActivityEnvTraspMultSuc.INPUT_METHOD_SERVICE);
 
@@ -106,7 +107,8 @@ public class ActivityRepEtiquetas extends AppCompatActivity {
                 String prod=txtNomProd.getText().toString();
                 String razon=spInci.getText().toString();
                 String comm=txtComentario.getText().toString();
-                if(prod.equals("") || razon.equals("")){
+                String cant=txtCantS.getText().toString();
+                if(prod.equals("") || razon.equals("") || cant.equals("") ){
                     AlertDialog.Builder builder = new AlertDialog.Builder(ActivityRepEtiquetas.this);
                     builder.setPositiveButton("ACEPTAR", null);
                     builder.setCancelable(false);
@@ -118,7 +120,7 @@ public class ActivityRepEtiquetas extends AppCompatActivity {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
 
-                            new AsyncReporteInici(prod,razon,"",comm).execute();
+                            new AsyncReporteInici(prod,razon,"0000000",comm,(Integer.parseInt(cant))+"").execute();
                         }
                     });
                     builder.setCancelable(false);
@@ -144,6 +146,8 @@ public class ActivityRepEtiquetas extends AppCompatActivity {
         txtDescProd.setText("");
         txtComentario.setText("");
         spInci.setText("");
+        txtCantS.setText("0");
+        txtCantS.setEnabled(false);
         claveInci="";
         ivProd.setImageResource(R.drawable.aboutlogo);
     }
@@ -172,6 +176,7 @@ public class ActivityRepEtiquetas extends AppCompatActivity {
     public void mostrarDetalle(String prod,String descip){
         txtNomProd.setText(prod);
         txtDescProd.setText(descip);
+        txtCantS.setEnabled(true);
 
         Picasso.with(getApplicationContext()).
                 load(urlImagenes+
@@ -340,13 +345,14 @@ public class ActivityRepEtiquetas extends AppCompatActivity {
     //Registrar incidencia
     private class AsyncReporteInici extends AsyncTask<Void, Void, Void> {
         boolean conn;
-        private String prod,razon,fol,comm;
+        private String prod,razon,fol,comm,canti;
 
-        public AsyncReporteInici(String prod, String razon, String fol,String comm) {
+        public AsyncReporteInici(String prod, String razon, String fol,String comm,String canti) {
             this.prod = prod;
             this.razon = razon;
             this.fol = fol;
             this.comm=comm;
+            this.canti=canti;
         }//
         @Override
         protected void onPreExecute() {
@@ -358,7 +364,8 @@ public class ActivityRepEtiquetas extends AppCompatActivity {
             if(conn==true){
                 String parametros="k_Producto="+prod+"&k_Usuario="+strusr+
                         "&k_Razon="+razon+"&k_Sucursal="+strbran+
-                        "&k_Folio="+fol+"&k_com="+comm;
+                        "&k_Folio="+fol+"&k_com="+comm+
+                        "&k_tipo=INVENTARIO&k_cant="+canti+"&k_cants="+canti;
                 String url = "http://"+strServer+"/ReportInci?"+parametros;
                 String jsonStr = new HttpHandler().makeServiceCall(url,strusr,strpass);
                 if (jsonStr != null) {
@@ -367,7 +374,7 @@ public class ActivityRepEtiquetas extends AppCompatActivity {
                         JSONArray jsonArray = jsonObj.getJSONArray("Response");
                         JSONObject dato = jsonArray.getJSONObject(0);
                         mensaje=dato.getString("respuesta");
-                    } catch (final JSONException e) {
+                    }catch (final JSONException e) {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -376,7 +383,7 @@ public class ActivityRepEtiquetas extends AppCompatActivity {
                         });
                     }//catch JSON EXCEPTION
                 }else {
-                    runOnUiThread(new Runnable() {
+                    runOnUiThread(new Runnable(){
                         @Override
                         public void run() {
                             mensaje="Problema en el servidor";

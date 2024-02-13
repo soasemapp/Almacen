@@ -1,5 +1,6 @@
 package com.almacen.alamacen202.Adapter;
 
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,15 +39,40 @@ public class AdapterInventario extends RecyclerView.Adapter<AdapterInventario.Vi
 
         if(index==position){
             holder.lyInv.setBackgroundResource(R.color.colorSelec);
+            /*if(datos.get(position).isSincronizado()==false){
+                holder.n.setTextColor(Color.parseColor("#043B72"));
+                holder.tvProd.setTextColor(Color.parseColor("#000000"));
+                holder.tvCant.setTextColor(Color.parseColor("#1E739A"));
+                holder.tvEscan.setTextColor(Color.parseColor("#043B72"));
+            }else{
+                holder.n.setTextColor(Color.parseColor("#223CCA"));
+                holder.tvProd.setTextColor(Color.parseColor("#223CCA"));
+                holder.tvCant.setTextColor(Color.parseColor("#223CCA"));
+                holder.tvEscan.setTextColor(Color.parseColor("#223CCA"));
+            }//else
+            */
         }else{
             holder.lyInv.setBackgroundColor(0);
-        }
+            /*if(datos.get(position).isSincronizado()==false){
+                holder.n.setTextColor(Color.parseColor("#043B72"));
+                holder.tvProd.setTextColor(Color.parseColor("#000000"));
+                holder.tvCant.setTextColor(Color.parseColor("#1E739A"));
+                holder.tvEscan.setTextColor(Color.parseColor("#043B72"));
+            }else{
+                holder.n.setTextColor(Color.parseColor("#223CCA"));
+                holder.tvProd.setTextColor(Color.parseColor("#223CCA"));
+                holder.tvCant.setTextColor(Color.parseColor("#223CCA"));
+                holder.tvEscan.setTextColor(Color.parseColor("#223CCA"));
+            }//else
+            */
+        }//else
     }//onBindViewHolder
 
     public int index(int index){
         this.index=index;
         return index;
     }
+
     @Override
     public int getItemViewType(int position) {
         return super.getItemViewType(position);

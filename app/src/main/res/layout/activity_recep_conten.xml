@@ -15,15 +15,57 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginTop="10dp">
-        <TextView
+        <!--<TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="LISTA FOLIOS"
             android:textSize="18dp"
             android:textColor="@color/AzulBack"
-            android:textStyle="bold"/>
+            android:textStyle="bold"/>-->
 
-        <LinearLayout
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="@string/folio"
+            android:textColorHint="@color/AzulBack"
+            app:hintTextColor="@color/AzulBack"
+            app:boxBackgroundMode="outline"
+            app:boxCornerRadiusTopEnd="10dp"
+            app:boxCornerRadiusTopStart="10dp"
+            app:boxBackgroundColor="@color/ColorWhite"
+            app:boxStrokeColor="@color/colorPrimary">
+            <EditText
+                android:id="@+id/txtFolBusq"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="phone"
+                android:digits="0123456789"
+                android:maxLength="7"
+                android:textSize="15sp"
+                android:fontFamily="sans-serif-condensed"
+                android:textStyle="italic|bold"
+                android:textColor="@color/colorBlack"
+                android:imeOptions="actionDone"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnBuscar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_background1"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="5dp"
+            android:text="@string/buscar"
+            android:tag="Buscar existencias en almacén de tránsito"
+            android:textColor="@color/ColorWhite"
+            app:icon="@drawable/icons8_lupa"
+            app:iconTint="@null"
+            app:iconSize="20dp"
+            app:backgroundTint="@null"
+            app:backgroundTintMode="add"/>
+
+        <!--<LinearLayout
             android:layout_width="match_parent"
             android:layout_height="100dp"
             android:orientation="horizontal">
@@ -50,7 +92,7 @@
                 android:textColor="@color/ColorWhite"
                 android:textSize="10dp"
                 app:backgroundTint="@color/Amarillo"/>
-        </LinearLayout>
+        </LinearLayout>-->
         <View
             android:layout_width="match_parent"
             android:layout_height="2dp"
@@ -131,6 +173,54 @@
                     android:textColor="#000000"/>
             </com.google.android.material.textfield.TextInputLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginRight="2.5dp"
+                    android:hint="@string/cantidad"
+                    app:hintTextColor="@color/AzulBack"
+                    app:boxBackgroundMode="outline"
+                    app:boxCornerRadiusTopEnd="10dp"
+                    app:boxCornerRadiusTopStart="10dp">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="phone"
+                        android:digits="0123456789"
+                        android:clickable="true"
+                        android:maxLines="1"
+                        android:textSize="15dp"
+                        android:enabled="false" />
+                </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="2.5dp"
+                    android:hint="Recibidas"
+                    app:hintTextColor="@color/ColorFinalizado"
+                    app:boxBackgroundMode="outline"
+                    app:boxCornerRadiusTopEnd="10dp"
+                    app:boxCornerRadiusTopStart="10dp">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="phone"
+                        android:digits="0123456789"
+                        android:clickable="true"
+                        android:maxLines="1"
+                        android:textSize="15dp"
+                        android:enabled="false" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </LinearLayout>
 
 
             <LinearLayout
@@ -141,7 +231,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="REPARTIR"
+                    android:text="DETALLE"
                     android:textSize="18dp"
                     android:textColor="@color/AzulBack"
                     android:textStyle="bold"/>
@@ -162,7 +252,7 @@
                             android:layout_weight="1"
                             android:background="@color/AzulBack"
                             android:gravity="center"
-                            android:text="MATRIZ"
+                            android:text="@string/celda"
                             android:textColor="@color/ColorWhite"
                             android:textSize="10dp"
                             android:textStyle="bold" />

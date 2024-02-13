@@ -189,12 +189,8 @@ public class ActivityTrasladoUbi extends AppCompatActivity {
                                 EDUbicacionOrigen.setInputType(InputType.TYPE_NULL);
 
                             }
-                            }
+                        }
                     }
-
-
-
-
                 }
             }
         });
@@ -219,7 +215,6 @@ public class ActivityTrasladoUbi extends AppCompatActivity {
                         ActivityTrasladoUbi.ModificarUbicacion task = new ActivityTrasladoUbi.ModificarUbicacion();
                         task.execute();
                     }else{
-
                         for(int i = 0; i<editable.length();i++){
                             char ban;
                             ban = editable.charAt(i);
@@ -756,7 +751,7 @@ public class ActivityTrasladoUbi extends AppCompatActivity {
 
                 }
             });
-// create and show the alert dialog
+            // create and show the alert dialog
             AlertDialog dialog = builder.create();
             dialog.show();
         }
@@ -786,8 +781,6 @@ public class ActivityTrasladoUbi extends AppCompatActivity {
 
                 listaUbicaciones.add(new ListaUbicasSandG(
                         (response0.getPropertyAsString("k_Ubicacion").equals("anyType{}") ? "" : response0.getPropertyAsString("k_Ubicacion"))));
-
-
             }
 
         } catch (SoapFault soapFault) {

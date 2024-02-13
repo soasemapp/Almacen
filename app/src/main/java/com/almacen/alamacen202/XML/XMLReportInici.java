@@ -14,12 +14,15 @@ public class XMLReportInici extends SoapSerializationEnvelope {
     String Razon ="";
     String Sucursal = "";
     String Folio ="";
+    String Canti="";
 
     public XMLReportInici(int version) {
         super(version);
     }
 
-    public void XMLReportInicide(String usuario, String clave, String UsuarioSuper, String Producto, String Razon, String Sucursal, String Folio) {
+    public void XMLReportInicide(String usuario, String clave, String UsuarioSuper,
+                                 String Producto, String Razon, String Sucursal,
+                                 String Folio,String canti) {
         this.usuario = usuario;
         this.clave = clave;
         this.UsuarioSuper = UsuarioSuper;
@@ -27,7 +30,7 @@ public class XMLReportInici extends SoapSerializationEnvelope {
         this.Razon =Razon;
         this.Sucursal = Sucursal;
         this.Folio = Folio;
-
+        this.Canti=canti;
 
     }
 
@@ -75,6 +78,10 @@ public class XMLReportInici extends SoapSerializationEnvelope {
         writer.startTag(tem, "k_Folio");
         writer.text(Folio);
         writer.endTag(tem, "k_Folio");
+
+        writer.startTag(tem, "k_cant");
+        writer.text(Canti);
+        writer.endTag(tem, "k_cant");
 
         writer.endTag(tem, "ReportIncide");
 
