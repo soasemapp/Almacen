@@ -78,6 +78,7 @@
             android:configChanges="screenSize|orientation"
             android:parentActivityName=".ActivityMenu"/>
 
+
         <activity android:name=".ActivityMenu" />
         <activity android:name=".ActivitySplash" />
         <activity android:name=".MainActivity"

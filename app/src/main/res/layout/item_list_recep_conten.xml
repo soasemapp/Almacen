@@ -3,94 +3,69 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:background="@color/ColorWhite">
+    android:background="@drawable/selector_backgr">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/AzulBack"/>
     <LinearLayout
         android:id="@+id/lyRec"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:orientation="horizontal"
+        android:background="@drawable/selector_backgr"
         android:onClick="onClickListaR">
         <TextView
-            android:id="@+id/tvFol"
-            android:layout_width="match_parent"
+            android:id="@+id/tvNu"
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
-            android:text="Folio"
-            android:textSize="10dp"
+            android:text="NUM"
+            android:textSize="8dp"
             android:textStyle="bold"
             android:maxLines="1"
             android:padding="5dp"
-            android:textColor="@color/ColorFinalizado"/>
-        <LinearLayout
+            android:textAlignment="center"
+            android:textColor="@color/AzulBack"/>
+        <View
+            android:layout_width="2dp"
+            android:layout_height="match_parent"
+            android:background="@color/AzulBack"/>
+        <TextView
+            android:id="@+id/tvPr"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <TextView
-                android:id="@+id/tvNu"
-                android:layout_width="40dp"
-                android:layout_height="wrap_content"
-                android:text="NUM"
-                android:textSize="8dp"
-                android:textStyle="bold"
-                android:maxLines="1"
-                android:padding="5dp"
-                android:textAlignment="center"
-                android:textColor="@color/AzulBack"/>
-            <View
-                android:layout_width="2dp"
-                android:layout_height="match_parent"
-                android:background="@color/AzulBack"/>
-            <TextView
-                android:id="@+id/tvPr"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Producto"
-                android:textStyle="bold"
-                android:lines="2"
-                android:maxLines="2"
-                android:padding="5dp"
-                android:textSize="12dp"
-                android:textAlignment="center"
-                android:textColor="#000000"/>
+            android:layout_weight="1"
+            android:text="Producto"
+            android:textStyle="bold"
+            android:lines="2"
+            android:maxLines="2"
+            android:padding="5dp"
+            android:textSize="12dp"
+            android:textAlignment="center"
+            android:textColor="@color/colorBlack"/>
 
-            <View
-                android:layout_width="2dp"
-                android:layout_height="match_parent"
-                android:background="@color/AzulBack"/>
-            <TextView
-                android:id="@+id/tvC"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1.5"
-                android:text="0"
-                android:padding="5dp"
-                android:textColor="@color/AzulBack"
-                android:textStyle="bold"
-                android:maxLines="1"
-                android:textSize="12dp"
-                android:textAlignment="center"/>
-            <View
-                android:layout_width="2dp"
-                android:layout_height="match_parent"
-                android:background="@color/AzulBack"/>
-            <TextView
-                android:id="@+id/tvPal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1.5"
-                android:text="palet"
-                android:textColor="@color/AzulBack"
-                android:textStyle="bold"
-                android:padding="5dp"
-                android:maxLines="2"
-                android:textSize="12dp"
-                android:textAlignment="center"/>
-        </LinearLayout>
         <View
+            android:layout_width="2dp"
+            android:layout_height="match_parent"
+            android:background="@color/AzulBack"/>
+        <TextView
+            android:id="@+id/tvC"
             android:layout_width="match_parent"
-            android:layout_height="3dp"
-            android:background="@color/AzulBack" />
+            android:layout_height="wrap_content"
+            android:layout_weight="1.5"
+            android:text="0"
+            android:padding="5dp"
+            android:textColor="@color/AzulBack"
+            android:textStyle="bold"
+            android:maxLines="1"
+            android:textSize="12dp"
+            android:textAlignment="center"/>
     </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/AzulBack"/>
 </LinearLayout>
 
 

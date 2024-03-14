@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fitsSystemWindows="true">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvClvProdDial"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="CLAVE"
+                android:textSize="18dp"
+                android:textAlignment="center"
+                android:textStyle="bold"
+                android:textColor="@color/colorBlack"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="5dp"
+                android:background="@color/AzulBack"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_margin="10dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:layout_marginRight="5dp"
+                    android:gravity="center_vertical">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
+                        android:hint="A ENVIAR"
+                        android:textColorHint="@color/AzulBack"
+                        app:hintTextColor="@color/AzulBack"
+                        app:boxBackgroundColor="@color/ColorGris"
+                        app:boxBackgroundMode="outline"
+                        app:boxCornerRadiusTopEnd="10dp"
+                        app:boxCornerRadiusTopStart="10dp"
+                        app:boxStrokeColor="@color/colorPrimary">
+                        <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                            android:id="@+id/spOr"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@color/ColorWhite"
+                            android:textSize="12dp"
+                            android:textStyle="bold"
+                            android:textColor="@color/colorBlack"
+                            android:inputType="none"
+                            android:focusable="false"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginRight="2.5dp"
+                        android:hint="Recepción"
+                        app:hintTextColor="@color/AzulBack"
+                        app:boxBackgroundMode="outline"
+                        app:boxCornerRadiusTopEnd="10dp"
+                        app:boxCornerRadiusTopStart="10dp">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/txtRecep"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="phone"
+                            android:digits="0123456789"
+                            android:text="0"
+                            android:textColor="@color/AzulBack"
+                            android:textStyle="bold"
+                            android:maxLines="1"
+                            android:textSize="15dp"
+                            android:enabled="false" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="1"
+                        android:layout_marginRight="2.5dp"
+                        android:hint="SUGERIDO"
+                        app:hintTextColor="@color/AzulBack"
+                        app:boxBackgroundMode="outline"
+                        app:boxCornerRadiusTopEnd="10dp"
+                        app:boxCornerRadiusTopStart="10dp">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/txtSug"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="phone"
+                            android:digits="0123456789"
+                            android:text="0"
+                            android:textColor="@color/AzulBack"
+                            android:textStyle="bold"
+                            android:maxLines="1"
+                            android:textSize="15dp"
+                            android:enabled="false" />
+                    </com.google.android.material.textfield.TextInputLayout>
+                </LinearLayout>
+
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:layout_marginLeft="5dp"
+                    android:gravity="center_vertical">
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginRight="2.5dp"
+                        android:hint="Almacén"
+                        app:hintTextColor="@color/AzulBack"
+                        app:boxBackgroundMode="outline"
+                        app:boxCornerRadiusTopEnd="10dp"
+                        app:boxCornerRadiusTopStart="10dp"
+                        app:boxBackgroundColor="@color/ColorGris">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/txtDest"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="ENVIOS"
+                            android:maxLength="40"
+                            android:textColor="@color/AzulBack"
+                            android:textStyle="bold"
+                            android:maxLines="1"
+                            android:textSize="13dp"
+                            android:enabled="false" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginRight="2.5dp"
+                        android:hint="CANT DESTINO"
+                        app:hintTextColor="@color/AzulBack"
+                        app:boxBackgroundMode="outline"
+                        app:boxCornerRadiusTopEnd="10dp"
+                        app:boxCornerRadiusTopStart="10dp"
+                        android:visibility="gone">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/txtCantEnv"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="phone"
+                            android:digits="0123456789"
+                            android:text="0"
+                            android:textColor="@color/AzulBack"
+                            android:textStyle="bold"
+                            android:maxLines="1"
+                            android:textSize="15dp"
+                            android:enabled="false" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_weight="1"
+                        android:layout_marginRight="2.5dp"
+                        android:hint="@string/cantidad"
+                        app:hintTextColor="@color/AzulBack"
+                        app:boxBackgroundMode="outline"
+                        app:boxCornerRadiusTopEnd="10dp"
+                        app:boxCornerRadiusTopStart="10dp">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/txtEditable"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="phone"
+                            android:digits="0123456789"
+                            android:text=""
+                            android:imeOptions="actionDone"
+                            android:textColor="@color/AzulBack"
+                            android:textStyle="bold"
+                            android:maxLines="1"
+                            android:maxLength="4"
+                            android:textSize="15dp" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+
+        </LinearLayout>
+
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

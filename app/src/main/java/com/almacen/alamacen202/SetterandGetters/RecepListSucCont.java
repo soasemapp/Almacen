@@ -4,14 +4,16 @@ public class RecepListSucCont {
     private String sucursal;
     private String clasif;
     private String exist;
+    private String env;
     private String compr;
     private String trans;
     private String dem;
 
-    public RecepListSucCont(String sucursal, String clasif, String exist, String compr, String trans, String dem) {
+    public RecepListSucCont(String sucursal, String clasif, String exist,String env, String compr, String trans, String dem) {
         this.sucursal = sucursal;
         this.clasif = clasif;
         this.exist = exist;
+        this.env=env;
         this.compr = compr;
         this.trans = trans;
         this.dem = dem;
@@ -39,6 +41,14 @@ public class RecepListSucCont {
 
     public void setExist(String exist) {
         this.exist = exist;
+    }
+
+    public String getEnv() {
+        return env;
+    }
+
+    public void setEnv(String env) {
+        this.env = env;
     }
 
     public String getCompr() {

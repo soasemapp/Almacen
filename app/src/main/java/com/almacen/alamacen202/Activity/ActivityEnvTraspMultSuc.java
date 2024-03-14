@@ -283,7 +283,7 @@ public class ActivityEnvTraspMultSuc extends AppCompatActivity {
                         builder.setPositiveButton("GUARDAR", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                new AsyncInsertCajasE(strbran, Folio, tvProd.getText().toString(),
+                                new AsyncInsertCajasE( Folio, tvProd.getText().toString(),
                                         finalSurtAcum +"", spCaja.getText().toString()+"",
                                         lista.get(posicion2).getPartida(), strusr, "change", false, Producto,6).execute();
                             }//onclick
@@ -696,7 +696,7 @@ public class ActivityEnvTraspMultSuc extends AppCompatActivity {
         posX=scrollView.getScrollX();
         posY=scrollView.getScrollY();
         if(!lista.get(posicion2).getProducto().equals(Producto) && posG!=-1 && lista.get(posicion2).isSincronizado()==false){//identificando que prod anterior no se sincronizó
-            new AsyncInsertCajasE(strbran, Folio, lista.get(posicion2).getProducto(),
+            new AsyncInsertCajasE( Folio, lista.get(posicion2).getProducto(),
                     lista.get(posicion2).getCantSurt(), spCaja.getText().toString() + "",
                     lista.get(posicion2).getPartida(), strusr, var, sumar, Producto,alTerminar).execute();
         }else{//cuando se escanea o por botones de adelante, atras y onclick en lista
@@ -753,7 +753,7 @@ public class ActivityEnvTraspMultSuc extends AppCompatActivity {
                         lista.get(pos).setSincronizado(false);
                         if(cantS[0] ==cant){
                             posicion2=pos;
-                            new AsyncInsertCajasE(strbran,Folio,prod,
+                            new AsyncInsertCajasE(Folio,prod,
                                     cantS[0] +"",spCaja.getText().toString(),
                                     lista.get(posicion2).getPartida(),strusr,"change",false,Producto,0).execute();
                         }
@@ -769,7 +769,7 @@ public class ActivityEnvTraspMultSuc extends AppCompatActivity {
                 adapter.setSingleSelection(pos);
                 if(cantS[0] ==cant){
                     posicion2=pos;
-                    new AsyncInsertCajasE(strbran,Folio,prod,
+                    new AsyncInsertCajasE(Folio,prod,
                             cantS[0] +"",spCaja.getText().toString(),
                             lista.get(posicion2).getPartida(),strusr,"change",false,Producto,0).execute();
                 }else{
@@ -1140,7 +1140,7 @@ public class ActivityEnvTraspMultSuc extends AppCompatActivity {
             if(conn==true){
                 HttpHandler sh = new HttpHandler();
                 String parametros="k_suc="+suc+"&k_fol="+folio+"&k_lin="+linea;
-                String url = "http://"+strServer+"/"+getString(R.string.resConsEnvTrasp)+"?"+parametros;
+                String url = "http://"+strServer+"/ConsEnvTrasp?"+parametros;
                 String jsonStr = sh.makeServiceCall(url,strusr,strpass);
                 //Log.e(TAG, "Respuesta de la url: " + jsonStr);
                 if (jsonStr != null) {
@@ -1492,14 +1492,13 @@ public class ActivityEnvTraspMultSuc extends AppCompatActivity {
 
     private class AsyncInsertCajasE extends AsyncTask<Void, Void, String> {
 
-        private String suc,folio,producto,cant,numCajas,part,usu,var,ProductoActual,newCant;
+        private String folio,producto,cant,numCajas,part,usu,var,ProductoActual,newCant;
         private boolean conn,sumar;
         int alTerminar;
 
-        public AsyncInsertCajasE(String suc, String folio, String producto, String cant,
+        public AsyncInsertCajasE(String folio, String producto, String cant,
                                  String numCajas, String part, String usu,String var,
                                  boolean sumar,String ProductoActual,int alTerminar) {
-            this.suc = suc;
             this.folio = folio;
             this.producto = producto;
             this.cant = cant;
@@ -1525,7 +1524,7 @@ public class ActivityEnvTraspMultSuc extends AppCompatActivity {
             conn=firtMet();
             newCant=cant;
             if(conn==true){
-                String parametros="k_Sucursal="+suc+"&k_Folio="+folio+
+                String parametros="k_Sucursal="+strbran+"&k_Folio="+folio+
                         "&k_Producto="+producto+"&k_Cantidad="+cant+
                         "&k_NumCajas="+numCajas+"&k_partida="+part+""+"&k_UUsuario="+usu;
                 String url = "http://"+strServer+"/InsertCajasE?"+parametros;
@@ -1566,7 +1565,6 @@ public class ActivityEnvTraspMultSuc extends AppCompatActivity {
             super.onPostExecute(result);
             if(conn==true && mensaje.equals("Insertado Exitosa") || mensaje.equals("Actualizacion Exitosa")) {
                 //cajaGuard=true;
-                mDialog.dismiss();
                 Toast.makeText(ActivityEnvTraspMultSuc.this, "Sincronizado", Toast.LENGTH_SHORT).show();
                 bepp.play(sonido_correcto, 1, 1, 1, 0, 0);
                 TOTPZA=TOTPZA+Integer.parseInt(cant);
@@ -1583,6 +1581,7 @@ public class ActivityEnvTraspMultSuc extends AppCompatActivity {
                     mostrarDetalleProd();
                 }
                 alFinalizar(alTerminar);
+                //new AsyncUbicMod().execute();
             }else{
                 mDialog.dismiss();
                 AlertDialog.Builder builder = new AlertDialog.Builder(ActivityEnvTraspMultSuc.this);
@@ -1600,7 +1599,7 @@ public class ActivityEnvTraspMultSuc extends AppCompatActivity {
         final int[] nomCaja = {caja};
         String parametros="k_Sucursal="+suc+"&k_Folio="+folio+
                 "&k_Producto="+producto+"&k_Cantidad="+rep+
-                "&k_NumCajas="+ nomCaja[0] +"&k_partida="+part+""+"&k_UUsuario="+usu;
+                "&k_NumCajas="+ nomCaja[0] +"&k_partida="+part+"&k_UUsuario="+usu;
         String url = "http://"+strServer+"/InsertCajasE?"+parametros;
         String jsonStr = new HttpHandler().makeServiceCall(url,strusr,strpass);
         if(jsonStr != null) {
@@ -2014,6 +2013,130 @@ public class ActivityEnvTraspMultSuc extends AppCompatActivity {
             dialog.show();
         }//onPost
     }//AsyncReporteInici
+
+    private class AsyncUbicMod extends AsyncTask<Void, Void, String> {
+
+        private String ubicacionOrigen,ubicacionDestino,producto,cantidad,folio,numCajas,part,var,ProductoActual;
+        private DialogInterface dialogInterface;
+        int alTerminar;
+        private boolean conn,sumar;
+
+        public AsyncUbicMod(String ubicacionOrigen, String ubicacionDestino, String producto,
+                            String cantidad,DialogInterface dialogInterface,
+                            String folio,String numCajas, String part, String usu,String var,
+                            boolean sumar,String ProductoActual,int alTerminar) {
+            this.ubicacionOrigen = ubicacionOrigen;
+            this.ubicacionDestino = ubicacionDestino;
+            this.producto = producto;
+            this.cantidad = cantidad;
+            this.dialogInterface=dialogInterface;
+            this.folio=folio;
+            this.numCajas=numCajas;
+            this.part=part;
+            this.alTerminar=alTerminar;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            if(mDialog.isShowing()==false){
+                mDialog.show();
+            }
+        }
+
+        @Override
+        protected String doInBackground(Void... voids) {
+            conn=firtMet();
+            if(conn==true){
+                String parametros="k_UbicacionOri="+ubicacionOrigen+
+                        "&k_UbicacionDest="+ubicacionDestino+
+                        "&k_Sucursal="+strbran+"&k_Producto="+producto+
+                        "&k_Cantidad="+cantidad;
+                String url = "http://"+strServer+"/CLArticulo?"+parametros;
+                String jsonStr = new HttpHandler().makeServiceCall(url,strusr,strpass);
+                if(jsonStr != null) {
+                    try {
+                        JSONObject jsonObj = new JSONObject(jsonStr);
+                        JSONArray jsonArray = jsonObj.getJSONArray("Response");
+                        mensaje=jsonArray.getString(0);
+                    } catch (final JSONException e) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                mensaje="Sin datos";
+                            }//run
+                        });
+                    }//catch JSON EXCEPTION
+                }else {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mensaje="Problema actualizar";
+                        }//run
+                    });//runUniTthread
+                }//else
+                return null;
+            }else{
+                mensaje="Problemas de conexión";
+                return null;
+            }//else
+        }//doInBackground
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            if(conn==true && mensaje.equals("LA UBICACION A SIDO INSERTADO") || mensaje.equals("LA UBICACION A SIDO ACTUALIZADA")) {
+                mDialog.dismiss();
+
+
+            }else{
+                mDialog.dismiss();
+                AlertDialog.Builder builder = new AlertDialog.Builder(ActivityEnvTraspMultSuc.this);
+                builder.setTitle("AVISO");
+                builder.setMessage("Problema al hacer traspaso de ubicación");
+                builder.setCancelable(false);
+                builder.setNegativeButton("OK",null);
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            }//else<
+        }//onPost
+    }//AsyncInsertCajasE
+
+    public String wsTraspUbi(String ubicacionOrigen, String ubicacionDestino, String producto,String cantidad){
+        if(firtMet()==true){
+            String parametros="k_UbicacionOri="+ubicacionOrigen+
+                    "&k_UbicacionDest="+ubicacionDestino+
+                    "&k_Sucursal="+strbran+"&k_Producto="+producto+
+                    "&k_Cantidad="+cantidad;
+            String url = "http://"+strServer+"/CLArticulo?"+parametros;
+            String jsonStr = new HttpHandler().makeServiceCall(url,strusr,strpass);
+            if(jsonStr != null) {
+                try {
+                    JSONObject jsonObj = new JSONObject(jsonStr);
+                    JSONArray jsonArray = jsonObj.getJSONArray("Response");
+                    mensaje=jsonArray.getString(0);
+                } catch (final JSONException e) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mensaje="Sin datos";
+                        }//run
+                    });
+                }//catch JSON EXCEPTION
+            }else {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mensaje="Problema actualizar";
+                    }//run
+                });//runUniTthread
+            }//else
+            return mensaje;
+        }else{
+            mensaje="Problemas de conexión";
+            return mensaje;
+        }//else
+    }//wsActualiza
 
 
 

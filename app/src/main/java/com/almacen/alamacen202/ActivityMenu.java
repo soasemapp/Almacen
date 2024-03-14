@@ -339,7 +339,7 @@ public class ActivityMenu extends AppCompatActivity {
         Intent intent = new Intent(ActivityMenu.this, ActivityResurtBal.class);
         startActivity(intent);
     }//recolectMontCarg
-    public void recepCont(View v){
+    public void recepConte(View v){
         Intent intent = new Intent(ActivityMenu.this, ActivityRecepConten.class);
         startActivity(intent);
     }//reporte de etiquetas

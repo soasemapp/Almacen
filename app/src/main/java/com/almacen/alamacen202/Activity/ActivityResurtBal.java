@@ -594,7 +594,7 @@ public class ActivityResurtBal extends AppCompatActivity {
                     for(int i=0;i<jsonArray.length();i++){
                         JSONObject dato = jsonArray.getJSONObject(i);//Conjunto de datos
                         listaSucRecep.add(new RecepListSucCont(dato.getString("k_suc"),dato.getString("k_clasf"),
-                                dato.getString("k_exist"),dato.getString("k_compr"),dato.getString("k_trans"),
+                                dato.getString("k_exist"),"",dato.getString("k_compr"),dato.getString("k_trans"),
                                 dato.getString("k_dem")));
                         mensaje="";
                     }//for
