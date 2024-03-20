@@ -91,9 +91,9 @@ public class ActivityInventario extends AppCompatActivity {
     private String strusr,strpass,strServer,strbran,codeBar,ProductoAct="",folio="",fecha="",hora="",mensaje,bandAutori,mensajeAutoriza,UserSuper;
     private ArrayList<Inventario> listaInv = new ArrayList<>();
     private ArrayList<Inventario> listaPSincro = new ArrayList<>();
-    private EditText txtFolioInv,txtProductoVi,txtFechaI,txtHoraI,txtProducto,txtEscan;
+    private EditText txtFolioInv,txtProductoVi,txtFechaI,txtHoraI,txtProducto,txtEscan,txtUbicc;
     private ArrayList<Folios>listaFol;
-    private Button btnGuardar,btnSincronizar;
+    private Button btnGuardar,btnSincronizar,btnElim;
     private CheckBox chbMan;
     private RecyclerView rvInventario;
     private AdapterInventario adapter;
@@ -146,12 +146,15 @@ public class ActivityInventario extends AppCompatActivity {
         txtProducto     = findViewById(R.id.txtProducto);
         txtProductoVi   = findViewById(R.id.txtProductoVi);
         txtEscan         = findViewById(R.id.txtEscan);
+        txtUbicc        = findViewById(R.id.txtUbicc);
+
         btnGuardar      = findViewById(R.id.btnGuardar);
         btnSincronizar  = findViewById(R.id.btnSincronizar);
         chbMan          = findViewById(R.id.chbMan);
         rvInventario    = findViewById(R.id.rvInventario);
+        btnElim         = findViewById(R.id.btnElim);
 
-        conn = new ConexionSQLiteHelper(ActivityInventario.this, "bd_INVENTARIO", null, 1);
+        conn = new ConexionSQLiteHelper(ActivityInventario.this, "bd_INVENTARIO", null, 2);
         db = conn.getReadableDatabase();
         rvInventario.setLayoutManager(new LinearLayoutManager(ActivityInventario.this));
         keyboard = (InputMethodManager) getSystemService(ActivityInventario.INPUT_METHOD_SERVICE);
@@ -159,6 +162,8 @@ public class ActivityInventario extends AppCompatActivity {
         txtProducto.requestFocus();
         txtProducto.setInputType(InputType.TYPE_NULL);
         txtEscan.setEnabled(false);
+        txtUbicc.setEnabled(true);
+        txtUbicc.setInputType(InputType.TYPE_NULL);
         chbMan.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -166,23 +171,24 @@ public class ActivityInventario extends AppCompatActivity {
                 txtProducto.requestFocus();
                 txtProductoVi.setText("");
                 posicion=-1;
+                adapter.index(posicion);
                 adapter.notifyDataSetChanged();
-                rvInventario.scrollToPosition(0);
-                if (b){
+                rvInventario.setAdapter(adapter);
+                if (b){//manual
                     //keyboard.showSoftInput(txtProducto, InputMethodManager.SHOW_IMPLICIT);
                     txtEscan.setEnabled(true);
                     txtEscan.setText("");
+                    txtUbicc.setText("");
+                    txtUbicc.setInputType(InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
                     //keyboard.showSoftInput(Cantidad, InputMethodManager.SHOW_IMPLICIT);
                     btnGuardar.setEnabled(true);
-                    btnGuardar.setBackgroundTintList(ColorStateList.
-                            valueOf(getResources().getColor(R.color.AzulBack)));
                 }else {
                     txtEscan.setText("");
                     txtEscan.setEnabled(false);
                     keyboard.hideSoftInputFromWindow(txtEscan.getWindowToken(), 0);
+                    txtUbicc.setText("");
+                    txtUbicc.setInputType(InputType.TYPE_NULL);
                     btnGuardar.setEnabled(false);
-                    btnGuardar.setBackgroundTintList(ColorStateList.
-                            valueOf(getResources().getColor(R.color.ColorGris)));
                 }//else
 
             }//oncheckedchange
@@ -202,21 +208,23 @@ public class ActivityInventario extends AppCompatActivity {
                 if (!editable.toString().equals("")) {
                     txtProductoVi.setText(ProductoAct);
                     if (codeBar.equals("Zebra")) {//codebar
-                        if (!chbMan.isChecked()) {//manual no
-                            buscar(ProductoAct,compararCantidad(ProductoAct)+"");
+                        if (!chbMan.isChecked()) {
+                            buscar(ProductoAct,compararCantidad(ProductoAct)+"",
+                                    compararUbi(ProductoAct));
                             txtProducto.setText("");
-                        }else{//manual si
+                        }else{//manual
                             txtEscan.setText("");
                             txtEscan.requestFocus();
                             keyboard.showSoftInput(txtEscan, InputMethodManager.SHOW_IMPLICIT);
                         }//else
-                    } else{
+                    }else{
                         for (int i = 0; i < editable.length(); i++) {
                             char ban;
                             ban = editable.charAt(i);
                             if(ban == '\n'){
                                 if (!chbMan.isChecked()) {//manual no
-                                    buscar(ProductoAct,compararCantidad(ProductoAct)+"");
+                                    buscar(ProductoAct,compararCantidad(ProductoAct)+"",
+                                            compararUbi(ProductoAct));
                                 }else{//manual si
                                     txtEscan.requestFocus();
                                     keyboard.showSoftInput(txtEscan, InputMethodManager.SHOW_IMPLICIT);
@@ -230,14 +238,56 @@ public class ActivityInventario extends AppCompatActivity {
             }//after
         });//txtProducto.addTextChanged
 
+        txtUbicc.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if(!s.toString().equals("") && !s.toString().equals(" ") && txtUbicc.isFocused()
+                        && !txtProductoVi.getText().toString().equals("") && !txtEscan.getText().toString().equals("")
+                        && Integer.parseInt(txtEscan.getText().toString())>0){
+                    if (!chbMan.isChecked()) {//normal
+                        keyboard.hideSoftInputFromWindow(txtUbicc.getWindowToken(), 0);
+                        ProductoAct=txtProductoVi.getText().toString();
+                        buscar(ProductoAct,txtEscan.getText().toString(),
+                                s.toString());
+                        txtProducto.requestFocus();
+                    }//if
+                }//if
+            }//aftertextchanged
+        });
+
+        txtUbicc.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(hasFocus){
+                    txtUbicc.setText("");
+                    //keyboard.hideSoftInputFromWindow(txtUbicc.getWindowToken(), 0);
+                }else{
+                    txtProducto.requestFocus();
+                    if(posicion>=0){
+                        txtUbicc.setText(listaInv.get(posicion).getUbi());
+                    }//if
+                }//else
+            }//onFocusChange
+        });//txtUbicc.setOnFocusChange
+
 
         btnGuardar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String v1=txtProductoVi.getText().toString();
                 String v2=txtEscan.getText().toString();
-                if(!v1.equals("") && !v2.equals("")){
-                    actualizaGuarda(v1,v2);
+                String v3=txtUbicc.getText().toString();
+                if(v3.equals("")){
+                    if(posicion>=0) {v3=listaInv.get(posicion).getUbi();}
+                }
+                if(!v1.equals("") && !v2.equals("") && !v3.equals("")){
+                    actualizaGuarda(v1,v2,v3);
                     keyboard.hideSoftInputFromWindow(txtEscan.getWindowToken(), 0);
                     txtProducto.setText("");
                     txtProducto.requestFocus();
@@ -253,6 +303,7 @@ public class ActivityInventario extends AppCompatActivity {
                 }
             }//onclick
         });//btnGuardar setonclick
+
         btnSincronizar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -263,7 +314,7 @@ public class ActivityInventario extends AppCompatActivity {
                     builder.setPositiveButton("ACEPTAR", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            new AsyncActualizaInv().execute();
+                            new AsyncResActualizaInv(folio).execute();
                         }//onclick
                     });//positive button
                     builder.setNegativeButton("CANCELAR",null);
@@ -278,6 +329,31 @@ public class ActivityInventario extends AppCompatActivity {
             }//onclcik
         });//btnSincronizar onclick
 
+        btnElim.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(posicion>=0){
+                    String p=listaInv.get(posicion).getProducto()+"'";
+                    AlertDialog.Builder builder = new AlertDialog.Builder(ActivityInventario.this);
+                    builder.setPositiveButton("ACEPTAR", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            eliminarSql(" PRODUCTO='"+p);
+                            ProductoAct="";
+                            consultaSql();
+                        }//onclick
+                    });//positive button
+                    builder.setNegativeButton("CANCELAR",null);
+                    builder.setCancelable(false);
+                    builder.setTitle("AVISO");
+                    builder.setMessage("¿Desea eliminar código "+p+"?").create().show();
+                }else{
+                    Toast.makeText(ActivityInventario.this, "Sin código seleccionado",
+                            Toast.LENGTH_SHORT).show();
+                }//else
+            }//onclick
+        });//btnElim
+
 
         //FOLIO
         if(folio.equals("")){//si no hay folio guardado
@@ -285,6 +361,11 @@ public class ActivityInventario extends AppCompatActivity {
         }else{
             comprobar=true;
             new AsyncFolios().execute();
+            /*txtFolioInv.setText(folio);
+            txtFechaI.setText(fecha);
+            txtHoraI.setText(hora);
+            consultaSql();
+            new AsyncResListInv(strbran,folio).execute();*/
         }//else
 
     }//onCreate
@@ -301,6 +382,8 @@ public class ActivityInventario extends AppCompatActivity {
     }//FirtMet saber si hay conexion a internet
 
     public void onClickInv(View v){//cada vez que se seleccione un producto en la lista
+        keyboard.hideSoftInputFromWindow(txtUbicc.getWindowToken(), 0);
+        keyboard.hideSoftInputFromWindow(txtEscan.getWindowToken(), 0);
         posicion = rvInventario.getChildPosition(rvInventario.findContainingItemView(v));
         ProductoAct=listaInv.get(posicion).getProducto();
         mostrarDetalleCod(posicion);
@@ -432,6 +515,17 @@ public class ActivityInventario extends AppCompatActivity {
         return cant;
     }//compararCant
 
+    public String compararUbi(String prod){//buscar ubi
+        String ubi="";
+        for(int i=0;i<listaInv.size();i++){
+            if(listaInv.get(i).getProducto().equals(prod)){
+                ubi=listaInv.get(i).getUbi();
+                break;
+            }//if
+        }//for
+        return ubi;
+    }//compararCant
+
     public void seleccionEnAlertFolios(View v){
         int pos = rvFolios.getChildAdapterPosition(rvFolios.findContainingItemView(v));
         folio=listaFol.get(pos).getFolio();
@@ -445,7 +539,7 @@ public class ActivityInventario extends AppCompatActivity {
         editor.putString("horaI", hora);
         editor.commit();
         rvInventario.setAdapter(null);
-        new AsyncListInv().execute();
+        new AsyncResListInv(strbran,folio).execute();
         dialog.dismiss();
     }//seleccionEnAlertFolios
 
@@ -491,6 +585,7 @@ public class ActivityInventario extends AppCompatActivity {
             contInsert=0;
             posicion=0;
             txtProductoVi.setText("");
+            btnElim.setEnabled(false);
             //txtEscan.setText("");
         }//onPreExecute
 
@@ -514,7 +609,9 @@ public class ActivityInventario extends AppCompatActivity {
                             String cant=dato.getString("k_acum");
                             String ubi=dato.getString("k_ubi");
                             listaInv.add(new Inventario((i+1)+"", prod, cant,0+"",ubi,true));
-                            contInsert++;
+                            if(insertarSql(prod,cant,0+"",ubi)==true){
+                                contInsert++;
+                            }
                         }//for
                     }catch (final JSONException e) {
                         runOnUiThread(new Runnable() {
@@ -542,9 +639,8 @@ public class ActivityInventario extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void aBoolean) {
             super.onPostExecute(aBoolean);
-            mDialog.dismiss();
             if (listaInv.size()>0) {
-                Toast.makeText(ActivityInventario.this, contInsert+" datos", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(ActivityInventario.this, contInsert+" datos", Toast.LENGTH_SHORT).show();
                 mDialog.dismiss();
                 mostrarLista();
             }else{
@@ -555,15 +651,47 @@ public class ActivityInventario extends AppCompatActivity {
         }//onPost
     }//AsyncResListInv
 
-    private class AsyncResActualizaInv extends AsyncTask<Void, Void, Void> {
+    public boolean conectaRes(String producto,String cantidad,String ubicacion){
+        mensaje="";
+        boolean var=false;
+        String parametros="k_folio="+folio+"&k_suc="+strbran+"&k_prod="+producto+
+                "&k_cant="+cantidad+"&k_ubi="+ubicacion;
+        String url = "http://"+strServer+"/ActualizaInv?"+parametros;
+        String jsonStr = new HttpHandler().makeServiceCall(url,strusr,strpass);
+        if (jsonStr != null) {
+            try {
+                JSONObject jsonObj = new JSONObject(jsonStr);
+                JSONArray jsonArray = jsonObj.getJSONArray("Response");
+                JSONObject dato = jsonArray.getJSONObject(0);
+                mensaje=dato.getString("k_estado");
+                var=true;
+            }catch (final JSONException e) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mensaje="Sin sincronizar";
+                    }//run
+                });
+            }//catch JSON EXCEPTION
+        }else {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mensaje="Problemas de datos";
+                }//run
+            });//runUniTthread
+        }//else
+        return var;
+    }//conectaRes
 
-        private String folio,producto,cantidad;
-        private boolean conn=true,sumar;
-        public AsyncResActualizaInv(String folio,String producto, String cantidad,boolean sumar) {
-            this.folio=folio;
-            this.producto = producto;
-            this.cantidad = cantidad;
-            this.sumar=sumar;
+    private class AsyncResActualizaInv extends AsyncTask<Void, Integer, Void> {
+
+        private String folio,producto,cantidad,ubicacion;
+        private boolean conn=true;
+        private int contador=0;
+
+        public AsyncResActualizaInv(String folio) {
+            this.folio = folio;
         }
 
         @Override
@@ -576,62 +704,82 @@ public class ActivityInventario extends AppCompatActivity {
         @Override
         protected Void doInBackground(Void... voids) {
             conn=firtMet();
-            if(conn==true){
-                String parametros="k_folio="+folio+"&k_suc="+strbran+"&k_prod="+producto+
-                        "&k_cant="+cantidad+"&k_usu="+strusr+"&k_folio="+folio;
-                String url = "http://"+strServer+"/ActualizaInv?"+parametros;
-                String jsonStr = new HttpHandler().makeServiceCall(url,strusr,strpass);
-                if (jsonStr != null) {
+            if(conn==true) {
+                progressDialog.setMax(listaPSincro.size());
+                for (int j = 0; j < listaPSincro.size(); j++) {//for para los registros de cada servidor
                     try {
-                        JSONObject jsonObj = new JSONObject(jsonStr);
-                        JSONArray jsonArray = jsonObj.getJSONArray("Response");
-                        JSONObject dato = jsonArray.getJSONObject(0);
-                        mensaje=dato.getString("k_estado");
-                    } catch (final JSONException e) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                mensaje="Sin sincronizar";
-                            }//run
-                        });
-                    }//catch JSON EXCEPTION
-                }else {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mensaje="Problemas de datos";
-                        }//run
-                    });//runUniTthread
-                }//else
-                return null;
+                        mensaje = "";
+                        producto = listaPSincro.get(j).getProducto();
+                        cantidad = listaPSincro.get(j).getEscan();
+                        ubicacion=listaPSincro.get(j).getUbi();
+                        if (conectaRes(producto,cantidad,ubicacion)==true) {
+                            eliminarSql(" PRODUCTO='" + producto + "'");
+                            contador++;
+                        }else if(mensaje.equals("0")){
+                            break;
+                        }//else if
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        return null;
+                    }//catch
+                    progressDialog.setProgress(j);
+                }//for
             }else{
                 mensaje="Problemas de conexión";
-                return null;
             }//else
+            return  null;
         }//doInBackground
+
+        @Override
+        protected void onProgressUpdate(Integer... progress) {
+            super.onProgressUpdate(progress);
+            progressDialog.setProgress(progress[0]);
+        }
 
         @Override
         protected void onPostExecute(Void aBoolean) {
             super.onPostExecute(aBoolean);
-            mDialog.dismiss();
-            if(conn==false){
-                Toast.makeText(ActivityInventario.this, "Sin conexión a internet\n"+
-                        "No se podrá seguir escaneando a menos que se actualice este producto", Toast.LENGTH_SHORT).show();
-            }else if (mensaje.equals("SINCRONIZADO")) {
-                Toast.makeText(ActivityInventario.this, producto+" Sincronizado", Toast.LENGTH_SHORT).show();
-                bepp.play(sonido_correcto, 1, 1, 1, 0, 0);
-                listaInv.get(posicionAnt).setSincronizado(true);
-                if(sumar==true){
-                    conteo(ProductoAct,"--1");
-                }else{
-                    posicion=posicionAnt;
-                    mostrarDetalleCod(posicion);
-                }//else
+            progressDialog.dismiss();
+            if(mensaje.equals("0")){
+                AlertDialog.Builder builder = new AlertDialog.Builder(ActivityInventario.this);
+                builder.setMessage("Folio cerrado");
+                builder.setCancelable(false);
+                builder.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        finish();
+                    }
+                });//negative botton
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            }else if(contador==listaPSincro.size()) {
+                listaInv.clear();
+                rvInventario.setAdapter(null);
+                editor.clear().commit();
+                eliminarSql("");
+                AlertDialog.Builder builder = new AlertDialog.Builder(ActivityInventario.this);
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        new AsyncFolios().execute();
+                    }//onclick
+                });//positivebutton
+                builder.setCancelable(false);
+                builder.setTitle("Resultado Sincronización").setMessage(contador+" Datos sincronizados").create().show();
+
             }else{
                 AlertDialog.Builder builder = new AlertDialog.Builder(ActivityInventario.this);
-                builder.setPositiveButton("ACEPTAR",null);
+                builder.setTitle("Problemas de sincronización");
                 builder.setCancelable(false);
-                builder.setTitle("AVISO").setMessage("Producto "+producto+" no se actualizó, no se podrá seguir escaneando a menos que se actualice").create().show();
+                builder.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        finish();
+                    }
+                });//negative botton
+                AlertDialog dialog = builder.create();
+                dialog.show();
+                consultaSql();
             }//else
         }//onPost
     }//AsyncResActualizaInv
@@ -800,7 +948,7 @@ public class ActivityInventario extends AppCompatActivity {
                 String cant=(response0.getPropertyAsString("k_acum").equals("anyType{}") ? " " : response0.getPropertyAsString("k_acum"));
                 listaInv.add(new Inventario(
                         (i+1)+"", prod, cant,0+"","",true));
-                if(insertarSql(prod,cant,0+"")==true){
+                if(insertarSql(prod,cant,0+"","")==true){
                     contInsert++;
                 }
             }//for
@@ -988,7 +1136,7 @@ public class ActivityInventario extends AppCompatActivity {
         } catch (Exception ex) {}
     }//conectaAutoriza
 
-    public void buscar(String prod,String cant){
+    public void buscar(String prod,String cant,String ubic){
         String nuevo=prod.substring(0,3)+"";
         if(nuevo.equals("P01") || nuevo.equals("P02") || nuevo.equals("P03") || nuevo.equals("P04") || nuevo.equals("P05")
                 || nuevo.equals("P06") || nuevo.equals("P07") || nuevo.equals("8") || nuevo.equals("P09") || nuevo.equals("P10")
@@ -1006,7 +1154,7 @@ public class ActivityInventario extends AppCompatActivity {
             titulo.setTitle("¡ERROR!");
             titulo.show();
         }else{
-            actualizaGuarda(prod,cant);
+            actualizaGuarda(prod,cant,ubic);
         }//else
     }//buscar
 
@@ -1064,14 +1212,15 @@ public class ActivityInventario extends AppCompatActivity {
         }//if bandera false
     }//conteo
 
-    public void actualizaGuarda(String prod, String cant){
+    public void actualizaGuarda(String prod, String cant,String ubic){
         boolean bandera=false;
         for(int i=0;i<listaInv.size();i++){
             if(listaInv.get(i).getProducto().equals(prod)){
                 bandera=true;
-                if(actualizarSql(prod,Integer.parseInt(cant)+"")==true){
+                if(actualizarSql(prod,Integer.parseInt(cant)+"",ubic)==true){
                     txtProductoVi.setText(prod);
                     listaInv.get(i).setEscan(cant);
+                    listaInv.get(i).setUbi(ubic);
                     mostrarDetalleCod(i);
                 }else{
                     Toast.makeText(this, "No se pudó actualizar este código", Toast.LENGTH_SHORT).show();
@@ -1080,7 +1229,7 @@ public class ActivityInventario extends AppCompatActivity {
             }//if
         }//for
         if(bandera==false){
-            if(insertarSql(prod,0+"",cant)==true){
+            if(insertarSql(prod,0+"",cant,ubic)==true){
                 consultaSql();
             }else{
                 Toast.makeText(this, "No se pudó guardar este código", Toast.LENGTH_SHORT).show();
@@ -1089,6 +1238,7 @@ public class ActivityInventario extends AppCompatActivity {
     }//actualizaGuarda
 
     public void mostrarLista(){
+        btnElim.setEnabled(true);
         rvInventario.setAdapter(null);
         adapter= new AdapterInventario(listaInv);
         rvInventario.setAdapter(adapter);
@@ -1103,7 +1253,9 @@ public class ActivityInventario extends AppCompatActivity {
         rvInventario.scrollToPosition(pos);
         txtProductoVi.setText(listaInv.get(pos).getProducto());
         txtEscan.setText(listaInv.get(pos).getEscan());
+        txtUbicc.setText(listaInv.get(pos).getUbi());
         posicion=pos;
+        txtProducto.requestFocus();
     }//mostrarDetalleCod
 
 
@@ -1130,13 +1282,13 @@ public class ActivityInventario extends AppCompatActivity {
                         "SELECT PRODUCTO,CANTIDAD from INVENTARIOALM WHERE PRODUCTO='"+prod+"'", null);
                 if (fila != null && fila.moveToFirst()) {
                     String esc=fila.getString(1);
-                    if(esc.equals("1")){
+                    //if(esc.equals("1")){
 
-                    }else{
-                        actualizarSql(prod,Integer.parseInt(cant)+"");
-                    }
+                    //}else{
+                        //actualizarSql(prod,Integer.parseInt(cant)+"");
+                    //}
                 }else{
-                    insertarSql(prod,0+"",cant);
+                    //insertarSql(prod,0+"",cant);
                 }
                 fila.close();
             }catch(Exception e){
@@ -1151,14 +1303,17 @@ public class ActivityInventario extends AppCompatActivity {
             listaInv.clear();
             rvInventario.setAdapter(null);
             int j=-1;
-            @SuppressLint("Recycle") Cursor fila = db.rawQuery("SELECT PRODUCTO,CANTIDAD,ESCAN FROM INVENTARIOALM ORDER BY PRODUCTO ", null);
+            posicion=j;
+            @SuppressLint("Recycle") Cursor fila = db.rawQuery("SELECT PRODUCTO,CANTIDAD,ESCAN,UBIC FROM INVENTARIOALM ORDER BY PRODUCTO ", null);
             if (fila != null && fila.moveToFirst()) {
                 do {
                     j++;
                     if(ProductoAct.equals(fila.getString(0))){
                         posicion=j;
                     }
-                    listaInv.add(new Inventario((j+1)+"",fila.getString(0),fila.getString(1),fila.getString(2),"",true));
+                    listaInv.add(new Inventario((j+1)+"",fila.getString(0),
+                            fila.getString(1),fila.getString(2),
+                            fila.getString(3),true));
                 }while (fila.moveToNext());
 
                 rvInventario.setAdapter(null);
@@ -1166,7 +1321,10 @@ public class ActivityInventario extends AppCompatActivity {
                 rvInventario.setAdapter(adapter);
                 if(posicion>=0){
                     mostrarDetalleCod(posicion);
-                }
+                }else{
+                    adapter.index(posicion);
+                }//else
+                btnElim.setEnabled(true);
             }//if
             fila.close();
         }catch(Exception e){
@@ -1178,10 +1336,11 @@ public class ActivityInventario extends AppCompatActivity {
     public void consultaPSincro(){
         try{
             listaPSincro.clear();
-            @SuppressLint("Recycle") Cursor fila = db.rawQuery("SELECT PRODUCTO,CANTIDAD,ESCAN FROM INVENTARIOALM WHERE ESCAN>0 ORDER BY PRODUCTO ", null);
+            @SuppressLint("Recycle") Cursor fila = db.rawQuery("SELECT PRODUCTO,CANTIDAD,ESCAN,UBIC FROM INVENTARIOALM WHERE ESCAN>0 ORDER BY PRODUCTO ", null);
             if (fila != null && fila.moveToFirst()) {
                 do {
-                    listaPSincro.add(new Inventario("",fila.getString(0),fila.getString(1),fila.getString(2),"",true));
+                    listaPSincro.add(new Inventario("",fila.getString(0),fila.getString(1),
+                            fila.getString(2),fila.getString(3),true));
                 } while (fila.moveToNext());
             }//if
             fila.close();
@@ -1191,7 +1350,7 @@ public class ActivityInventario extends AppCompatActivity {
         }//catch
     }//consultaPSincro
 
-    public boolean insertarSql(String prod,String cant,String esc){
+    public boolean insertarSql(String prod,String cant,String esc,String ubic){
         boolean vari=false;
         try{
             if(db != null){
@@ -1199,18 +1358,21 @@ public class ActivityInventario extends AppCompatActivity {
                 valores.put("PRODUCTO", prod);
                 valores.put("CANTIDAD", cant);
                 valores.put("ESCAN", esc);
+                valores.put("UBIC",ubic);
                 db.insert("INVENTARIOALM", null, valores);
                 vari=true;
             }
         }catch(Exception e){vari=false;}return vari;
     }//insertarSql
 
-    public boolean actualizarSql(String prod,String escan){
+    public boolean actualizarSql(String prod,String escan,String ubic){
         boolean var=false;
         try{
             ContentValues valores = new ContentValues();
             valores.put("ESCAN", Integer.parseInt(escan));
-            db.update("INVENTARIOALM", valores, "PRODUCTO='"+prod+"'", null);
+            valores.put("UBIC",ubic);
+            db.update("INVENTARIOALM", valores,
+                    "PRODUCTO='"+prod+"'", null);
             var=true;
         }catch(Exception e){var=false;}
         return  var;

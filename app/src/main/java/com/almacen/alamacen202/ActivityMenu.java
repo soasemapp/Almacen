@@ -66,7 +66,7 @@ public class ActivityMenu extends AppCompatActivity {
         setContentView(R.layout.activity_menu);
         MyToolbar.show(this, "Menu", false);
 
-        conn = new ConexionSQLiteHelper(ActivityMenu.this, "bd_INVENTARIO", null, 1);
+        conn = new ConexionSQLiteHelper(ActivityMenu.this, "bd_INVENTARIO", null, 2);
         db = conn.getReadableDatabase();
         preference = getSharedPreferences("Login", Context.MODE_PRIVATE);
         preferenceF = getSharedPreferences("Folio", Context.MODE_PRIVATE);//para guardar folio

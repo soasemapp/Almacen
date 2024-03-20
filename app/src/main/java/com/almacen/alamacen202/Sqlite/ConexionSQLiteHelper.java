@@ -12,6 +12,7 @@ public class ConexionSQLiteHelper extends SQLiteOpenHelper {
             "PRODUCTO VARCHAR (45)," +
             "CANTIDAD INTEGER (11)," +
             "ESCAN INTEGER (11)," +//lo que se esta escaneando
+            "UBIC VARCHAR (40),"+
             "PRIMARY KEY(PRODUCTO))";
 
     final String CREAR_TABLA_INVENTARIO = "CREATE TABLE INVENTARIO (" +
@@ -57,10 +58,10 @@ public class ConexionSQLiteHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int versionAntigua, int versionNueva) {
-        db.execSQL("DROP TABLE IF EXISTS CREAR_TABLA_INVENTARIOALM");
-        db.execSQL("DROP TABLE IF EXISTS CREAR_TABLA_INVENTARIO");
-        db.execSQL("DROP TABLE IF EXISTS CREAR_TABLA_DIFUBIEXIST");
-        db.execSQL("DROP TABLE IF EXISTS CREAR_TABLA_RECEPCONT");
+        db.execSQL("DROP TABLE IF EXISTS INVENTARIOALM");
+        db.execSQL("DROP TABLE IF EXISTS INVENTARIO");
+        db.execSQL("DROP TABLE IF EXISTS DIFUBIEXIST");
+        db.execSQL("DROP TABLE IF EXISTS RECEPCONT");
         onCreate(db);
     }//onUpgrade
 }
