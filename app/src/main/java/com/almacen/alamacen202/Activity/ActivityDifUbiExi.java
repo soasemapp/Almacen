@@ -11,6 +11,8 @@ import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -291,17 +293,11 @@ public class ActivityDifUbiExi extends AppCompatActivity {
                 int tam=listaPSincro.size();
                 if(tam>0){
                     AlertDialog.Builder builder = new AlertDialog.Builder(ActivityDifUbiExi.this);
-                    /*builder.setPositiveButton("TODOS", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            jSon();
-                        }//onclick
-                    });*/
                     builder.setNegativeButton("CANCELAR",null);
                     builder.setNeutralButton("SINCRONIZAR", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            new AsyncActualiza().execute();
+                            new AsyncResActualizaDif().execute();
                         }
                     });
                     builder.setCancelable(false);
@@ -359,7 +355,7 @@ public class ActivityDifUbiExi extends AppCompatActivity {
                 txtDif.setText("");
                 txtUbb.setText("");
                 txtCant.setText("");
-                new AsyncDifUbiExist().execute();
+                new AsyncResDifUbiExist().execute();
             }//onclick
         });//btnRefr
 
@@ -371,6 +367,17 @@ public class ActivityDifUbiExi extends AppCompatActivity {
             contados();
         }//else
     }//onCreate
+
+    public boolean firtMet() {//firtMet
+        ConnectivityManager connectivityManager =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnected()) {//si hay conexion a internet
+            return true;
+        } else {
+            return false;
+        }//else
+    }//FirtMet saber si hay conexion a internet
 
     private static boolean isNumeric(String cadena){
         try {
@@ -456,7 +463,7 @@ public class ActivityDifUbiExi extends AppCompatActivity {
         rvDifUbiExi.setAdapter(null);
         dialog.dismiss();
         seleccionaFol();
-        new AsyncDifUbiExist().execute();
+        new AsyncResDifUbiExist().execute();
     }//seleccionEnAlertFolios
 
     public void seleccionaFol(){
@@ -496,6 +503,182 @@ public class ActivityDifUbiExi extends AppCompatActivity {
         });
         dialog.show();
     }//listaFolio
+
+    private class AsyncResDifUbiExist extends AsyncTask<Void, Void, Void> {
+        private boolean conn;
+        @Override
+        protected void onPreExecute() {
+            mDialog.show();
+        }//onPreExecute
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            conn=firtMet();
+            if(conn==true){
+                HttpHandler sh = new HttpHandler();
+                String parametros="k_suc="+strbran+"&k_folio="+folio;
+                String url = "http://"+strServer+"/DifUbiExist?"+parametros;
+                String jsonStr = sh.makeServiceCall(url,strusr,strpass);
+                //Log.e(TAG, "Respuesta de la url: " + jsonStr);
+                if (jsonStr != null) {
+                    try{
+                        JSONObject jsonObj = new JSONObject(jsonStr);
+                        JSONArray jsonArray = jsonObj.getJSONArray("Response");
+                        int num=1;
+                        String clave,cant,exist,dif,ubi,est;
+                        for(int i=0;i<jsonArray.length();i++){
+                            JSONObject dato = jsonArray.getJSONObject(i);//Conjunto de datos
+                            clave=dato.getString("CLAVE");
+                            cant=dato.getString("CANTIDAD");
+                            exist=dato.getString("EXISTENCIA");
+                            dif=dato.getString("DIFERENCIA");
+                            ubi=dato.getString("UBICACION");
+                            est=dato.getString("ESTATUS");
+                            insertarSql(clave,cant, exist,dif, ubi,est);
+                            mensaje="Guardados";
+                        }//for
+                    }catch (final JSONException e) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                mensaje="Hubó un problema al consultar datos";
+                            }//run
+                        });
+                    }//catch JSON EXCEPTION
+                }else {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mensaje="No fue posible obtener datos del servidor";
+                        }//run
+                    });//runUniTthread
+                }//else
+                return null;
+            }else{
+                mensaje="Problemas de conexión";
+                return null;
+            }//else
+        }//doInBackground
+
+        @Override
+        protected void onPostExecute(Void aBoolean) {
+            super.onPostExecute(aBoolean);
+            chbMan.setChecked(false);
+            if (mensaje.equals("Guardados")) {
+                contados();
+                mDialog.dismiss();
+            }else{
+                mDialog.dismiss();
+                Toast.makeText(ActivityDifUbiExi.this, "Ningún dato", Toast.LENGTH_SHORT).show();
+            }
+            txtProducto.setText("");
+        }//onPost
+    }//AsyncResDifUbiExist
+
+    public boolean conectaRes(String producto,String cantidad,String ubicacion){
+        mensaje="";
+        boolean var=false;
+        String parametros="k_folio="+folio+"&k_suc="+strbran+"&k_prod="+producto+
+                "&k_cont="+cantidad+"&k_ubi="+ubicacion;
+        String url = "http://"+strServer+"/ActualizaDif?"+parametros;
+        String jsonStr = new HttpHandler().makeServiceCall(url,strusr,strpass);
+        if (jsonStr != null) {
+            try {
+                JSONObject jsonObj = new JSONObject(jsonStr);
+                JSONArray jsonArray = jsonObj.getJSONArray("Response");
+                JSONObject dato = jsonArray.getJSONObject(0);
+                mensaje=dato.getString("k_estado");
+                if(mensaje.equals("Actualizado")){
+                    var=true;
+                }
+            }catch (final JSONException e) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mensaje="Sin sincronizar";
+                    }//run
+                });
+            }//catch JSON EXCEPTION
+        }else {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mensaje="Problemas de datos";
+                }//run
+            });//runUniTthread
+        }//else
+        return var;
+    }//conectaRes
+
+    private class AsyncResActualizaDif extends AsyncTask<Void, Integer, Void> {
+        private String pro,cc,ubic;
+        private int contador=0;
+        @Override
+        protected void onPreExecute() {progressDialog.show();}
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            progressDialog.setMax(listaPSincro.size());
+            try {
+                for(int j=0;j<listaPSincro.size();j++){
+                    mensaje="";
+                    pro=listaPSincro.get(j).getProducto();
+                    cc=listaPSincro.get(j).getConteo();
+                    ubic=listaPSincro.get(j).getUbicacion();
+                    if(conectaRes(pro,cc,ubic)==true){
+                        eliminarSql("AND PRODUCTO='"+pro+"' ");
+                        contador++;
+                    }//if
+                    Thread.sleep(100);
+                    progressDialog.setProgress(j);
+                }//for
+            } catch (InterruptedException e) {
+                return null;
+            }//catch
+            return null;
+        }//doinbackground
+
+        @Override
+        protected void onProgressUpdate(Integer... progress) {
+            super.onProgressUpdate(progress);
+            progressDialog.setProgress(progress[0]);
+        }
+
+        @RequiresApi(api = Build.VERSION_CODES.P)
+        @Override
+        protected void onPostExecute(Void result) {
+            progressDialog.dismiss();
+            if (contador==listaPSincro.size()) {
+                lista2.clear();
+                rvDifUbiExi.setAdapter(null);
+                editor.clear().commit();
+                eliminarSql("");
+                AlertDialog.Builder builder = new AlertDialog.Builder(ActivityDifUbiExi.this);
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        new AsyncFolios().execute();
+                    }//onclick
+                });//positivebutton
+                builder.setCancelable(false);
+                builder.setTitle("Resultado Sincronización").setMessage(contador+" Datos sincronizados").create().show();
+
+            }else{
+                AlertDialog.Builder builder = new AlertDialog.Builder(ActivityDifUbiExi.this);
+                builder.setMessage("Error al sincronizar");
+                builder.setCancelable(false);
+                builder.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        finish();
+                    }
+                });//negative botton
+                AlertDialog dialog = builder.create();
+                dialog.show();
+                contados();
+            }//else
+        }//onPostExecute
+    }//AsyncResActualizaDif
 
 
     private class AsyncFolios extends AsyncTask<Void, Void, Void> {
@@ -583,7 +766,7 @@ public class ActivityDifUbiExi extends AppCompatActivity {
             }
             txtProducto.setText("");
         }//onPostExecute
-    }//AsynInsertInv
+    }//AsyncDifUbiExist
 
 
     private void conectaDifUbiExist() {
@@ -687,7 +870,7 @@ public class ActivityDifUbiExi extends AppCompatActivity {
                 contados();
             }//else
         }//onPostExecute
-    }//AsynInsertInv
+    }//AsynActualiza
 
 
     private void conectaActualiza (String producto, String cont, String ubic) {

@@ -22,10 +22,13 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -88,7 +91,8 @@ public class ActivityInventario extends AppCompatActivity {
     private SharedPreferences.Editor editor;
     private boolean comprobar=false;
     private int posicion=0,posicionAnt=0,contInsert=0;
-    private String strusr,strpass,strServer,strbran,codeBar,ProductoAct="",folio="",fecha="",hora="",mensaje,bandAutori,mensajeAutoriza,UserSuper;
+    private String strusr,strpass,strServer,strbran,codeBar,
+            ProductoAct="",folio="",fecha="",hora="",mensaje,bandAutori,mensajeAutoriza,UserSuper,ProdGuard="";
     private ArrayList<Inventario> listaInv = new ArrayList<>();
     private ArrayList<Inventario> listaPSincro = new ArrayList<>();
     private EditText txtFolioInv,txtProductoVi,txtFechaI,txtHoraI,txtProducto,txtEscan,txtUbicc;
@@ -96,7 +100,7 @@ public class ActivityInventario extends AppCompatActivity {
     private Button btnGuardar,btnSincronizar,btnElim;
     private CheckBox chbMan;
     private RecyclerView rvInventario;
-    private AdapterInventario adapter;
+    private AdapterInventario adapter=new AdapterInventario(listaInv);
     private AlertDialog mDialog;
     private InputMethodManager keyboard;
     private ConexionSQLiteHelper conn;
@@ -173,6 +177,7 @@ public class ActivityInventario extends AppCompatActivity {
                 posicion=-1;
                 adapter.index(posicion);
                 adapter.notifyDataSetChanged();
+                ProdGuard="";
                 rvInventario.setAdapter(adapter);
                 if (b){//manual
                     //keyboard.showSoftInput(txtProducto, InputMethodManager.SHOW_IMPLICIT);
@@ -206,29 +211,34 @@ public class ActivityInventario extends AppCompatActivity {
             public void afterTextChanged(Editable editable) {
                 ProductoAct=editable.toString();
                 if (!editable.toString().equals("")) {
-                    txtProductoVi.setText(ProductoAct);
                     if (codeBar.equals("Zebra")) {//codebar
-                        if (!chbMan.isChecked()) {
-                            buscar(ProductoAct,compararCantidad(ProductoAct)+"",
-                                    compararUbi(ProductoAct));
-                            txtProducto.setText("");
-                        }else{//manual
-                            txtEscan.setText("");
-                            txtEscan.requestFocus();
-                            keyboard.showSoftInput(txtEscan, InputMethodManager.SHOW_IMPLICIT);
-                        }//else
+                        busquedaRapida();
+                        if(alertUbi()==false){
+                            if (!chbMan.isChecked()) {
+                                buscar(ProductoAct,compararCantidad(ProductoAct)+"",
+                                        compararUbi(ProductoAct));
+                            }else{//manual
+                                txtEscan.requestFocus();
+                                keyboard.showSoftInput(txtEscan, InputMethodManager.SHOW_IMPLICIT);
+                            }//else
+                        }//if alertUbi==true
+                        txtProducto.setText("");
                     }else{
                         for (int i = 0; i < editable.length(); i++) {
                             char ban;
                             ban = editable.charAt(i);
                             if(ban == '\n'){
-                                if (!chbMan.isChecked()) {//manual no
-                                    buscar(ProductoAct,compararCantidad(ProductoAct)+"",
-                                            compararUbi(ProductoAct));
-                                }else{//manual si
-                                    txtEscan.requestFocus();
-                                    keyboard.showSoftInput(txtEscan, InputMethodManager.SHOW_IMPLICIT);
-                                }//else
+                                busquedaRapida();
+                                if(alertUbi()==false){
+                                    if (!chbMan.isChecked()) {
+                                        buscar(ProductoAct,compararCantidad(ProductoAct)+"",
+                                                compararUbi(ProductoAct));
+                                    }else{//manual
+                                        txtEscan.requestFocus();
+                                        keyboard.showSoftInput(txtEscan, InputMethodManager.SHOW_IMPLICIT);
+                                    }//else
+                                }//if alertUbi==true
+                                txtProducto.setText("");
                                 break;
                             }//if
                         }//for
@@ -237,6 +247,8 @@ public class ActivityInventario extends AppCompatActivity {
                 }//if !editable
             }//after
         });//txtProducto.addTextChanged
+
+
 
         txtUbicc.addTextChangedListener(new TextWatcher() {
             @Override
@@ -251,15 +263,30 @@ public class ActivityInventario extends AppCompatActivity {
                         && !txtProductoVi.getText().toString().equals("") && !txtEscan.getText().toString().equals("")
                         && Integer.parseInt(txtEscan.getText().toString())>0){
                     if (!chbMan.isChecked()) {//normal
-                        keyboard.hideSoftInputFromWindow(txtUbicc.getWindowToken(), 0);
                         ProductoAct=txtProductoVi.getText().toString();
+                        txtProducto.requestFocus();
                         buscar(ProductoAct,txtEscan.getText().toString(),
                                 s.toString());
-                        txtProducto.requestFocus();
+                        txtUbicc.clearFocus();
+                        txtUbicc.setCursorVisible(false);
                     }//if
                 }//if
             }//aftertextchanged
         });
+
+        txtEscan.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(hasFocus){
+                    txtEscan.setText("");
+                }else{
+                    if(posicion>=0 && txtEscan.getText().toString().equals("")){
+                        txtEscan.setText(listaInv.get(posicion).getEscan());
+                    }//if
+                }//else
+            }//onfocus
+        });//txtEscan onfocus
+
 
         txtUbicc.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -269,12 +296,24 @@ public class ActivityInventario extends AppCompatActivity {
                     //keyboard.hideSoftInputFromWindow(txtUbicc.getWindowToken(), 0);
                 }else{
                     txtProducto.requestFocus();
-                    if(posicion>=0){
+                    if(posicion>=0 && txtUbicc.getText().toString().equals("")){
                         txtUbicc.setText(listaInv.get(posicion).getUbi());
                     }//if
                 }//else
             }//onFocusChange
         });//txtUbicc.setOnFocusChange
+
+        txtUbicc.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if(actionId== EditorInfo.IME_ACTION_DONE){
+                    txtProducto.setText("");
+                    keyboard.hideSoftInputFromWindow(txtUbicc.getWindowToken(), 0);
+                    txtProducto.requestFocus();
+                }//if
+                return false;
+            }
+        });
 
 
         btnGuardar.setOnClickListener(new View.OnClickListener() {
@@ -369,6 +408,48 @@ public class ActivityInventario extends AppCompatActivity {
         }//else
 
     }//onCreate
+
+    public boolean alertUbi(){
+        //si producto guardado no es igual al escaneado y ya tiene ubicación mostrara alert
+        String cade=txtProducto.getText().toString();
+        String ub=txtUbicc.getText().toString();
+        if(!cade.equals(ProdGuard) && !ub.equals("")){
+            bepp.play(sonido_correcto, 1, 1, 1, 0, 0);
+            ProdGuard=cade;
+            AlertDialog.Builder alerta = new AlertDialog.Builder(ActivityInventario.this);
+            alerta.setMessage("El código "+cade+" ya está en la ubicación "+ub+
+                    "\nSi sigue escaneando las piezas se guardaran en esta ubicación").setCancelable(false);
+            alerta.setNegativeButton("Ok", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    txtProducto.setText("");
+                    dialogInterface.cancel();
+                }
+            });
+            alerta.setCancelable(false);
+            AlertDialog titulo = alerta.create();
+            titulo.setTitle("AVISO");
+            titulo.show();
+            return true;
+        }else{
+            return false;
+        }
+    }//alertUbi
+
+    public void busquedaRapida(){
+        boolean var=false;
+        for(int h=0;h<listaInv.size();h++){
+            if(listaInv.get(h).getProducto().equals(ProductoAct)){
+                var=true;
+                mostrarDetalleCod(h);
+                break;
+            }
+        }//for
+        if(var==false){
+            txtEscan.setText("");
+            txtUbicc.setText("");
+        }
+    }//busquedaRapida
 
     public boolean firtMet() {//firtMet
         ConnectivityManager connectivityManager =
@@ -1230,6 +1311,7 @@ public class ActivityInventario extends AppCompatActivity {
         }//for
         if(bandera==false){
             if(insertarSql(prod,0+"",cant,ubic)==true){
+                ProdGuard=prod;
                 consultaSql();
             }else{
                 Toast.makeText(this, "No se pudó guardar este código", Toast.LENGTH_SHORT).show();
@@ -1322,6 +1404,7 @@ public class ActivityInventario extends AppCompatActivity {
                 if(posicion>=0){
                     mostrarDetalleCod(posicion);
                 }else{
+                    ProdGuard="";
                     adapter.index(posicion);
                 }//else
                 btnElim.setEnabled(true);
@@ -1329,7 +1412,7 @@ public class ActivityInventario extends AppCompatActivity {
             fila.close();
         }catch(Exception e){
             Toast.makeText(ActivityInventario.this,
-                    "Error al consultar datos de la base de datos interna", Toast.LENGTH_SHORT).show();
+                    "Sin datos", Toast.LENGTH_SHORT).show();
         }//catch
     }//consultaSql
 
