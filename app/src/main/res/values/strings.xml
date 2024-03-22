@@ -55,6 +55,7 @@
     <string name="partech">partech/</string>
     <string name="shark">shark/</string>
     <!-- https://sprautomotive.com/es_MX/res/img/products/md/-->
+    <string name="versionBaseDatos">3</string>
 
     <!-- NOMBRES WEB SERVICES -->
     <string name="resActualizaDif">resActualizaDif</string>

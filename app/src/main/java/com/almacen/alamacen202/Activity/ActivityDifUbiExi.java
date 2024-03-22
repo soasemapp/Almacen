@@ -182,7 +182,8 @@ public class ActivityDifUbiExi extends AppCompatActivity {
         btnAlma         = findViewById(R.id.btnAlma);
         btnRefr         = findViewById(R.id.btnRefr);
 
-        conn = new ConexionSQLiteHelper(ActivityDifUbiExi.this, "bd_INVENTARIO", null, 2);
+        conn = new ConexionSQLiteHelper(ActivityDifUbiExi.this, "bd_INVENTARIO",
+                null, Integer.parseInt(getString(R.string.versionBaseDatos)));
         db = conn.getReadableDatabase();
         rvDifUbiExi.setLayoutManager(new LinearLayoutManager(ActivityDifUbiExi.this));
         keyboard = (InputMethodManager) getSystemService(ActivityInventario.INPUT_METHOD_SERVICE);

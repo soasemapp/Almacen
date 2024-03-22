@@ -92,12 +92,13 @@ public class ActivityInventario extends AppCompatActivity {
     private boolean comprobar=false;
     private int posicion=0,posicionAnt=0,contInsert=0;
     private String strusr,strpass,strServer,strbran,codeBar,
-            ProductoAct="",folio="",fecha="",hora="",mensaje,bandAutori,mensajeAutoriza,UserSuper,ProdGuard="";
+            ProductoAct="",folio="",fecha="",hora="",mensaje,
+            bandAutori,mensajeAutoriza,UserSuper,UbicAct="";
     private ArrayList<Inventario> listaInv = new ArrayList<>();
     private ArrayList<Inventario> listaPSincro = new ArrayList<>();
     private EditText txtFolioInv,txtProductoVi,txtFechaI,txtHoraI,txtProducto,txtEscan,txtUbicc;
     private ArrayList<Folios>listaFol;
-    private Button btnGuardar,btnSincronizar,btnElim;
+    private Button btnGuardar,btnSincronizar,btnElim,btnMas;
     private CheckBox chbMan;
     private RecyclerView rvInventario;
     private AdapterInventario adapter=new AdapterInventario(listaInv);
@@ -157,8 +158,10 @@ public class ActivityInventario extends AppCompatActivity {
         chbMan          = findViewById(R.id.chbMan);
         rvInventario    = findViewById(R.id.rvInventario);
         btnElim         = findViewById(R.id.btnElim);
+        btnMas          = findViewById(R.id.btnMas);
 
-        conn = new ConexionSQLiteHelper(ActivityInventario.this, "bd_INVENTARIO", null, 2);
+        conn = new ConexionSQLiteHelper(ActivityInventario.this, "bd_INVENTARIO",
+                null, Integer.parseInt(getString(R.string.versionBaseDatos)));
         db = conn.getReadableDatabase();
         rvInventario.setLayoutManager(new LinearLayoutManager(ActivityInventario.this));
         keyboard = (InputMethodManager) getSystemService(ActivityInventario.INPUT_METHOD_SERVICE);
@@ -173,11 +176,12 @@ public class ActivityInventario extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 txtProducto.setText("");
                 txtProducto.requestFocus();
+                txtProducto.setInputType(InputType.TYPE_NULL);
                 txtProductoVi.setText("");
                 posicion=-1;
                 adapter.index(posicion);
                 adapter.notifyDataSetChanged();
-                ProdGuard="";
+                ProductoAct="";UbicAct="";
                 rvInventario.setAdapter(adapter);
                 if (b){//manual
                     //keyboard.showSoftInput(txtProducto, InputMethodManager.SHOW_IMPLICIT);
@@ -209,36 +213,15 @@ public class ActivityInventario extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                ProductoAct=editable.toString();
                 if (!editable.toString().equals("")) {
                     if (codeBar.equals("Zebra")) {//codebar
-                        busquedaRapida();
-                        if(alertUbi()==false){
-                            if (!chbMan.isChecked()) {
-                                buscar(ProductoAct,compararCantidad(ProductoAct)+"",
-                                        compararUbi(ProductoAct));
-                            }else{//manual
-                                txtEscan.requestFocus();
-                                keyboard.showSoftInput(txtEscan, InputMethodManager.SHOW_IMPLICIT);
-                            }//else
-                        }//if alertUbi==true
-                        txtProducto.setText("");
+                        accionEscanea();
                     }else{
                         for (int i = 0; i < editable.length(); i++) {
                             char ban;
                             ban = editable.charAt(i);
                             if(ban == '\n'){
-                                busquedaRapida();
-                                if(alertUbi()==false){
-                                    if (!chbMan.isChecked()) {
-                                        buscar(ProductoAct,compararCantidad(ProductoAct)+"",
-                                                compararUbi(ProductoAct));
-                                    }else{//manual
-                                        txtEscan.requestFocus();
-                                        keyboard.showSoftInput(txtEscan, InputMethodManager.SHOW_IMPLICIT);
-                                    }//else
-                                }//if alertUbi==true
-                                txtProducto.setText("");
+                                accionEscanea();
                                 break;
                             }//if
                         }//for
@@ -264,9 +247,13 @@ public class ActivityInventario extends AppCompatActivity {
                         && Integer.parseInt(txtEscan.getText().toString())>0){
                     if (!chbMan.isChecked()) {//normal
                         ProductoAct=txtProductoVi.getText().toString();
+                        UbicAct=s.toString();
                         txtProducto.requestFocus();
-                        buscar(ProductoAct,txtEscan.getText().toString(),
-                                s.toString());
+                        if(insertarSql(ProductoAct,listaInv.get(posicion).getCantidad(),
+                                txtEscan.getText().toString(),UbicAct)==true){
+                            eliminarSql("PRODUCTO='"+ProductoAct+"' AND UBIC='-'");
+                            consultaSql();
+                        }
                         txtUbicc.clearFocus();
                         txtUbicc.setCursorVisible(false);
                     }//if
@@ -326,17 +313,15 @@ public class ActivityInventario extends AppCompatActivity {
                     if(posicion>=0) {v3=listaInv.get(posicion).getUbi();}
                 }
                 if(!v1.equals("") && !v2.equals("") && !v3.equals("")){
-                    actualizaGuarda(v1,v2,v3);
+                    ProductoAct=v1;
+                    UbicAct=v3;
+                    if(insertarSql(ProductoAct,listaInv.get(posicion).getCantidad(), v2,UbicAct)==true){
+                        eliminarSql("PRODUCTO='"+ProductoAct+"' AND UBIC='-'");
+                        consultaSql();
+                    }
                     keyboard.hideSoftInputFromWindow(txtEscan.getWindowToken(), 0);
                     txtProducto.setText("");
                     txtProducto.requestFocus();
-                    //keyboard.hideSoftInputFromWindow(txtProducto.getWindowToken(), 0);
-                    /*if (chbMan.isChecked()) {
-                        txtEscan.setText("");
-                    }else{
-                        txtEscan.setText("1");
-                    }//else
-                    */
                 }else{
                     Toast.makeText(ActivityInventario.this, "Campos vacios", Toast.LENGTH_SHORT).show();
                 }
@@ -373,11 +358,12 @@ public class ActivityInventario extends AppCompatActivity {
             public void onClick(View v) {
                 if(posicion>=0){
                     String p=listaInv.get(posicion).getProducto()+"'";
+                    String ub=listaInv.get(posicion).getUbi();
                     AlertDialog.Builder builder = new AlertDialog.Builder(ActivityInventario.this);
                     builder.setPositiveButton("ACEPTAR", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            eliminarSql(" PRODUCTO='"+p);
+                            eliminarSql(" PRODUCTO='"+p+"' AND UBIC='"+ub+"'");
                             ProductoAct="";
                             consultaSql();
                         }//onclick
@@ -399,57 +385,60 @@ public class ActivityInventario extends AppCompatActivity {
             new AsyncFolios().execute();
         }else{
             comprobar=true;
-            new AsyncFolios().execute();
-            /*txtFolioInv.setText(folio);
+            //new AsyncFolios().execute();
+            txtFolioInv.setText(folio);
             txtFechaI.setText(fecha);
             txtHoraI.setText(hora);
             consultaSql();
-            new AsyncResListInv(strbran,folio).execute();*/
+            //new AsyncResListInv(strbran,folio).execute();
         }//else
 
     }//onCreate
 
+    public void accionEscanea(){
+        String escan=txtProducto.getText().toString();
+        String busqUbic=compararUbi(escan);
+        int busqCant=compararCantidad(escan,busqUbic);
+        buscar(escan,busqCant+"", busqUbic);
+        if (chbMan.isChecked()) {//manual
+            //txtEscan.requestFocus();
+        }//else
+        txtProducto.setText("");
+    }//accionEscanea
+
     public boolean alertUbi(){
         //si producto guardado no es igual al escaneado y ya tiene ubicación mostrara alert
+        txtProducto.setEnabled(false);
         String cade=txtProducto.getText().toString();
         String ub=txtUbicc.getText().toString();
-        if(!cade.equals(ProdGuard) && !ub.equals("")){
+        txtProducto.clearFocus();
+        txtProducto.setCursorVisible(false);
+        if(!cade.equals(ProductoAct) && !ub.equals("")){
             bepp.play(sonido_correcto, 1, 1, 1, 0, 0);
-            ProdGuard=cade;
+            //ProdGuard=cade;
             AlertDialog.Builder alerta = new AlertDialog.Builder(ActivityInventario.this);
             alerta.setMessage("El código "+cade+" ya está en la ubicación "+ub+
                     "\nSi sigue escaneando las piezas se guardaran en esta ubicación").setCancelable(false);
             alerta.setNegativeButton("Ok", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
+                    txtProducto.setEnabled(true);
                     txtProducto.setText("");
+                    txtProducto.requestFocus();
                     dialogInterface.cancel();
                 }
             });
             alerta.setCancelable(false);
-            AlertDialog titulo = alerta.create();
-            titulo.setTitle("AVISO");
-            titulo.show();
+            AlertDialog dialogAlert = alerta.create();
+            dialogAlert.setTitle("AVISO");
+            dialogAlert.show();
             return true;
         }else{
             return false;
         }
     }//alertUbi
 
-    public void busquedaRapida(){
-        boolean var=false;
-        for(int h=0;h<listaInv.size();h++){
-            if(listaInv.get(h).getProducto().equals(ProductoAct)){
-                var=true;
-                mostrarDetalleCod(h);
-                break;
-            }
-        }//for
-        if(var==false){
-            txtEscan.setText("");
-            txtUbicc.setText("");
-        }
-    }//busquedaRapida
+
 
     public boolean firtMet() {//firtMet
         ConnectivityManager connectivityManager =
@@ -467,6 +456,7 @@ public class ActivityInventario extends AppCompatActivity {
         keyboard.hideSoftInputFromWindow(txtEscan.getWindowToken(), 0);
         posicion = rvInventario.getChildPosition(rvInventario.findContainingItemView(v));
         ProductoAct=listaInv.get(posicion).getProducto();
+        //ProdGuard=ProdGuard;
         mostrarDetalleCod(posicion);
         txtProducto.setText("");
         if (chbMan.isChecked()){//manual no
@@ -585,11 +575,16 @@ public class ActivityInventario extends AppCompatActivity {
         super.onDestroy();
         db.close();
     }
-    public int compararCantidad(String prod){//en caso de que no sea manual, se toma la cantidad que se tenia y se suma 1
+    public int compararCantidad(String prod,String ubi){//en caso de que no sea manual, se toma la cantidad que se tenia y se suma 1
         int cant=1;
         for(int i=0;i<listaInv.size();i++){
-            if(listaInv.get(i).getProducto().equals(prod)){
-                cant=Integer.parseInt(listaInv.get(i).getEscan())+1;
+            if(listaInv.get(i).getProducto().equals(prod) &&
+            listaInv.get(i).getUbi().equals(ubi)){
+                if(chbMan.isChecked()){
+                    cant=Integer.parseInt(listaInv.get(i).getEscan());
+                }else{
+                    cant=Integer.parseInt(listaInv.get(i).getEscan())+1;
+                }//else
                 break;
             }//if
         }//for
@@ -599,7 +594,7 @@ public class ActivityInventario extends AppCompatActivity {
     public String compararUbi(String prod){//buscar ubi
         String ubi="";
         for(int i=0;i<listaInv.size();i++){
-            if(listaInv.get(i).getProducto().equals(prod)){
+            if(listaInv.get(i).getProducto().equals(prod) ){
                 ubi=listaInv.get(i).getUbi();
                 break;
             }//if
@@ -794,7 +789,7 @@ public class ActivityInventario extends AppCompatActivity {
                         cantidad = listaPSincro.get(j).getEscan();
                         ubicacion=listaPSincro.get(j).getUbi();
                         if (conectaRes(producto,cantidad,ubicacion)==true) {
-                            eliminarSql(" PRODUCTO='" + producto + "'");
+                            eliminarSql(" PRODUCTO='" + producto + "' AND UBIC='"+ubicacion+"'");
                             contador++;
                         }else if(mensaje.equals("0")){
                             break;
@@ -864,6 +859,89 @@ public class ActivityInventario extends AppCompatActivity {
             }//else
         }//onPost
     }//AsyncResActualizaInv
+
+    private class AsyncResUbicacionAlma extends AsyncTask<Void, Void, Void> {
+        private String prod,ubFind="";
+        private boolean conn;
+
+        public AsyncResUbicacionAlma(String prod) {
+            this.prod = prod;
+        }//constructor
+
+        @Override
+        protected void onPreExecute() {
+            mensaje="";
+            mDialog.show();
+        }//onPreExecute
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            conn=firtMet();
+            if(conn==true){
+                HttpHandler sh = new HttpHandler();
+                String parametros="k_Sucursal="+strbran+"&k_Producto="+prod;
+                String url = "http://"+strServer+"/UbicacionAlma?"+parametros;
+                String jsonStr = sh.makeServiceCall(url,strusr,strpass);
+                //Log.e(TAG, "Respuesta de la url: " + jsonStr);
+                if (jsonStr != null) {
+                    try{
+                        JSONObject jsonObj = new JSONObject(jsonStr);
+                        JSONArray jsonArray = jsonObj.getJSONArray("Response");
+                        for(int i=0;i<jsonArray.length();i++){
+                            JSONObject dato = jsonArray.getJSONObject(i);//Conjunto de datos
+                            String Ubicc=dato.getString("k_Ubicacion");
+                            if(Ubicc.charAt(0)=='P' || Ubicc.charAt(0)=='Q'){
+                                ubFind=Ubicc;
+                                break;
+                            }
+                        }//for
+                    }catch (final JSONException e) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                mensaje="Hubó un problema al consultar ubicación";
+                            }//run
+                        });
+                    }//catch JSON EXCEPTION
+                }else {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mensaje="No fue posible obtener datos del servidor";
+                        }//run
+                    });//runUniTthread
+                }//else
+                return null;
+            }else{
+                mensaje="Problemas de conexión, no fue posible consultar ubicación";
+                return null;
+            }//else
+        }//doInBackground
+
+        @Override
+        protected void onPostExecute(Void aBoolean) {
+            super.onPostExecute(aBoolean);
+            mDialog.dismiss();
+            ProductoAct=prod;
+            if (!ubFind.equals("")) {
+                UbicAct=ubFind;
+            }else{
+                AlertDialog.Builder builder = new AlertDialog.Builder(ActivityInventario.this);
+                    builder.setTitle("AVISO");
+                builder.setMessage(mensaje);
+                builder.setCancelable(false);
+                builder.setPositiveButton("ACEPTAR",null);
+                AlertDialog dialog = builder.create();
+                dialog.show();
+                UbicAct="-";
+            }//else
+            if(insertarSql(prod,"0","1",ubFind)==false){
+                Toast.makeText(ActivityInventario.this, "Problema al guardar dato",
+                        Toast.LENGTH_SHORT).show();
+            }//else
+            consultaSql();
+        }//onPost
+    }//AsyncResUbicacionAlma
 
 
     private class AsyncFolios extends AsyncTask<Void, Void, Void> {
@@ -1256,11 +1334,12 @@ public class ActivityInventario extends AppCompatActivity {
         return c;
     }//cantidad
 
-    public void conteo(String prod,String canti){
+    public void conteo(String prod,String canti,String ubic){
         boolean bandera=false;
         int cant=0;
         for(int i=0;i<listaInv.size();i++){
-            if(listaInv.get(i).getProducto().equals(prod)){
+            if(listaInv.get(i).getProducto().equals(prod) &&
+            listaInv.get(i).getUbi().equals(ubic)){
                 bandera=true;
                 posicion=i;
                 if(canti.equals("--1")){
@@ -1279,7 +1358,8 @@ public class ActivityInventario extends AppCompatActivity {
             Collections.sort(listaInv, new ComparadorLista());
             for(int i=0;i<listaInv.size();i++){
                 listaInv.get(i).setNum((i+1)+"");
-                if(listaInv.get(i).getProducto().equals(prod)){
+                if(listaInv.get(i).getProducto().equals(prod) &&
+                        listaInv.get(i).getUbi().equals(ubic)){
                     posicion=i;
                     if(canti.equals("--1")){
                         cant=1;
@@ -1296,12 +1376,14 @@ public class ActivityInventario extends AppCompatActivity {
     public void actualizaGuarda(String prod, String cant,String ubic){
         boolean bandera=false;
         for(int i=0;i<listaInv.size();i++){
-            if(listaInv.get(i).getProducto().equals(prod)){
+            if(listaInv.get(i).getProducto().equals(prod) &&
+                    listaInv.get(i).getUbi().equals(ubic)){
                 bandera=true;
                 if(actualizarSql(prod,Integer.parseInt(cant)+"",ubic)==true){
                     txtProductoVi.setText(prod);
                     listaInv.get(i).setEscan(cant);
                     listaInv.get(i).setUbi(ubic);
+                    //keyboard.showSoftInput(txtEscan, InputMethodManager.SHOW_IMPLICIT);
                     mostrarDetalleCod(i);
                 }else{
                     Toast.makeText(this, "No se pudó actualizar este código", Toast.LENGTH_SHORT).show();
@@ -1310,12 +1392,10 @@ public class ActivityInventario extends AppCompatActivity {
             }//if
         }//for
         if(bandera==false){
-            if(insertarSql(prod,0+"",cant,ubic)==true){
-                ProdGuard=prod;
-                consultaSql();
-            }else{
-                Toast.makeText(this, "No se pudó guardar este código", Toast.LENGTH_SHORT).show();
-            }//else no se guardo
+            txtEscan.setText("");
+            txtUbicc.setText("");
+            txtProductoVi.setText("");
+            new AsyncResUbicacionAlma(txtProducto.getText().toString()).execute();
         }//if bandera false
     }//actualizaGuarda
 
@@ -1337,7 +1417,17 @@ public class ActivityInventario extends AppCompatActivity {
         txtEscan.setText(listaInv.get(pos).getEscan());
         txtUbicc.setText(listaInv.get(pos).getUbi());
         posicion=pos;
+        ProductoAct=txtProductoVi.getText().toString();
+        UbicAct=txtUbicc.getText().toString();
+
+        txtUbicc.setEnabled(true);
+        btnMas.setEnabled(false);
+        if(!UbicAct.equals("-") && !UbicAct.equals("")){
+            txtUbicc.setEnabled(false);
+            btnMas.setEnabled(true);
+        }
         txtProducto.requestFocus();
+
     }//mostrarDetalleCod
 
 
@@ -1390,7 +1480,8 @@ public class ActivityInventario extends AppCompatActivity {
             if (fila != null && fila.moveToFirst()) {
                 do {
                     j++;
-                    if(ProductoAct.equals(fila.getString(0))){
+                    if(ProductoAct.equals(fila.getString(0)) &&
+                    UbicAct.equals(fila.getString(3))){
                         posicion=j;
                     }
                     listaInv.add(new Inventario((j+1)+"",fila.getString(0),
@@ -1404,7 +1495,7 @@ public class ActivityInventario extends AppCompatActivity {
                 if(posicion>=0){
                     mostrarDetalleCod(posicion);
                 }else{
-                    ProdGuard="";
+                    UbicAct="";ProductoAct="";
                     adapter.index(posicion);
                 }//else
                 btnElim.setEnabled(true);
@@ -1435,6 +1526,7 @@ public class ActivityInventario extends AppCompatActivity {
 
     public boolean insertarSql(String prod,String cant,String esc,String ubic){
         boolean vari=false;
+        if(ubic.equals("") || ubic.equals(" ")){ubic="-";}
         try{
             if(db != null){
                 ContentValues valores = new ContentValues();
@@ -1453,9 +1545,9 @@ public class ActivityInventario extends AppCompatActivity {
         try{
             ContentValues valores = new ContentValues();
             valores.put("ESCAN", Integer.parseInt(escan));
-            valores.put("UBIC",ubic);
             db.update("INVENTARIOALM", valores,
-                    "PRODUCTO='"+prod+"'", null);
+                    "PRODUCTO='"+prod+"' AND UBIC='"+ubic+"'", null);
+            consultaSql();
             var=true;
         }catch(Exception e){var=false;}
         return  var;

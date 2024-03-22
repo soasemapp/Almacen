@@ -5,17 +5,16 @@
     android:orientation="vertical"
     android:background="@color/ColorWhite">
     <LinearLayout
+        android:id="@+id/lyInv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
-
+        android:orientation="vertical"
+        android:onClick="onClickInv">
         <LinearLayout
-            android:id="@+id/lyInv"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="60dp"
             android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:onClick="onClickInv">
+            android:gravity="center_vertical">
             <TextView
                 android:id="@+id/tvN"
                 android:layout_width="60dp"
@@ -38,10 +37,11 @@
                 android:layout_weight="1"
                 android:text="Producto"
                 android:textStyle="bold"
-                android:padding="5dp"
                 android:textAlignment="center"
-                android:maxLines="1"
-                android:textColor="#000000"/>
+                android:lines="2"
+                android:maxLines="2"
+                android:textColor="@color/colorBlack"/>
+
             <View
                 android:layout_width="2dp"
                 android:layout_height="match_parent"
@@ -74,7 +74,25 @@
                 android:textColor="@color/AzulBack"
                 android:textStyle="bold"
                 android:textAlignment="center"/>
+
+            <View
+                android:layout_width="2dp"
+                android:layout_height="match_parent"
+                android:background="@color/AzulBack"/>
+            <TextView
+                android:id="@+id/Ub"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Ubicación"
+                android:textStyle="bold"
+                android:textAlignment="center"
+                android:lines="1"
+                android:maxLines="1"
+                android:textColor="@color/AzulBack"
+                android:visibility="gone"/>
         </LinearLayout>
+
         <View
             android:layout_width="match_parent"
             android:layout_height="3dp"

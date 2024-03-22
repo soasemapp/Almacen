@@ -13,7 +13,7 @@ public class ConexionSQLiteHelper extends SQLiteOpenHelper {
             "CANTIDAD INTEGER (11)," +
             "ESCAN INTEGER (11)," +//lo que se esta escaneando
             "UBIC VARCHAR (40),"+
-            "PRIMARY KEY(PRODUCTO))";
+            "PRIMARY KEY(PRODUCTO,UBIC))";
 
     final String CREAR_TABLA_INVENTARIO = "CREATE TABLE INVENTARIO (" +
             "EMPRESA VARCHAR (15)," +

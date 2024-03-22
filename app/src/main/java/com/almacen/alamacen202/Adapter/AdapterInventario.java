@@ -35,36 +35,13 @@ public class AdapterInventario extends RecyclerView.Adapter<AdapterInventario.Vi
         holder.tvProd.setText(datos.get(position).getProducto());
         holder.tvCant.setText(datos.get(position).getCantidad());
         holder.tvEscan.setText(datos.get(position).getEscan());
+        holder.Ub.setText(datos.get(position).getUbi());
         holder.n.setText(datos.get(position).getNum());
 
         if(index==position){
             holder.lyInv.setBackgroundResource(R.color.colorSelec);
-            /*if(datos.get(position).isSincronizado()==false){
-                holder.n.setTextColor(Color.parseColor("#043B72"));
-                holder.tvProd.setTextColor(Color.parseColor("#000000"));
-                holder.tvCant.setTextColor(Color.parseColor("#1E739A"));
-                holder.tvEscan.setTextColor(Color.parseColor("#043B72"));
-            }else{
-                holder.n.setTextColor(Color.parseColor("#223CCA"));
-                holder.tvProd.setTextColor(Color.parseColor("#223CCA"));
-                holder.tvCant.setTextColor(Color.parseColor("#223CCA"));
-                holder.tvEscan.setTextColor(Color.parseColor("#223CCA"));
-            }//else
-            */
         }else{
             holder.lyInv.setBackgroundColor(0);
-            /*if(datos.get(position).isSincronizado()==false){
-                holder.n.setTextColor(Color.parseColor("#043B72"));
-                holder.tvProd.setTextColor(Color.parseColor("#000000"));
-                holder.tvCant.setTextColor(Color.parseColor("#1E739A"));
-                holder.tvEscan.setTextColor(Color.parseColor("#043B72"));
-            }else{
-                holder.n.setTextColor(Color.parseColor("#223CCA"));
-                holder.tvProd.setTextColor(Color.parseColor("#223CCA"));
-                holder.tvCant.setTextColor(Color.parseColor("#223CCA"));
-                holder.tvEscan.setTextColor(Color.parseColor("#223CCA"));
-            }//else
-            */
         }//else
     }//onBindViewHolder
 
@@ -84,7 +61,7 @@ public class AdapterInventario extends RecyclerView.Adapter<AdapterInventario.Vi
     }
 
     public static class ViewHolderInventario extends RecyclerView.ViewHolder {
-        TextView n,tvProd,tvCant,tvEscan;
+        TextView n,tvProd,tvCant,tvEscan,Ub;
         LinearLayout lyInv;
         public ViewHolderInventario (View itemView) {
             super(itemView);
@@ -92,6 +69,7 @@ public class AdapterInventario extends RecyclerView.Adapter<AdapterInventario.Vi
             tvProd =  itemView.findViewById(R.id.Producto);
             tvCant = itemView.findViewById(R.id.Cantidad);
             tvEscan =  itemView.findViewById(R.id.Escan);
+            Ub = itemView.findViewById(R.id.Ub);
             lyInv = itemView.findViewById(R.id.lyInv);
         }//constructor
     }//AdapterInventarioViewHolder class
