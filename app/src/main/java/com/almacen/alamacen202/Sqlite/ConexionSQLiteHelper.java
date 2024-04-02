@@ -31,7 +31,7 @@ public class ConexionSQLiteHelper extends SQLiteOpenHelper {
             "UBICACION VARCHAR(45),"+
             "CONTEO INTEGER (11),"+
             "ESTATUS INTEGER,"+//CONTADOS 1 NO CONTADOS 0
-            "PRIMARY KEY(EMPRESA,PRODUCTO))";
+            "PRIMARY KEY(EMPRESA,PRODUCTO,UBICACION))";
 
     final String CREAR_TABLA_RECEPCONT = "CREATE TABLE RECEPCONT(" +
             "FOLIO VARCHAR (15)," +

@@ -241,10 +241,11 @@
                         app:iconGravity="textStart"
                         app:iconPadding="0dp"
                         android:background="@drawable/btn_background4"
-                        app:backgroundTint="@color/ColorGris"
+                        app:backgroundTint="@null"
                         android:layout_marginRight="5dp"
                         android:enabled="false"
-                        android:tooltipText="Agregar para ubicación nueva"/>
+                        android:tooltipText="Agregar para ubicación nueva"
+                        android:visibility="gone"/>
 
                 </LinearLayout>
 

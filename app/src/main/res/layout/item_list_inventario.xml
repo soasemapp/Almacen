@@ -12,7 +12,7 @@
         android:onClick="onClickInv">
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical">
             <TextView
@@ -30,17 +30,35 @@
                 android:layout_width="2dp"
                 android:layout_height="match_parent"
                 android:background="@color/AzulBack"/>
-            <TextView
-                android:id="@+id/Producto"
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Producto"
-                android:textStyle="bold"
-                android:textAlignment="center"
-                android:lines="2"
-                android:maxLines="2"
-                android:textColor="@color/colorBlack"/>
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/Producto"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Producto"
+                    android:textStyle="bold"
+                    android:textAlignment="center"
+                    android:maxLines="2"
+                    android:textColor="@color/colorBlack"/>
+                <TextView
+                    android:id="@+id/Ub"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Ubicación"
+                    android:textStyle="bold"
+                    android:textAlignment="center"
+                    android:lines="2"
+                    android:maxLines="2"
+                    android:textColor="@color/AzulBack"/>
+
+            </LinearLayout>
 
             <View
                 android:layout_width="2dp"
@@ -75,22 +93,6 @@
                 android:textStyle="bold"
                 android:textAlignment="center"/>
 
-            <View
-                android:layout_width="2dp"
-                android:layout_height="match_parent"
-                android:background="@color/AzulBack"/>
-            <TextView
-                android:id="@+id/Ub"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Ubicación"
-                android:textStyle="bold"
-                android:textAlignment="center"
-                android:lines="1"
-                android:maxLines="1"
-                android:textColor="@color/AzulBack"
-                android:visibility="gone"/>
         </LinearLayout>
 
         <View
