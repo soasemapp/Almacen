@@ -213,13 +213,17 @@ public class ActivityInventario extends AppCompatActivity {
             public void afterTextChanged(Editable editable) {
                 if (!editable.toString().equals("")) {
                     if (codeBar.equals("Zebra")) {//codebar
-                        accionEscanea();
+                        if(validar(editable.toString())){
+                            accionEscanea();
+                        }
                     }else{
                         for (int i = 0; i < editable.length(); i++) {
                             char ban;
                             ban = editable.charAt(i);
                             if(ban == '\n'){
-                                accionEscanea();
+                                if(validar(editable.toString())){
+                                    accionEscanea();
+                                }
                                 break;
                             }//if
                         }//for
@@ -264,7 +268,7 @@ public class ActivityInventario extends AppCompatActivity {
                     }//if
                 }//else
             }//onfocus
-        });//txtEscan onfocus
+        });//txtEscan on focus
 
 
         txtUbicc.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -306,7 +310,7 @@ public class ActivityInventario extends AppCompatActivity {
                 if(v1.equals("") || (v2.equals("") && Integer.parseInt(v2)<=0) || v3.equals("")){
                     Toast.makeText(ActivityInventario.this, "Campos vacios", Toast.LENGTH_SHORT).show();
                 }else{
-                    if(posicion>=0) {
+                    if(posicion>=0){
                         if(v3.equals("-") && listaInv.get(posicion).getUbi().equals(v3)){
                             v3=listaInv.get(posicion).getUbi();
                         }
@@ -340,7 +344,7 @@ public class ActivityInventario extends AppCompatActivity {
                     builder.setCancelable(false);
                     builder.setTitle("AVISO").setMessage("Sin datos para sincronizar").create().show();
                 }//else
-            }//onclcik
+            }//onclick
         });//btnSincronizar onclick
 
         btnElim.setOnClickListener(new View.OnClickListener() {
@@ -404,10 +408,33 @@ public class ActivityInventario extends AppCompatActivity {
 
     }//onCreate
 
+    public boolean validar(String prod){
+        boolean valido=false;
+        String nuevo=prod.substring(0,3)+"";
+        if(nuevo.equals("P01") || nuevo.equals("P02") || nuevo.equals("P03") || nuevo.equals("P04") || nuevo.equals("P05")
+                || nuevo.equals("P06") || nuevo.equals("P07") || nuevo.equals("8") || nuevo.equals("P09") || nuevo.equals("P10")
+                || nuevo.equals("P11") || nuevo.equals("P12") || prod.substring(0,4).equals("http") || prod.substring(0,4).equals("HTTP")
+                || nuevo.equals("www") || nuevo.equals("WWW")){
+            bepp.play(sonido_error, 1, 1, 1, 0, 0);
+            AlertDialog.Builder alerta = new AlertDialog.Builder(ActivityInventario.this);
+            alerta.setMessage("Producto no válido").setCancelable(false).setNegativeButton("Ok", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.cancel();
+                }
+            });
+            AlertDialog titulo = alerta.create();
+            titulo.setTitle("¡ERROR!");
+            titulo.show();
+        }else{
+            valido=true;
+        }//else
+        return valido;
+    }//validar
+
     public void cambioCod(String cod,String cantEsc,String ubi,boolean sumar){//si sumar==false
         //Buscar si hay mas de un código
         boolean find=false;
-        String escan;
         if(ubi.equals("")){ubi="-";}
         for(int i=0;i<listaInv.size();i++){
             if(listaInv.get(i).getProducto().equals(cod) && listaInv.get(i).getUbi().equals(ubi)){
@@ -449,13 +476,13 @@ public class ActivityInventario extends AppCompatActivity {
     public void accionEscanea(){
         String escan=txtProducto.getText().toString();
         boolean sumar=false;
-        String busqUbic=compararUbi(escan);
+        String busqUbic="";
         if(!chbMan.isChecked()){//Normal
             sumar=true;
         }
-        int busqCant=consulCantidad(escan,busqUbic);
-
         if(!escan.equals(txtProductoVi.getText().toString())){//cuando se cambia de codigo
+            busqUbic=compararUbi(escan);
+            int busqCant=consulCantidad(escan,busqUbic);
             if(txtUbicc.getText().toString().equals("-")){//si campo ubicacion esta vacio
                 ProductoAct=txtProductoVi.getText().toString();
                 UbicAct="-";
@@ -494,11 +521,12 @@ public class ActivityInventario extends AppCompatActivity {
                         }
                     }
                 });
+                String finalBusqUbic = busqUbic;
                 alerta.setNegativeButton("CANCELAR", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        ProductoAct=escan;UbicAct=busqUbic;
-                        cambioCod(escan,busqCant+"",busqUbic,false);
+                        ProductoAct=escan;UbicAct= finalBusqUbic;
+                        cambioCod(escan,busqCant+"", finalBusqUbic,false);
                     }
                 });
                 alerta.setCancelable(false);
@@ -507,7 +535,9 @@ public class ActivityInventario extends AppCompatActivity {
                 dialogAlert.show();
             }//else
         }else{//para seguir escaneando el mismmo código
-            cambioCod(escan,busqCant+"",compararUbi(escan),sumar);
+            busqUbic=txtUbicc.getText().toString();
+            int busqCant=consulCantidad(escan,busqUbic);
+            cambioCod(escan,busqCant+"",busqUbic,sumar);
             if (chbMan.isChecked()) {//manual
                 txtEscan.requestFocus();
             }//else
@@ -661,7 +691,6 @@ public class ActivityInventario extends AppCompatActivity {
             titulo.setTitle("¡ERROR!");
             titulo.show();
         }//else
-
     }//alertAutoriza
 
     public void buscaFolios(View v){
@@ -1201,7 +1230,7 @@ public class ActivityInventario extends AppCompatActivity {
     }//conectaFolios
 
 
-    private class AsyncListInv extends AsyncTask<Void, Void, Void> {
+    /*private class AsyncListInv extends AsyncTask<Void, Void, Void> {
         @Override
         protected void onPreExecute() {mDialog.show();}
 
@@ -1376,6 +1405,8 @@ public class ActivityInventario extends AppCompatActivity {
             mensaje=ex.getMessage();
         }//catch
     }//conectaActualiza
+
+    */
 
     private class AsyncAutoriza extends AsyncTask<Void, Void, Void> {
         String usuario;

@@ -192,8 +192,8 @@ public class ActivityDifUbiExi extends AppCompatActivity {
         txtProducto.setInputType(InputType.TYPE_NULL);
         txtCant.setEnabled(false);
         //BOTONES CONTADOS/NOCONTADOS
-        btnCont.setBackgroundTintList(ColorStateList.
-                valueOf(getResources().getColor(R.color.AzulBack)));
+        btnCont.setBackgroundTintList(null);
+        btnCont.setBackgroundResource(R.drawable.btn_background1);
         btnNoCont.setBackgroundTintList(ColorStateList.
                 valueOf(getResources().getColor(R.color.ColorGris)));
 
@@ -211,16 +211,12 @@ public class ActivityDifUbiExi extends AppCompatActivity {
                     txtCant.setText("");
                     //keyboard.showSoftInput(Cantidad, InputMethodManager.SHOW_IMPLICIT);
                     btnGuardar.setEnabled(true);
-                    btnGuardar.setBackgroundTintList(ColorStateList.
-                            valueOf(getResources().getColor(R.color.AzulBack)));
                 }else{
                     txtCant.setText("0");
                     txtCant.setEnabled(false);
 
                     keyboard.hideSoftInputFromWindow(txtCant.getWindowToken(), 0);
                     btnGuardar.setEnabled(false);
-                    btnGuardar.setBackgroundTintList(ColorStateList.
-                            valueOf(getResources().getColor(R.color.ColorGris)));
                 }//else
             }//oncheckedchange
         });//chbMan.setoncheckedchange
@@ -347,17 +343,27 @@ public class ActivityDifUbiExi extends AppCompatActivity {
         btnRefr.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                chbMan.setChecked(false);
-                lista2.clear();
-                rvDifUbiExi.setAdapter(null);
-                eliminarSql("");
-                txtProductoVi.setText("");
-                txtContF.setText("");
-                txtExistS.setText("");
-                txtDif.setText("");
-                txtUbb.setText("");
-                txtCant.setText("");
-                new AsyncResDifUbiExist().execute();
+                AlertDialog.Builder builder = new AlertDialog.Builder(ActivityDifUbiExi.this);
+                builder.setPositiveButton("ACEPTAR", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        chbMan.setChecked(false);
+                        lista2.clear();
+                        rvDifUbiExi.setAdapter(null);
+                        eliminarSql("");
+                        txtProductoVi.setText("");
+                        txtContF.setText("");
+                        txtExistS.setText("");
+                        txtDif.setText("");
+                        txtUbb.setText("");
+                        txtCant.setText("");
+                        new AsyncResDifUbiExist().execute();
+                    }//onclick
+                });//positive button
+                builder.setNegativeButton("CANCELAR", null);//negative
+                builder.setCancelable(false);
+                builder.setTitle("AVISO").setMessage("¿Desea volver a cargar datos de este folio?" +
+                        " Se eliminaran datos que no se hayan guardado").create().show();
             }//onclick
         });//btnRefr
 
@@ -401,8 +407,8 @@ public class ActivityDifUbiExi extends AppCompatActivity {
 
 
     public void contados(){//cuando se muestre la parte de contados
-        btnCont.setBackgroundTintList(ColorStateList.
-                valueOf(getResources().getColor(R.color.AzulBack)));
+        btnCont.setBackgroundTintList(null);
+        btnCont.setBackgroundResource(R.drawable.btn_background1);
         btnNoCont.setBackgroundTintList(ColorStateList.
                 valueOf(getResources().getColor(R.color.ColorGris)));
         limpiaCampos();
@@ -411,8 +417,8 @@ public class ActivityDifUbiExi extends AppCompatActivity {
     }//contados
 
     public void noContados(){
-        btnNoCont.setBackgroundTintList(ColorStateList.
-                valueOf(getResources().getColor(R.color.AzulBack)));
+        btnNoCont.setBackgroundTintList(null);
+        btnNoCont.setBackgroundResource(R.drawable.btn_background1);
         btnCont.setBackgroundTintList(ColorStateList.
                 valueOf(getResources().getColor(R.color.ColorGris)));
         limpiaCampos();
@@ -623,7 +629,7 @@ public class ActivityDifUbiExi extends AppCompatActivity {
         protected Void doInBackground(Void... params) {
             progressDialog.setMax(listaPSincro.size());
             conn=firtMet();
-            if(conn==true) {
+            if(conn==true){
                 progressDialog.setMax(listaPSincro.size());
                 for (int j = 0; j < listaPSincro.size(); j++) {//for para los registros de cada servidor
                     try {
@@ -912,6 +918,8 @@ public class ActivityDifUbiExi extends AppCompatActivity {
             mensaje=ex.getMessage();
         }//catch
     }//conectaActualiza
+
+
     public void buscarXprod(String prod,String canti,String ubicacion,boolean sum){
         try{
             int contA=0,cont=0,exist=0,dif=0;
