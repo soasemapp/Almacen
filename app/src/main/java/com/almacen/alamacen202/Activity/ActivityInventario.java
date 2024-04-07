@@ -167,16 +167,16 @@ public class ActivityInventario extends AppCompatActivity {
         keyboard = (InputMethodManager) getSystemService(ActivityInventario.INPUT_METHOD_SERVICE);
 
         txtProducto.requestFocus();
-        //txtProducto.setInputType(InputType.TYPE_NULL);
+        txtProducto.setInputType(InputType.TYPE_NULL);
         txtEscan.setEnabled(false);
         txtUbicc.setEnabled(true);
-        //txtUbicc.setInputType(InputType.TYPE_NULL);
+        txtUbicc.setInputType(InputType.TYPE_NULL);
         chbMan.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 txtProducto.setText("");
                 txtProducto.requestFocus();
-                //txtProducto.setInputType(InputType.TYPE_NULL);
+                txtProducto.setInputType(InputType.TYPE_NULL);
                 txtProductoVi.setText("");
                 posicion=-1;
                 adapter.index(posicion);
@@ -188,14 +188,14 @@ public class ActivityInventario extends AppCompatActivity {
                     txtEscan.setEnabled(true);
                     txtEscan.setText("");
                     txtUbicc.setText("");
-                    //txtUbicc.setInputType(InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
+                    txtUbicc.setInputType(InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
                     btnGuardar.setEnabled(true);
                 }else{
                     txtEscan.setText("");
                     txtEscan.setEnabled(false);
                     keyboard.hideSoftInputFromWindow(txtEscan.getWindowToken(), 0);
                     txtUbicc.setText("");
-                    //txtUbicc.setInputType(InputType.TYPE_NULL);
+                    txtUbicc.setInputType(InputType.TYPE_NULL);
                     btnGuardar.setEnabled(false);
                 }//else
             }//oncheckedchange
@@ -317,7 +317,7 @@ public class ActivityInventario extends AppCompatActivity {
                     }//if posicion
 
                     ProductoAct=v1;UbicAct=v3;
-                    cambioCod(v1,(Integer.parseInt(v2)-1)+"",v3,true);
+                    cambioCod(v1,v2+"",v3,true);
                 }//else
             }//onclick
         });//btnGuardar setonclick
@@ -436,11 +436,14 @@ public class ActivityInventario extends AppCompatActivity {
         //Buscar si hay mas de un código
         boolean find=false;
         if(ubi.equals("")){ubi="-";}
+        if(cantEsc.equals("0")){cantEsc="1";}
         for(int i=0;i<listaInv.size();i++){
             if(listaInv.get(i).getProducto().equals(cod) && listaInv.get(i).getUbi().equals(ubi)){
                 find=true;
                 if(sumar==true){//si sumar ==true
-                    cantEsc=(Integer.parseInt(cantEsc)+1)+"";
+                    if(!chbMan.isChecked()){//normal
+                        cantEsc=(Integer.parseInt(cantEsc)+1)+"";
+                    }
                     if(actualizarSql(cod,cantEsc+"",ubi)==true){
                         txtProductoVi.setText(cod);
                         listaInv.get(i).setEscan(cantEsc);
@@ -459,9 +462,11 @@ public class ActivityInventario extends AppCompatActivity {
         }//for
         if(find==false){
             if(chbMan.isChecked()){
-                if(insertarSql(ProductoAct,listaInv.get(posicion).getCantidad(),
-                        txtEscan.getText().toString(),UbicAct)==true){
-                    eliminarSql("PRODUCTO='"+ProductoAct+"' AND UBIC='-'");
+                UbicAct=ubi;
+                if(insertarSql(ProductoAct,"0", cantEsc,ubi)==true){
+                    if(!ubi.equals("-")){
+                        eliminarSql("PRODUCTO='"+ProductoAct+"' AND UBIC='-'");
+                    }//if
                     consultaSql();
                 }else{
                     Toast.makeText(ActivityInventario.this,
@@ -494,7 +499,7 @@ public class ActivityInventario extends AppCompatActivity {
                 dialogAlert.setTitle("AVISO");
                 dialogAlert.show();
                 cambioCod(ProductoAct,busqCant+"",UbicAct,false);
-            }else if(busqUbic.equals("-")){//
+            }else if(busqUbic.equals("-")){//si no tiene ubicacion aun
                 ProductoAct=escan;
                 AlertDialog.Builder alerta = new AlertDialog.Builder(ActivityInventario.this);
                 alerta.setMessage("El código "+ProductoAct+" tiene una ubicación vacia").setCancelable(false);
@@ -504,7 +509,7 @@ public class ActivityInventario extends AppCompatActivity {
                 dialogAlert.setTitle("AVISO");
                 dialogAlert.show();
                 cambioCod(ProductoAct,busqCant+"",busqUbic,false);
-            }else if(busqUbic.equals("")){
+            }else if(busqUbic.equals("")){//si no existe el código en lista
                 ProductoAct=escan;
                 cambioCod(ProductoAct,busqCant+"",busqUbic,false);
             } else{//

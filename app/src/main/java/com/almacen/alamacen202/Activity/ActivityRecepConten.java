@@ -1025,7 +1025,7 @@ public class ActivityRecepConten extends AppCompatActivity {
                                 cantRecep=dato.getString("k_cant");
                                 mensaje="";
                                 break;
-                            }
+                            }//if
 
                         }//for
                     }catch (final JSONException e) {
