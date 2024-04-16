@@ -302,6 +302,8 @@ public class ActivityInventario extends AppCompatActivity {
         btnGuardar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                keyboard.hideSoftInputFromWindow(txtEscan.getWindowToken(), 0);
+                keyboard.hideSoftInputFromWindow(txtEscan.getWindowToken(), 0);
                 String v1=txtProductoVi.getText().toString();
                 String v2=txtEscan.getText().toString();
                 String v3=txtUbicc.getText().toString();
@@ -479,6 +481,7 @@ public class ActivityInventario extends AppCompatActivity {
     }//cambioCod
 
     public void accionEscanea(){
+        txtProducto.setEnabled(false);
         String escan=txtProducto.getText().toString();
         boolean sumar=false;
         String busqUbic="";
@@ -499,6 +502,7 @@ public class ActivityInventario extends AppCompatActivity {
                 dialogAlert.setTitle("AVISO");
                 dialogAlert.show();
                 cambioCod(ProductoAct,busqCant+"",UbicAct,false);
+                txtProducto.setEnabled(true);
             }else if(busqUbic.equals("-")){//si no tiene ubicacion aun
                 ProductoAct=escan;
                 AlertDialog.Builder alerta = new AlertDialog.Builder(ActivityInventario.this);
@@ -509,9 +513,11 @@ public class ActivityInventario extends AppCompatActivity {
                 dialogAlert.setTitle("AVISO");
                 dialogAlert.show();
                 cambioCod(ProductoAct,busqCant+"",busqUbic,false);
+                txtProducto.setEnabled(true);
             }else if(busqUbic.equals("")){//si no existe el código en lista
                 ProductoAct=escan;
                 cambioCod(ProductoAct,busqCant+"",busqUbic,false);
+                txtProducto.setEnabled(true);
             } else{//
                 ProductoAct=escan;
                 AlertDialog.Builder alerta = new AlertDialog.Builder(ActivityInventario.this);
@@ -524,6 +530,8 @@ public class ActivityInventario extends AppCompatActivity {
                         if(insertarSql(ProductoAct,listaInv.get(posicion).getCantidad(), "1",UbicAct)==true){
                             consultaSql();
                         }
+                        txtProducto.setEnabled(true);
+                        txtProducto.requestFocus();
                     }
                 });
                 String finalBusqUbic = busqUbic;
@@ -532,6 +540,7 @@ public class ActivityInventario extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         ProductoAct=escan;UbicAct= finalBusqUbic;
                         cambioCod(escan,busqCant+"", finalBusqUbic,false);
+                        txtProducto.setEnabled(true);
                     }
                 });
                 alerta.setCancelable(false);
@@ -546,6 +555,7 @@ public class ActivityInventario extends AppCompatActivity {
             if (chbMan.isChecked()) {//manual
                 txtEscan.requestFocus();
             }//else
+            txtProducto.setEnabled(true);
         }//else
         txtProducto.setText("");
         txtProducto.requestFocus();
@@ -584,7 +594,7 @@ public class ActivityInventario extends AppCompatActivity {
                     "¿Desea unificar con la ubicación?");
             builder.create().show();
         }else{//
-            if(insertarSql(ProductoAct,listaInv.get(posicion).getCantidad(),
+            if(insertarSql(ProductoAct,"0",
                     txtEscan.getText().toString(),UbicAct)==true){
                 eliminarSql("PRODUCTO='"+ProductoAct+"' AND UBIC='-'");
                 consultaSql();
@@ -1073,12 +1083,16 @@ public class ActivityInventario extends AppCompatActivity {
                         for(int i=0;i<jsonArray.length();i++){
                             JSONObject dato = jsonArray.getJSONObject(i);//Conjunto de datos
                             String Ubicc=dato.getString("k_Ubicacion");
-                            if(Ubicc.charAt(0)=='P' || Ubicc.charAt(0)=='Q'){
-                                ubFind=Ubicc;
-                                break;
+                            if(!Ubicc.equals("")){
+                                if(Ubicc.charAt(0)=='P' || Ubicc.charAt(0)=='Q'){
+                                    ubFind=Ubicc;
+                                    break;
+                                }else{
+                                    ubFind="-";
+                                }//else
                             }else{
                                 ubFind="-";
-                            }
+                            }//else
                         }//for
                     }catch (final JSONException e) {
                         runOnUiThread(new Runnable() {

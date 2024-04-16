@@ -707,7 +707,6 @@ public class ActivityEnvTraspMultSuc extends AppCompatActivity {
                 mostrarDetalleProd();
             }//else
         }//else
-
     }//alert
 
     public void tipoCambio(String var){
@@ -783,7 +782,6 @@ public class ActivityEnvTraspMultSuc extends AppCompatActivity {
                     rvEnvTrasp.smoothScrollBy(x,y);
                     scrollView.smoothScrollTo(posX,posY);
                 }//else
-
             }//else
             txtProducto.requestFocus();
         }else{
@@ -882,7 +880,6 @@ public class ActivityEnvTraspMultSuc extends AppCompatActivity {
 
     @SuppressLint("ResourceAsColor")
     public void inFinBt(boolean var){
-
         if(chbConten.isChecked()==true){
             escan=false;
             txtProducto.setInputType(InputType.TYPE_CLASS_TEXT| TYPE_TEXT_FLAG_CAP_CHARACTERS);

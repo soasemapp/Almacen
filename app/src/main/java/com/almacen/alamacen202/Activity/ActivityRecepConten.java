@@ -946,11 +946,11 @@ public class ActivityRecepConten extends AppCompatActivity {
                 String url = "http://"+strServer+"/InsertEnv?"+parametros;
                 String jsonStr = new HttpHandler().makeServiceCall(url,strusr,strpass);
                 if(jsonStr != null) {
-                    try {
+                    try{
                         JSONObject jsonObj = new JSONObject(jsonStr);
                         JSONArray jsonArray = jsonObj.getJSONArray("Response");
                         mensaje=jsonArray.getString(0);
-                    } catch (final JSONException e) {
+                    }catch (final JSONException e) {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
