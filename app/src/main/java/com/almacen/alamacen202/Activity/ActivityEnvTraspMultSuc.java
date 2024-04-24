@@ -258,7 +258,6 @@ public class ActivityEnvTraspMultSuc extends AppCompatActivity {
                     dialog.show();
                 }else if(!txtCantSurtCont.getText().toString().equals("") && Integer.parseInt(txtCantSurtCont.getText().toString())>0 ){
                     surt=Integer.parseInt(txtCantSurtCont.getText().toString());
-
                     if(chTipoS.isChecked()){//surt es lo que se puso para que sea el numero de cajas en que se quiere repartir
                         if((surtAcum+(cant/surt))<0){//para no exceder del numero de cajas
                             AlertDialog.Builder builder = new AlertDialog.Builder(ActivityEnvTraspMultSuc.this);
@@ -942,6 +941,7 @@ public class ActivityEnvTraspMultSuc extends AppCompatActivity {
     }//inFinBt
 
     public void alFinalizar(int alTerminar){
+        if(mDialog.isShowing()){mDialog.dismiss();}
         switch (alTerminar){
             case 1:
                 mDialog.dismiss();
@@ -1156,7 +1156,7 @@ public class ActivityEnvTraspMultSuc extends AppCompatActivity {
                             TOTCAJAS=dato.getInt("k_ulcaj");
                             num++;mensaje="";
                         }//for
-                    } catch (final JSONException e) {
+                    }catch (final JSONException e) {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -1165,7 +1165,7 @@ public class ActivityEnvTraspMultSuc extends AppCompatActivity {
                         });
                     }//catch JSON EXCEPTION
                 }else {
-                    runOnUiThread(new Runnable() {
+                    runOnUiThread(new Runnable(){
                         @Override
                         public void run() {
                             mensaje="No fue posible obtener datos del servidor";
@@ -1523,7 +1523,7 @@ public class ActivityEnvTraspMultSuc extends AppCompatActivity {
             if(conn==true){
                 String parametros="k_Sucursal="+strbran+"&k_Folio="+folio+
                         "&k_Producto="+producto+"&k_Cantidad="+cant+
-                        "&k_NumCajas="+numCajas+"&k_partida="+part+""+"&k_UUsuario="+usu;
+                        "&k_NumCajas="+numCajas+"&k_partida="+part+""+"&k_UUsuario="+usu+"&k_ubi="+txtUbi.getText().toString();
                 String url = "http://"+strServer+"/InsertCajasE?"+parametros;
                 String jsonStr = new HttpHandler().makeServiceCall(url,strusr,strpass);
                 if(jsonStr != null) {
@@ -1596,7 +1596,7 @@ public class ActivityEnvTraspMultSuc extends AppCompatActivity {
         final int[] nomCaja = {caja};
         String parametros="k_Sucursal="+suc+"&k_Folio="+folio+
                 "&k_Producto="+producto+"&k_Cantidad="+rep+
-                "&k_NumCajas="+ nomCaja[0] +"&k_partida="+part+"&k_UUsuario="+usu;
+                "&k_NumCajas="+ nomCaja[0] +"&k_partida="+part+"&k_UUsuario="+usu+"&k_ubi="+txtUbi.getText().toString();
         String url = "http://"+strServer+"/InsertCajasE?"+parametros;
         String jsonStr = new HttpHandler().makeServiceCall(url,strusr,strpass);
         if(jsonStr != null) {

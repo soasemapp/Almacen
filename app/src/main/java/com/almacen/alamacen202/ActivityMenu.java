@@ -144,6 +144,16 @@ public class ActivityMenu extends AppCompatActivity {
                 lyAdicSPR.setVisibility(View.GONE);
                 ly2.setVisibility(View.VISIBLE);
                 break;
+            case "cedistabasco.ddns.net:9080":
+                Picasso.with(getApplicationContext()).
+                        load(R.drawable.pressa)
+                        .error(R.drawable.logokepler)
+                        .fit()
+                        .centerInside()
+                        .into(imgVi);
+                lyAdicSPR.setVisibility(View.GONE);
+                ly2.setVisibility(View.VISIBLE);
+                break;
             case "autodis.ath.cx:9085":
                 Picasso.with(getApplicationContext()).
                         load(R.drawable.autodis)

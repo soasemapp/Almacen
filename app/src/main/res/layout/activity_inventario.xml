@@ -225,8 +225,7 @@
                             android:textColor="@color/AzulBack"
                             android:maxLines="1"
                             android:focusable="true"
-                            android:focusableInTouchMode="true"
-                            android:imeOptions="actionNext"/>
+                            android:focusableInTouchMode="true"/>
                     </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -384,7 +383,8 @@
                     android:text="@string/sincronizar"
                     android:textColor="@color/ColorWhite"
                     android:textSize="14sp"
-                    app:backgroundTint="@null"/>
+                    app:backgroundTint="@null"
+                    android:focusable="false"/>
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnElim"
@@ -398,7 +398,8 @@
                     android:textColor="@color/ColorWhite"
                     android:textSize="14sp"
                     app:backgroundTint="@null"
-                    android:enabled="false"/>
+                    android:enabled="false"
+                    android:visibility="gone"/>
             </LinearLayout>
 
 

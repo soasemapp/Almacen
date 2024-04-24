@@ -215,6 +215,7 @@ public class ActivityInventario extends AppCompatActivity {
                     if (codeBar.equals("Zebra")) {//codebar
                         if(validar(editable.toString())){
                             accionEscanea();
+                            txtProducto.setText("");
                         }
                     }else{
                         for (int i = 0; i < editable.length(); i++) {
@@ -223,16 +224,16 @@ public class ActivityInventario extends AppCompatActivity {
                             if(ban == '\n'){
                                 if(validar(editable.toString())){
                                     accionEscanea();
+                                    txtProducto.setText("");
                                 }
                                 break;
                             }//if
                         }//for
                     }//else
 
-                }//if !editable
+                }
             }//after
         });//txtProducto.addTextChanged
-
 
 
         txtUbicc.addTextChangedListener(new TextWatcher() {
@@ -260,13 +261,13 @@ public class ActivityInventario extends AppCompatActivity {
         txtEscan.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus){
-                    txtEscan.setText("");
-                }else{
+                if(hasFocus==false){
                     if(posicion>=0 && txtEscan.getText().toString().equals("")){
                         txtEscan.setText(listaInv.get(posicion).getEscan());
                     }//if
-                }//else
+                }else{
+                    txtEscan.setText("");
+                }
             }//onfocus
         });//txtEscan on focus
 
@@ -320,6 +321,8 @@ public class ActivityInventario extends AppCompatActivity {
 
                     ProductoAct=v1;UbicAct=v3;
                     cambioCod(v1,v2+"",v3,true);
+                    keyboard.hideSoftInputFromWindow(txtEscan.getWindowToken(), 0);
+                    txtProducto.requestFocus();
                 }//else
             }//onclick
         });//btnGuardar setonclick
@@ -463,24 +466,25 @@ public class ActivityInventario extends AppCompatActivity {
             }//if
         }//for
         if(find==false){
-            if(chbMan.isChecked()){
-                UbicAct=ubi;
-                if(insertarSql(ProductoAct,"0", cantEsc,ubi)==true){
-                    if(!ubi.equals("-")){
-                        eliminarSql("PRODUCTO='"+ProductoAct+"' AND UBIC='-'");
-                    }//if
-                    consultaSql();
-                }else{
-                    Toast.makeText(ActivityInventario.this,
-                            "Problema al actualizar código", Toast.LENGTH_SHORT).show();
-                }//else
-            }else{
-                new AsyncResUbicacionAlma(cod).execute();
-            }
+            new AsyncResUbicacionAlma(cod).execute();
         }//find
     }//cambioCod
 
+    public void tipoEscan(){//focus dependiendo si es manual o no
+        if (chbMan.isChecked()) {//manual
+            txtEscan.setText("");
+            txtEscan.requestFocus();
+            keyboard.showSoftInput(txtEscan, InputMethodManager.SHOW_IMPLICIT);
+            txtProducto.setEnabled(true);
+        }else{
+            txtProducto.setEnabled(true);
+            txtProducto.requestFocus();
+        }//else
+    }//tipoEscan
+
     public void accionEscanea(){
+        txtProducto.clearFocus();
+        txtProducto.setCursorVisible(false);
         txtProducto.setEnabled(false);
         String escan=txtProducto.getText().toString();
         boolean sumar=false;
@@ -491,56 +495,40 @@ public class ActivityInventario extends AppCompatActivity {
         if(!escan.equals(txtProductoVi.getText().toString())){//cuando se cambia de codigo
             busqUbic=compararUbi(escan);
             int busqCant=consulCantidad(escan,busqUbic);
-            if(txtUbicc.getText().toString().equals("-")){//si campo ubicacion esta vacio
-                ProductoAct=txtProductoVi.getText().toString();
-                UbicAct="-";
-                AlertDialog.Builder alerta = new AlertDialog.Builder(ActivityInventario.this);
-                alerta.setMessage("Se sugiere ingresar ubicación antes de cambiar de código").setCancelable(false);
-                alerta.setPositiveButton("ACEPTAR", null);
-                alerta.setCancelable(false);
-                AlertDialog dialogAlert = alerta.create();
-                dialogAlert.setTitle("AVISO");
-                dialogAlert.show();
-                cambioCod(ProductoAct,busqCant+"",UbicAct,false);
-                txtProducto.setEnabled(true);
-            }else if(busqUbic.equals("-")){//si no tiene ubicacion aun
+            if(busqUbic.equals("-")){//si no tiene ubicacion aun
                 ProductoAct=escan;
                 AlertDialog.Builder alerta = new AlertDialog.Builder(ActivityInventario.this);
                 alerta.setMessage("El código "+ProductoAct+" tiene una ubicación vacia").setCancelable(false);
-                alerta.setPositiveButton("ACEPTAR",null);
+                int finalBusqCant1 = busqCant;
+                String finalBusqUbic1 = busqUbic;
+                alerta.setPositiveButton("ACEPTAR", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        cambioCod(ProductoAct, finalBusqCant1 +"", finalBusqUbic1,false);
+                        tipoEscan();
+                    }
+                });
                 alerta.setCancelable(false);
                 AlertDialog dialogAlert = alerta.create();
                 dialogAlert.setTitle("AVISO");
                 dialogAlert.show();
-                cambioCod(ProductoAct,busqCant+"",busqUbic,false);
-                txtProducto.setEnabled(true);
-            }else if(busqUbic.equals("")){//si no existe el código en lista
-                ProductoAct=escan;
-                cambioCod(ProductoAct,busqCant+"",busqUbic,false);
-                txtProducto.setEnabled(true);
+            }else if(busqUbic.equals("")){
+                busqCant=consulCantidad(escan,busqUbic);
+                cambioCod(escan,busqCant+"",busqUbic,sumar);
+                tipoEscan();
             } else{//
                 ProductoAct=escan;
+                bepp.play(sonido_correcto, 1, 1, 1, 0, 0);
                 AlertDialog.Builder alerta = new AlertDialog.Builder(ActivityInventario.this);
-                alerta.setMessage("El código "+ProductoAct+" esta en la ubicación "+busqUbic+"\n" +
-                        "¿Desea agregar una nueva ubicacion?").setCancelable(false);
-                alerta.setPositiveButton("AGREGAR", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        UbicAct="-";
-                        if(insertarSql(ProductoAct,listaInv.get(posicion).getCantidad(), "1",UbicAct)==true){
-                            consultaSql();
-                        }
-                        txtProducto.setEnabled(true);
-                        txtProducto.requestFocus();
-                    }
-                });
+                alerta.setMessage("El código "+ProductoAct+" esta en la ubicación "+busqUbic).setCancelable(false);
                 String finalBusqUbic = busqUbic;
-                alerta.setNegativeButton("CANCELAR", new DialogInterface.OnClickListener() {
+                int finalBusqCant = busqCant;
+                alerta.setNegativeButton("CERRAR", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         ProductoAct=escan;UbicAct= finalBusqUbic;
-                        cambioCod(escan,busqCant+"", finalBusqUbic,false);
-                        txtProducto.setEnabled(true);
+                        cambioCod(escan, finalBusqCant +"", finalBusqUbic,false);
+                        tipoEscan();
                     }
                 });
                 alerta.setCancelable(false);
@@ -552,13 +540,8 @@ public class ActivityInventario extends AppCompatActivity {
             busqUbic=txtUbicc.getText().toString();
             int busqCant=consulCantidad(escan,busqUbic);
             cambioCod(escan,busqCant+"",busqUbic,sumar);
-            if (chbMan.isChecked()) {//manual
-                txtEscan.requestFocus();
-            }//else
-            txtProducto.setEnabled(true);
+            tipoEscan();
         }//else
-        txtProducto.setText("");
-        txtProducto.requestFocus();
     }//accionEscanea
 
     public void cambiaUbicacion(){
@@ -886,7 +869,7 @@ public class ActivityInventario extends AppCompatActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                mensaje="Hubó un problema al consultar datos";
+                                mensaje="Sin datos";
                             }//run
                         });
                     }//catch JSON EXCEPTION
@@ -1639,8 +1622,7 @@ public class ActivityInventario extends AppCompatActivity {
             txtUbicc.setEnabled(false);
             btnMas.setEnabled(true);
         }
-        txtProducto.requestFocus();
-
+        tipoEscan();
     }//mostrarDetalleCod
 
 
@@ -1711,7 +1693,6 @@ public class ActivityInventario extends AppCompatActivity {
                     UbicAct="";ProductoAct="";
                     adapter.index(posicion);
                 }//else
-                btnElim.setEnabled(true);
             }//if
             fila.close();
         }catch(Exception e){
@@ -1733,7 +1714,7 @@ public class ActivityInventario extends AppCompatActivity {
             fila.close();
         }catch(Exception e){
             Toast.makeText(ActivityInventario.this,
-                    "Error al consultar datos de la base de datos interna", Toast.LENGTH_SHORT).show();
+                    "Sin datos", Toast.LENGTH_SHORT).show();
         }//catch
     }//consultaPSincro
 

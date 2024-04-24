@@ -110,21 +110,23 @@ public class MainActivity extends AppCompatActivity {
                                 msjToast="Entrando a GUVI";break;
                             case 5:StrServer = "cedistabasco.ddns.net:9085";
                                 msjToast="Entrando a PRESSA";break;
-                            case 6:StrServer = "autodis.ath.cx:9085";
+                            case 6:StrServer = "cedistabasco.ddns.net:9080";
+                                msjToast="Entrando a MIGRACION";break;
+                            case 7:StrServer = "autodis.ath.cx:9085";
                                 msjToast="Entrando a AUTODIS";break;
-                            case 7:StrServer = "sprautomotive.servehttp.com:9090";
+                            case 8:StrServer = "sprautomotive.servehttp.com:9090";
                                 msjToast="Entrando a RODATECH ";break;
-                            case 8:StrServer = "sprautomotive.servehttp.com:9095";
+                            case 9:StrServer = "sprautomotive.servehttp.com:9095";
                                 msjToast="Entrando a PARTECH ";break;
-                            case 9:StrServer = "sprautomotive.servehttp.com:9080";
+                            case 10:StrServer = "sprautomotive.servehttp.com:9080";
                                 msjToast="Entrando a SHARK";break;
-                            case 10:StrServer = "vazlocolombia.dyndns.org:9085";
+                            case 11:StrServer = "vazlocolombia.dyndns.org:9085";
                                 msjToast="Entrando a Colombia";break;
-                            case 11:StrServer = "sprautomotive.servehttp.com:9075";
+                            case 12:StrServer = "sprautomotive.servehttp.com:9075";
                                 msjToast="Iniciando Pruebas";break;
-                            case 12:StrServer = "192.168.1.72:9085";
+                            case 13:StrServer = "192.168.1.72:9085";
                                 msjToast="Iniciando Pruebas";break;
-                            case 13:StrServer = "soasem.is-by.us:9085";
+                            case 14:StrServer = "soasem.is-by.us:9085";
                                 msjToast="Iniciando Pruebas";break;
                         }//swicth
                         id = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
@@ -156,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
             }//onclick
         });//btn1 setonclick
 
-        String[] opciones1 = {"--Seleccione--", "JACVE", "VIPLA", "CECRA", "GUVI", "PRESSA", "AUTODIS", "RODATECH ", "PARTECH", "SHARK", "COLOMBIA", "PRUEBAS SPR", "PRUEBAS", "PRUEBAS EX"};
+        String[] opciones1 = {"--Seleccione--", "JACVE", "VIPLA", "CECRA", "GUVI", "PRESSA","MIGRACION", "AUTODIS", "RODATECH ", "PARTECH", "SHARK", "COLOMBIA", "PRUEBAS SPR", "PRUEBAS", "PRUEBAS EX"};
         ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, opciones1);
         SERVER.setAdapter(adapter1);
     }//oncreate
