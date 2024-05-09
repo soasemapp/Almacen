@@ -12,6 +12,7 @@ import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.net.ConnectivityManager;
@@ -112,6 +113,7 @@ public class ActivityInventario extends AppCompatActivity {
     private Button btnAutoriza;
     private int sonido_correcto,sonido_error;
     private SoundPool bepp;
+    private Intent dwIntent;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -137,7 +139,7 @@ public class ActivityInventario extends AppCompatActivity {
 
         bepp = new SoundPool(1, AudioManager.STREAM_MUSIC, 1);
         sonido_correcto = bepp.load(ActivityInventario.this, R.raw.sonido_correct, 1);
-        sonido_error = bepp.load(ActivityInventario.this, R.raw.error, 1);
+        sonido_error = bepp.load(ActivityInventario.this, R.raw.sonido_correct, 1);
 
         progressDialog = new ProgressDialog(ActivityInventario.this);//parala barra de
         progressDialog.setMessage("Procesando datos....");
@@ -384,20 +386,6 @@ public class ActivityInventario extends AppCompatActivity {
         });//btnElim
 
 
-        btnMas.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ProductoAct=txtProductoVi.getText().toString();
-                UbicAct="-";
-                txtProducto.requestFocus();
-                if(insertarSql(ProductoAct,listaInv.get(posicion).getCantidad(),
-                        "1",UbicAct)==true){
-                    consultaSql();
-                }
-            }//onclick
-        });//btnMas
-
-
         //FOLIO
         if(folio.equals("")){//si no hay folio guardado
             new AsyncFolios().execute();
@@ -410,6 +398,9 @@ public class ActivityInventario extends AppCompatActivity {
             consultaSql();*/
             //new AsyncResListInv(strbran,folio).execute();
         }//else
+
+        dwIntent = new Intent();
+        dwIntent.setAction("com.symbol.datawedge.api.ACTION");
 
     }//onCreate
 
@@ -475,17 +466,12 @@ public class ActivityInventario extends AppCompatActivity {
             txtEscan.setText("");
             txtEscan.requestFocus();
             keyboard.showSoftInput(txtEscan, InputMethodManager.SHOW_IMPLICIT);
-            txtProducto.setEnabled(true);
         }else{
-            txtProducto.setEnabled(true);
             txtProducto.requestFocus();
         }//else
     }//tipoEscan
 
     public void accionEscanea(){
-        txtProducto.clearFocus();
-        txtProducto.setCursorVisible(false);
-        txtProducto.setEnabled(false);
         String escan=txtProducto.getText().toString();
         boolean sumar=false;
         String busqUbic="";
@@ -496,6 +482,8 @@ public class ActivityInventario extends AppCompatActivity {
             busqUbic=compararUbi(escan);
             int busqCant=consulCantidad(escan,busqUbic);
             if(busqUbic.equals("-")){//si no tiene ubicacion aun
+                dwIntent.putExtra("com.symbol.datawedge.api.SCANNER_INPUT_PLUGIN", "DISABLE_PLUGIN");
+                sendBroadcast(dwIntent);
                 ProductoAct=escan;
                 AlertDialog.Builder alerta = new AlertDialog.Builder(ActivityInventario.this);
                 alerta.setMessage("El código "+ProductoAct+" tiene una ubicación vacia").setCancelable(false);
@@ -506,6 +494,8 @@ public class ActivityInventario extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         cambioCod(ProductoAct, finalBusqCant1 +"", finalBusqUbic1,false);
                         tipoEscan();
+                        dwIntent.putExtra("com.symbol.datawedge.api.SCANNER_INPUT_PLUGIN", "ENABLE_PLUGIN");
+                        sendBroadcast(dwIntent);
                     }
                 });
                 alerta.setCancelable(false);
@@ -517,6 +507,8 @@ public class ActivityInventario extends AppCompatActivity {
                 cambioCod(escan,busqCant+"",busqUbic,sumar);
                 tipoEscan();
             } else{//
+                dwIntent.putExtra("com.symbol.datawedge.api.SCANNER_INPUT_PLUGIN", "DISABLE_PLUGIN");
+                sendBroadcast(dwIntent);
                 ProductoAct=escan;
                 bepp.play(sonido_correcto, 1, 1, 1, 0, 0);
                 AlertDialog.Builder alerta = new AlertDialog.Builder(ActivityInventario.this);
@@ -529,6 +521,8 @@ public class ActivityInventario extends AppCompatActivity {
                         ProductoAct=escan;UbicAct= finalBusqUbic;
                         cambioCod(escan, finalBusqCant +"", finalBusqUbic,false);
                         tipoEscan();
+                        dwIntent.putExtra("com.symbol.datawedge.api.SCANNER_INPUT_PLUGIN", "ENABLE_PLUGIN");
+                        sendBroadcast(dwIntent);
                     }
                 });
                 alerta.setCancelable(false);
@@ -949,6 +943,12 @@ public class ActivityInventario extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            ProductoAct="";UbicAct="";
+            chbMan.setChecked(false);
+            txtProducto.setText("");
+            txtProductoVi.setText("");
+            txtEscan.setText("");
+            txtUbicc.setText("");
             progressDialog.show();
             mensaje="";
         }//onPreExecute
@@ -1047,6 +1047,9 @@ public class ActivityInventario extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             mensaje="";
+            listaFol.clear();
+            ProductoAct="";
+            UbicAct="";
             mDialog.show();
         }//onPreExecute
 
@@ -1133,6 +1136,7 @@ public class ActivityInventario extends AppCompatActivity {
         @Override
         protected Void doInBackground(Void... params) {
             listaFol = new ArrayList<>();
+            chbMan.setChecked(false);
             conectaFolios();
             return null;
         }//doInBackground
@@ -1155,6 +1159,7 @@ public class ActivityInventario extends AppCompatActivity {
                         txtFechaI.setText(fecha);
                         txtHoraI.setText(hora);
                         consultaSql();
+                        txtProducto.requestFocus();
                     }else {//si no esta abierto
                         AlertDialog.Builder builder = new AlertDialog.Builder(ActivityInventario.this);
                         builder.setMessage("Folio cerrado");
