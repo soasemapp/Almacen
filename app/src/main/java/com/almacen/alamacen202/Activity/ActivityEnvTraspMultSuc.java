@@ -278,7 +278,7 @@ public class ActivityEnvTraspMultSuc extends AppCompatActivity {
                         builder.setMessage("¿Desea guardar "+surt+" piezas de "+tvProd.getText().toString()+"?"+
                                 "\nSerán "+surtAcum+" en total");
                         builder.setCancelable(false);
-                        int finalSurtAcum = surtAcum;
+                        int finalSurtAcum=surtAcum;
                         builder.setPositiveButton("GUARDAR", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
@@ -343,7 +343,7 @@ public class ActivityEnvTraspMultSuc extends AppCompatActivity {
                             }//for
                         }//else
                     }//if es diferente a vacio
-                }//if chconten is false
+                }//if chbconten is false
             }//after
         });//txtProd textchange
         
@@ -1523,7 +1523,8 @@ public class ActivityEnvTraspMultSuc extends AppCompatActivity {
             if(conn==true){
                 String parametros="k_Sucursal="+strbran+"&k_Folio="+folio+
                         "&k_Producto="+producto+"&k_Cantidad="+cant+
-                        "&k_NumCajas="+numCajas+"&k_partida="+part+""+"&k_UUsuario="+usu+"&k_ubi="+txtUbi.getText().toString();
+                        "&k_NumCajas="+numCajas+"&k_partida="+part+""+"&k_UUsuario="+usu+
+                        "&k_ubi="+txtUbi.getText().toString();
                 String url = "http://"+strServer+"/InsertCajasE?"+parametros;
                 String jsonStr = new HttpHandler().makeServiceCall(url,strusr,strpass);
                 if(jsonStr != null) {

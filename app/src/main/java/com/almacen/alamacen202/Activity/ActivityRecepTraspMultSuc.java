@@ -255,25 +255,6 @@ public class ActivityRecepTraspMultSuc extends AppCompatActivity {
         btnCorr.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*AlertDialog.Builder builder = new AlertDialog.Builder(ActivityRecepTraspMultSuc.this);
-                builder.setPositiveButton("ACEPTAR", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        int cantAct=Integer.parseInt(listaTrasp.get(posicion).getCantSurt());
-                        if(cantAct==0){
-                            Toast.makeText(ActivityRecepTraspMultSuc.this, "Escaneados en 0, no se puede restar", Toast.LENGTH_SHORT).show();
-                        }else{
-                            listaTrasp.get(posicion).setCantSurt((cantAct-1)+"");
-                            listaTrasp.get(posicion).setSincronizado(false);
-                            RECEP--;
-                            mostrarDetalleProd();
-
-                        }//else
-                    }//onclick
-                });
-                builder.setNegativeButton("",null);
-                builder.setCancelable(false);
-                builder.setTitle("AVISO").setMessage("Se corregirá "+Producto+" con una pieza de más").create().show();*/
                 if(listaTrasp.get(posicion).isSincronizado()==false){
                     posicion2=posicion;
                     new AsyncActualizar(Folio,listaTrasp.get(posicion).getProducto(),
@@ -355,7 +336,6 @@ public class ActivityRecepTraspMultSuc extends AppCompatActivity {
             btnBackC.setEnabled(false);
             btnBackC.setBackgroundTintList(ColorStateList.
                     valueOf(getResources().getColor(R.color.ColorGris)));
-
         }else if(CONTCAJA==TOTCAJAS && TOTCAJAS>1){
             btnBackC.setEnabled(true);
             btnBackC.setBackgroundTintList(null);

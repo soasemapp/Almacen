@@ -542,7 +542,7 @@ public class ActivityDifUbiExi extends AppCompatActivity {
                             dif=dato.getString("DIFERENCIA");
                             ubi=dato.getString("UBICACION");
                             est=dato.getString("ESTATUS");
-                            insertarSql(clave,cant, exist,dif, ubi,est);
+                            insertarSql(clave,cant, exist,dif,ubi,est);
                             mensaje="Guardados";
                         }//for
                     }catch (final JSONException e) {

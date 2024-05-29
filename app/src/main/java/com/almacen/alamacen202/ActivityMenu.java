@@ -431,9 +431,6 @@ public class ActivityMenu extends AppCompatActivity {
                 AlertDialog titulo = alerta.create();
                 titulo.setTitle("Aviso");
                 titulo.show();
-
-
-
             }else if (id == R.id.RodatechMenu){
                 StrServer = "sprautomotive.servehttp.com:9090";
                 editor.putString("Server", StrServer);
@@ -499,7 +496,6 @@ public class ActivityMenu extends AppCompatActivity {
                 titulo.setTitle("¡AVISO!");
                 titulo.show();
             }
-
         } else {
             AlertDialog.Builder alerta = new AlertDialog.Builder(ActivityMenu.this);
             alerta.setMessage("No hay Conexion a Internet").setCancelable(false).setNegativeButton("Ok", new DialogInterface.OnClickListener() {
@@ -508,14 +504,10 @@ public class ActivityMenu extends AppCompatActivity {
                     dialogInterface.cancel();
                 }
             });
-
             AlertDialog titulo = alerta.create();
             titulo.setTitle("!ERROR! CONEXION");
             titulo.show();
-
         }//else
-
-
         return super.onOptionsItemSelected(item);
     }//OnOptionItemSelected
 

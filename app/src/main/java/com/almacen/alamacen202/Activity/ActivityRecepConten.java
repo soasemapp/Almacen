@@ -342,22 +342,22 @@ public class ActivityRecepConten extends AppCompatActivity {
             int fo = folio.length();
             switch (fo) {
                 case 1:
-                    folio ="000000" + folio;
+                    folio ="000000"+folio;
                     break;
                 case 2:
-                    folio ="00000" + folio;
+                    folio ="00000"+folio;
                     break;
                 case 3:
-                    folio ="0000" + folio;
+                    folio ="0000"+folio;
                     break;
                 case 4:
-                    folio ="000" + folio;
+                    folio ="000"+folio;
                     break;
                 case 5:
-                    folio ="00" + folio;
+                    folio ="00"+folio;
                     break;
                 case 6:
-                    folio ="0" + folio;
+                    folio ="0"+folio;
                     break;
                 default:
                     folio=folio;
@@ -707,15 +707,15 @@ public class ActivityRecepConten extends AppCompatActivity {
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                     switch (i){
                         case 0:
-                            txtDest.setText("ENVIOS CDMX");
+                            txtDest.setText("CDMX");
                             txtSug.setText(tvRepCdmx.getText().toString());
                             break;
                         case 1:
-                            txtDest.setText("ENVIOS CULIACAN");
+                            txtDest.setText("CULIACAN");
                             txtSug.setText(tvRepCul.getText().toString());
                             break;
                         case 2:
-                            txtDest.setText("ENVIOS MONTERREY");
+                            txtDest.setText("MONTERREY");
                             txtSug.setText(tvRepMty.getText().toString());
                             break;
                     }//switch

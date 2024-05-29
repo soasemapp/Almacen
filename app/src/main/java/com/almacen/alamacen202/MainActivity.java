@@ -73,7 +73,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mDialog = new SpotsDialog.Builder().setContext(MainActivity.this).setMessage("Espere un momento...").build();
+        mDialog = new SpotsDialog.Builder().setContext(MainActivity.this)
+                .setMessage("Espere un momento...").build();
         SERVER = (Spinner) findViewById(R.id.spinnerserver);
         usu = (EditText) findViewById(R.id.txtinUsu);
         clave = (EditText) findViewById(R.id.txtinCla);
@@ -162,60 +163,6 @@ public class MainActivity extends AppCompatActivity {
         ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, opciones1);
         SERVER.setAdapter(adapter1);
     }//oncreate
-
-    private void jSon() throws InterruptedException{
-        final CountDownLatch latch = new CountDownLatch(1);
-        mQueue.start();
-        String url="http://sprautomotive.servehttp.com:9080/Login";
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, new JSONObject(),
-                new Response.Listener<JSONObject>() {//correcto
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            JSONArray jsonArray = response.getJSONArray("Response");
-                            res=jsonArray.getString(0);
-                            if(res.equals("0")){
-                                mensaje="Contraseña y/o Usuario Incorrecto";
-                            }else{
-                                JSONObject dato = jsonArray.getJSONObject(0);//Conjunto de datos
-                                user=dato.getString("k_usr");
-                                name=dato.getString("k_name");
-                                lName=dato.getString("k_lname");
-                                type=dato.getString("k_type");
-                                branch=dato.getString("k_dscr");
-                                mail=dato.getString("k_mail1");
-                                codB=dato.getString("k_codB");
-                                mensaje="";
-                            }//else
-                            latch.countDown();//
-                        } catch (JSONException e) {
-                            mensaje="Problemas al recibir datos json";
-                            latch.countDown();
-                        }catch (Error error){
-                            mensaje="Hubó un problema";
-                            latch.countDown();
-
-                        }//catch
-                    }//onResponse
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {//Para error
-                latch.countDown();
-                mensaje="Hubó un problema al recibir datos";
-            }//onError
-        })//JsonObjectRequest
-        {//headers
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("user", getUsuario);
-                params.put("pass", getPass);
-                return params;
-            }//Map
-        };//headers
-        mQueue.add(request);
-        //Bloqueamos el hilo hasta que el callback llame a latch.countDown
-        latch.await();
-    }//json
 
     @Override
     protected void onStart() {
