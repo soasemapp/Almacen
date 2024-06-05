@@ -697,7 +697,7 @@ public class ActivityInventario extends AppCompatActivity {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     editor.clear().commit();
-                    eliminarSql("");
+                    eliminarSql(null);
                     chbMan.setChecked(false);
                     txtProducto.setText("");
                     txtProductoVi.setText("");
@@ -1008,7 +1008,7 @@ public class ActivityInventario extends AppCompatActivity {
                 listaInv.clear();
                 rvInventario.setAdapter(null);
                 editor.clear().commit();
-                eliminarSql("");
+                eliminarSql(null);
                 AlertDialog.Builder builder = new AlertDialog.Builder(ActivityInventario.this);
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
@@ -1355,7 +1355,7 @@ public class ActivityInventario extends AppCompatActivity {
                 listaInv.clear();
                 rvInventario.setAdapter(null);
                 editor.clear().commit();
-                eliminarSql("");
+                eliminarSql(null);
                 AlertDialog.Builder builder = new AlertDialog.Builder(ActivityInventario.this);
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override

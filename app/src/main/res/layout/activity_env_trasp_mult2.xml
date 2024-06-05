@@ -26,56 +26,9 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <Switch
-                    android:id="@+id/swAlm"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Activar"
-                    android:textStyle="italic|bold"
-                    android:layout_gravity="center_vertical"
-                    android:textColor="@color/colorBlack"
-                    android:textSize="15dp"
-                    android:thumbTint="@color/AzulBack"
-                    android:trackTint="@color/colorPrimary"/>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
-                    android:hint="Almacenes"
-                    android:textColorHint="@color/AzulBack"
-                    app:hintTextColor="@color/AzulBack"
-                    app:boxBackgroundColor="@color/ColorWhite"
-                    app:boxBackgroundMode="outline"
-                    app:boxCornerRadiusTopEnd="10dp"
-                    app:boxCornerRadiusTopStart="10dp"
-                    app:boxStrokeColor="@color/colorPrimary">
-                    <com.google.android.material.textfield.MaterialAutoCompleteTextView
-                        android:id="@+id/spAlm"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@color/ColorWhite"
-                        android:textSize="15sp"
-                        android:fontFamily="sans-serif-condensed"
-                        android:textStyle="italic"
-                        android:textColor="@color/colorBlack"
-                        android:inputType="none"
-                        android:focusable="false"/>
-                </com.google.android.material.textfield.TextInputLayout>
-
-
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/lyFol"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:gravity="center">
+                android:gravity="center"
+                android:visibility="gone">
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -133,13 +86,13 @@
                 android:layout_marginTop="2dp"/>
 
             <LinearLayout
-                android:id="@+id/lyCaja"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:layout_marginTop="5dp"
                 android:layout_marginBottom="5dp"
-                android:gravity="center_vertical">
+                android:gravity="center_vertical"
+                android:visibility="gone">
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

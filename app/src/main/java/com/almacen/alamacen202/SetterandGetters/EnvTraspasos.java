@@ -10,10 +10,12 @@ public class EnvTraspasos {
     private String cantSurt;
     private String almEnv;
     private String linea;
+    private String folio;
     boolean sincronizado;
 
     public EnvTraspasos(String num, String producto, String ubic, String existencia,
-                        String cantidad, String partida, String cantSurt,String almEnv,String linea,boolean sincronizado) {
+                        String cantidad, String partida, String cantSurt,String almEnv,
+                        String linea,String folio,boolean sincronizado) {
         this.num = num;
         this.producto = producto;
         this.ubic = ubic;
@@ -23,6 +25,7 @@ public class EnvTraspasos {
         this.cantSurt = cantSurt;
         this.almEnv=almEnv;
         this.linea=linea;
+        this.folio=folio;
         this.sincronizado=sincronizado;
     }
 
@@ -96,6 +99,14 @@ public class EnvTraspasos {
 
     public void setLinea(String linea) {
         this.linea = linea;
+    }
+
+    public String getFolio() {
+        return folio;
+    }
+
+    public void setFolio(String folio) {
+        this.folio = folio;
     }
 
     public boolean isSincronizado() {

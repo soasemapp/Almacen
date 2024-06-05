@@ -350,7 +350,7 @@ public class ActivityDifUbiExi extends AppCompatActivity {
                         chbMan.setChecked(false);
                         lista2.clear();
                         rvDifUbiExi.setAdapter(null);
-                        eliminarSql("");
+                        eliminarSql(null);
                         txtProductoVi.setText("");
                         txtContF.setText("");
                         txtExistS.setText("");
@@ -441,7 +441,7 @@ public class ActivityDifUbiExi extends AppCompatActivity {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     editor.clear().commit();
-                    eliminarSql("");
+                    eliminarSql(null);
                     new AsyncFolios().execute();
                 }
             });//negative
@@ -669,7 +669,7 @@ public class ActivityDifUbiExi extends AppCompatActivity {
                 lista2.clear();
                 rvDifUbiExi.setAdapter(null);
                 editor.clear().commit();
-                eliminarSql("");
+                eliminarSql(null);
                 AlertDialog.Builder builder = new AlertDialog.Builder(ActivityDifUbiExi.this);
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
@@ -861,7 +861,7 @@ public class ActivityDifUbiExi extends AppCompatActivity {
                 lista2.clear();
                 rvDifUbiExi.setAdapter(null);
                 editor.clear().commit();
-                eliminarSql("");
+                eliminarSql(null);
                 AlertDialog.Builder builder = new AlertDialog.Builder(ActivityDifUbiExi.this);
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
