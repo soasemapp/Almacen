@@ -22,6 +22,7 @@ import android.widget.LinearLayout;
 import com.almacen.alamacen202.Activity.ActivityConsultaPA;
 import com.almacen.alamacen202.Activity.ActivityDifUbiExi;
 import com.almacen.alamacen202.Activity.ActivityEnvTraspMultSuc;
+import com.almacen.alamacen202.Activity.ActivityEnvTraspMultSuc2;
 import com.almacen.alamacen202.Activity.ActivityInventario;
 import com.almacen.alamacen202.Activity.ActivityInventarioXProd;
 import com.almacen.alamacen202.Activity.ActivityLiberaciones;
@@ -359,7 +360,23 @@ public class ActivityMenu extends AppCompatActivity {
         startActivity(intent);
     }//reporte de etiquetas
     public void envRecepTrasp(View v){
-        startActivity(new Intent(ActivityMenu.this, ActivityEnvTraspMultSuc.class));
+        AlertDialog.Builder builder = new AlertDialog.Builder(ActivityMenu.this);
+        builder.setTitle("SELECCIONAR");
+        builder.setNegativeButton("POR FOLIO", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                startActivity(new Intent(ActivityMenu.this, ActivityEnvTraspMultSuc.class));
+            }//onclick
+        });//neutral folio
+        builder.setPositiveButton("POR ALMACÉN", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                startActivity(new Intent(ActivityMenu.this, ActivityEnvTraspMultSuc2.class));
+            }//onclick
+        });//neutral alm
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
     }
 
 

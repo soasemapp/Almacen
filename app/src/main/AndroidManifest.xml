@@ -77,6 +77,10 @@
             android:name=".Activity.ActivityEnvTraspMultSuc"
             android:configChanges="screenSize|orientation"
             android:parentActivityName=".ActivityMenu"/>
+        <activity
+            android:name=".Activity.ActivityEnvTraspMultSuc2"
+            android:configChanges="screenSize|orientation"
+            android:parentActivityName=".ActivityMenu"/>
 
 
         <activity android:name=".ActivityMenu" />
