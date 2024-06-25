@@ -56,6 +56,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.almacen.alamacen202.ActivityMenu;
 import com.almacen.alamacen202.Adapter.AdaptadorCajas;
 import com.almacen.alamacen202.Adapter.AdaptadorCajaxProd;
 import com.almacen.alamacen202.Adapter.AdaptadorEnvTraspasos;
@@ -246,14 +247,23 @@ public class ActivityEnvTraspMultSuc extends AppCompatActivity {
             public void onClick(View view) {
                 posicion2=posG;
                 keyboard.hideSoftInputFromWindow(txtCantSurtCont.getWindowToken(), 0);
-                int cant=0,surtAcum=0,surt=0;
+                int cant=0,surtAcum=0,surt=0,exi=0;
                 surtAcum=Integer.parseInt(lista.get(posicion2).getCantSurt());
                 cant=Integer.parseInt(txtCantidad.getText().toString());
+                exi=Integer.parseInt(lista.get(posicion2).getExistencia());
 
                 if((Integer.parseInt(txtCantSurtCont.getText().toString())+surtAcum)>cant){
                     AlertDialog.Builder builder = new AlertDialog.Builder(ActivityEnvTraspMultSuc.this);
                     builder.setTitle("AVISO");
                     builder.setMessage("Excede cantidad\nLleva "+surtAcum+" piezas de surtido de este producto");
+                    builder.setCancelable(false);
+                    builder.setNegativeButton("ACEPTAR", null);//
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                }else if((Integer.parseInt(txtCantSurtCont.getText().toString())+surtAcum)>exi){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(ActivityEnvTraspMultSuc.this);
+                    builder.setTitle("AVISO");
+                    builder.setMessage("Excede existencia");
                     builder.setCancelable(false);
                     builder.setNegativeButton("ACEPTAR", null);//
                     AlertDialog dialog = builder.create();
@@ -265,6 +275,14 @@ public class ActivityEnvTraspMultSuc extends AppCompatActivity {
                             AlertDialog.Builder builder = new AlertDialog.Builder(ActivityEnvTraspMultSuc.this);
                             builder.setTitle("AVISO");
                             builder.setMessage("El número de cajas excede cantidad");
+                            builder.setCancelable(false);
+                            builder.setNegativeButton("ACEPTAR", null);//
+                            AlertDialog dialog = builder.create();
+                            dialog.show();
+                        }else if((surtAcum+(cant/surt))<exi){//para no exceder del numero de existencia
+                            AlertDialog.Builder builder = new AlertDialog.Builder(ActivityEnvTraspMultSuc.this);
+                            builder.setTitle("AVISO");
+                            builder.setMessage("No hay suficientes piezas en existencia para completar cantidad");
                             builder.setCancelable(false);
                             builder.setNegativeButton("ACEPTAR", null);//
                             AlertDialog dialog = builder.create();
@@ -1708,6 +1726,12 @@ public class ActivityEnvTraspMultSuc extends AppCompatActivity {
             if(conn==true){
                 int rep=0;
                 int caja = Integer.parseInt(spCaja.getText().toString());
+                int exist=Integer.parseInt(lista.get(posicion2).getExistencia());
+
+                if(exist<canti){
+                    canti=exist;
+                }//if
+
                 if((canti%numCajas)==0){//si se puede repartir en cajas iguales
                     rep=canti/numCajas;
                     int sum=0;
@@ -1916,22 +1940,6 @@ public class ActivityEnvTraspMultSuc extends AppCompatActivity {
             super.onPostExecute(result);
             mDialog.dismiss();
             if(listaIncidencias.size() > 0) {
-                /*String[] opciones = new String[listaIncidencias.size()];
-                for (int i = 0; i < listaIncidencias.size(); i++) {
-                    opciones[i] = listaIncidencias.get(i).getClave() + ".-" + listaIncidencias.get(i).getMensaje();
-                }//for
-                AlertDialog.Builder builder = new AlertDialog.Builder(ActivityEnvTraspMultSuc.this);
-                builder.setIcon(R.drawable.icons8_error_52).setTitle("Seleccione la Incidencia");
-                builder.setItems(opciones, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        String Producto =lista.get(posicion).getProducto();
-                        String RazonSuper = opciones[which];
-                        new AsyncReporteInici(Producto,RazonSuper,Folio,lista.get(posicion).getCantidad()).execute();
-                    }//onclclick
-                });
-                AlertDialog dialog = builder.create();
-                dialog.show();*/
                 alertIncid();
             }else {
                 AlertDialog.Builder builder = new AlertDialog.Builder(ActivityEnvTraspMultSuc.this);
@@ -2204,6 +2212,9 @@ public class ActivityEnvTraspMultSuc extends AppCompatActivity {
                 }else if((Integer.parseInt(Cant)+Integer.parseInt(lista.get(posicion).getCantSurt()))>
                         Integer.parseInt(lista.get(posicion).getCantidad())){
                     Toast.makeText(ActivityEnvTraspMultSuc.this, "Excede cantidad", Toast.LENGTH_SHORT).show();
+                }else if((Integer.parseInt(Cant)+Integer.parseInt(lista.get(posicion).getCantSurt()))>
+                        Integer.parseInt(lista.get(posicion).getExistencia())){
+                    Toast.makeText(ActivityEnvTraspMultSuc.this, "Excede existencia", Toast.LENGTH_SHORT).show();
                 }else{
                     AlertDialog.Builder builder = new AlertDialog.Builder(ActivityEnvTraspMultSuc.this);
                     builder.setPositiveButton("ACEPTAR", new DialogInterface.OnClickListener() {
@@ -2224,6 +2235,8 @@ public class ActivityEnvTraspMultSuc extends AppCompatActivity {
 
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menuoverflow4, menu);
+        MenuItem itemOtro = menu.findItem(R.id.itOtro);
+        itemOtro.setTitle("POR ALMACÉN");
         return true;
     }//onCreateOptionsMenu
 
@@ -2231,11 +2244,19 @@ public class ActivityEnvTraspMultSuc extends AppCompatActivity {
         int id = item.getItemId();
         switch (id){
             case R.id.itInci:
-                if(lista.size()>0){
-                    new AsyncIncid().execute();
-                }else{
-                    Toast.makeText(this, "Sin productos seleccionados", Toast.LENGTH_SHORT).show();
+                if(primeroSinc(0)==false){
+                    if(lista.size()>0){
+                        new AsyncIncid().execute();
+                    }else{
+                        Toast.makeText(this, "Sin productos seleccionados", Toast.LENGTH_SHORT).show();
+                    }
                 }
+                break;
+            case R.id.itOtro:
+                if(primeroSinc(0)==false){
+                    startActivity(new Intent(ActivityEnvTraspMultSuc.this, ActivityEnvTraspMultSuc2.class));
+                    finish();
+                }//if
                 break;
         }
         return super.onOptionsItemSelected(item);

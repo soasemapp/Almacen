@@ -1,9 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
-        android:id="@+id/itInci"
-        android:title="REPORTAR INICIDENCIAS"
-        android:icon="@drawable/icons8_error_52"
-        app:showAsAction="always"/>
+
+    <item  android:title="Menu"
+        android:icon="@drawable/ic_baseline_menu_24"
+        app:showAsAction="always">
+        <menu>
+            <item
+                android:id="@+id/itInci"
+                android:title="REPORTAR INICIDENCIAS"
+                android:icon="@drawable/icons8_error_52"
+                app:showAsAction="always"/>
+            <item
+                android:id="@+id/itOtro"
+                android:title="POR ALMACÉN"
+                android:icon="@drawable/icons8_paquete"
+                android:tooltipText="Cambiar tipo de traspaso"
+                app:showAsAction="always"/>
+
+
+        </menu>
+    </item>
+
+
+
 </menu>

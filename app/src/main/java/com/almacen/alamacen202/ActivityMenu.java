@@ -360,23 +360,7 @@ public class ActivityMenu extends AppCompatActivity {
         startActivity(intent);
     }//reporte de etiquetas
     public void envRecepTrasp(View v){
-        AlertDialog.Builder builder = new AlertDialog.Builder(ActivityMenu.this);
-        builder.setTitle("SELECCIONAR");
-        builder.setNegativeButton("POR FOLIO", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                startActivity(new Intent(ActivityMenu.this, ActivityEnvTraspMultSuc.class));
-            }//onclick
-        });//neutral folio
-        builder.setPositiveButton("POR ALMACÉN", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                startActivity(new Intent(ActivityMenu.this, ActivityEnvTraspMultSuc2.class));
-            }//onclick
-        });//neutral alm
-        AlertDialog dialog = builder.create();
-        dialog.show();
-
+        startActivity(new Intent(ActivityMenu.this, ActivityEnvTraspMultSuc.class));
     }
 
 

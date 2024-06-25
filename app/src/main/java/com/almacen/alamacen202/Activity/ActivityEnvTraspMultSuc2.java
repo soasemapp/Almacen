@@ -1214,6 +1214,9 @@ public class ActivityEnvTraspMultSuc2 extends AppCompatActivity {
                 }else if((Integer.parseInt(Cant)+Integer.parseInt(lista.get(posicion).getCantSurt()))>
                         Integer.parseInt(lista.get(posicion).getCantidad())){
                     Toast.makeText(ActivityEnvTraspMultSuc2.this, "Excede cantidad", Toast.LENGTH_SHORT).show();
+                }else if((Integer.parseInt(Cant)+Integer.parseInt(lista.get(posicion).getCantSurt()))>
+                        Integer.parseInt(lista.get(posicion).getExistencia())){
+                    Toast.makeText(ActivityEnvTraspMultSuc2.this, "Excede existencia", Toast.LENGTH_SHORT).show();
                 }else{
                     AlertDialog.Builder builder = new AlertDialog.Builder(ActivityEnvTraspMultSuc2.this);
                     builder.setPositiveButton("ACEPTAR", new DialogInterface.OnClickListener() {
@@ -1234,6 +1237,8 @@ public class ActivityEnvTraspMultSuc2 extends AppCompatActivity {
 
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menuoverflow4, menu);
+        MenuItem itemOtro = menu.findItem(R.id.itOtro);
+        itemOtro.setTitle("POR FOLIO");
         return true;
     }//onCreateOptionsMenu
 
@@ -1246,6 +1251,10 @@ public class ActivityEnvTraspMultSuc2 extends AppCompatActivity {
                 }else{
                     Toast.makeText(this, "Sin productos seleccionados", Toast.LENGTH_SHORT).show();
                 }
+                break;
+            case R.id.itOtro:
+                startActivity(new Intent(ActivityEnvTraspMultSuc2.this, ActivityEnvTraspMultSuc.class));
+                finish();
                 break;
         }
         return super.onOptionsItemSelected(item);
