@@ -223,10 +223,10 @@ public class ActivityTrasladoUbi extends AppCompatActivity {
                                 UbicacionOrigen = UbicacionOrigen.replace("\n","");
                                 ActivityTrasladoUbi.ModificarUbicacion task = new ActivityTrasladoUbi.ModificarUbicacion();
                                 task.execute();
-                            }
-                        }
-                    }
-                }
+                            }//if
+                        }//for
+                    }//else
+                }//if
             }
         });
 

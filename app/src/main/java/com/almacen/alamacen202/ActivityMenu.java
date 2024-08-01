@@ -88,7 +88,43 @@ public class ActivityMenu extends AppCompatActivity {
                 setMessage("Espere un momento...").build();
         mDialog.setCancelable(false);
 
-        urlImagenes=getString(R.string.urlImagenesGeneral);
+
+
+        switch (StrServer) {
+            case "jacve.dyndns.org:9085":
+                urlImagenes = "https://www.jacve.mx/es-mx/img/products/xl/";
+                break;
+            case "autodis.ath.cx:9085":
+                urlImagenes = "https://www.autodis.mx/es-mx/img/products/xl/";
+                break;
+            case "cecra.ath.cx:9085":
+                urlImagenes = "https://www.cecra.mx/es-mx/img/products/xl/";
+                break;
+            case "guvi.ath.cx:9085":
+                urlImagenes = "https://www.guvi.mx/es-mx/img/products/xl/";
+                break;
+            case "cedistabasco.ddns.net:9085":
+                urlImagenes = "https://www.pressa.mx/es-mx/img/products/xl/";
+                break;
+            case "sprautomotive.servehttp.com:9090":
+                urlImagenes = "https://www.vipla.mx/es-mx/img/products/xl/";
+                break;
+            case "sprautomotive.servehttp.com:9095":
+                urlImagenes = "https://www.vipla.mx/es-mx/img/products/xl/";
+                break;
+            case "sprautomotive.servehttp.com:9080":
+                urlImagenes = "https://www.vipla.mx/es-mx/img/products/xl/";
+                break;
+            case "sprautomotive.servehttp.com:9085":
+                urlImagenes = "https://www.vipla.mx/es-mx/img/products/xl/";
+                break;
+            case "vazlocolombia.dyndns.org:9085":
+                urlImagenes = "https://vazlo.com.mx/assets/img/productos/chica/jpg/";
+                break;
+            default:
+                urlImagenes = "https://www.pressa.mx/es-mx/img/products/xl/";
+                break;
+        }
         extIm=getString(R.string.ext);
 
         lyAdicSPR = findViewById(R.id.lyAdicSPR);

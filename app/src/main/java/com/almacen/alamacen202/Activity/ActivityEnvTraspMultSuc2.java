@@ -106,7 +106,6 @@ public class ActivityEnvTraspMultSuc2 extends AppCompatActivity {
     private boolean escan=false,mover=false;
     private ScrollView scrollView;
     private TextInputLayout tIlSurt,tIlSurtN;
-    private LinearLayout lyCaja,lyFol;
     private String almE;
 
     //VARIABLES PARA AALERT DE LISTA DE PROD
@@ -157,8 +156,6 @@ public class ActivityEnvTraspMultSuc2 extends AppCompatActivity {
         tIlSurt =findViewById(R.id.tIlSurt);
         tIlSurtN = findViewById(R.id.tIlSurtN);
         txtCantSurtCont = findViewById(R.id.txtCantSurtCont);
-        lyCaja = findViewById(R.id.lyCaja);
-        lyFol = findViewById(R.id.lyFol);
         spAlm = findViewById(R.id.spAlm);
 
         adapter = new AdaptadorEnvTraspasos2(lista);
@@ -698,19 +695,13 @@ public class ActivityEnvTraspMultSuc2 extends AppCompatActivity {
     public void inFinBt(boolean var){
         escan=true;
         txtProducto.setInputType(InputType.TYPE_NULL);
-        tIlSurtN.setVisibility(View.GONE);
-        //keyboard.hideSoftInputFromWindow(txtProducto.getWindowToken(), 0);
-        txtCantSurtCont.setEnabled(false);
-        //chTipoS.setVisibility(View.GONE);
-
         if(var==true){
-            btnBusc.setEnabled(false);
-            btnBusc.setBackgroundTintList(ColorStateList.
-                    valueOf(getResources().getColor(R.color.ColorGris)));
-
+            btnBusc.setEnabled(true);
+            //btnBusc.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.ColorGris)));
         }else{
-            btnBusc.setBackgroundTintList(null);
-            btnBusc.setBackgroundResource(R.drawable.btn_background1);
+            btnBusc.setEnabled(false);
+            //btnBusc.setBackgroundTintList(null);
+            //btnBusc.setBackgroundResource(R.drawable.btn_background1);
         }//else
     }//inFinBt
 
@@ -736,7 +727,7 @@ public class ActivityEnvTraspMultSuc2 extends AppCompatActivity {
             limpiar();
             TOTPZA=0;
             mensaje="";posicion=-1;lista.clear();
-            rvEnvTrasp.setAdapter(null);inFinBt(true);
+            rvEnvTrasp.setAdapter(null);inFinBt(false);
             txtProducto.setText("");
             txtProducto.setEnabled(false);
             escan=false;
@@ -806,7 +797,7 @@ public class ActivityEnvTraspMultSuc2 extends AppCompatActivity {
                 AlertDialog dialog = builder.create();
                 dialog.show();
             }else{
-                inFinBt(false);
+                inFinBt(true);
                 txtProducto.requestFocus();
                 verLista();
                 //SPINNER LINEAS
@@ -820,8 +811,6 @@ public class ActivityEnvTraspMultSuc2 extends AppCompatActivity {
                     spLineas.setAdapter(adaptador);
                     spLineas.setText(listaLineas.get(0),false);
                 }//SPINNER
-
-
             }//else
             //chbConten.setVisibility(View.GONE);
         }//onPost
@@ -983,22 +972,6 @@ public class ActivityEnvTraspMultSuc2 extends AppCompatActivity {
             super.onPostExecute(result);
             mDialog.dismiss();
             if(listaIncidencias.size() > 0) {
-                /*String[] opciones = new String[listaIncidencias.size()];
-                for (int i = 0; i < listaIncidencias.size(); i++) {
-                    opciones[i] = listaIncidencias.get(i).getClave() + ".-" + listaIncidencias.get(i).getMensaje();
-                }//for
-                AlertDialog.Builder builder = new AlertDialog.Builder(ActivityEnvTraspMultSuc.this);
-                builder.setIcon(R.drawable.icons8_error_52).setTitle("Seleccione la Incidencia");
-                builder.setItems(opciones, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        String Producto =lista.get(posicion).getProducto();
-                        String RazonSuper = opciones[which];
-                        new AsyncReporteInici(Producto,RazonSuper,Folio,lista.get(posicion).getCantidad()).execute();
-                    }//onclclick
-                });
-                AlertDialog dialog = builder.create();
-                dialog.show();*/
                 alertIncid();
             }else {
                 AlertDialog.Builder builder = new AlertDialog.Builder(ActivityEnvTraspMultSuc2.this);

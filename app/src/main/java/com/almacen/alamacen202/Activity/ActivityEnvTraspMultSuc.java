@@ -1197,7 +1197,7 @@ public class ActivityEnvTraspMultSuc extends AppCompatActivity {
                         public void run() {
                             mensaje="No fue posible obtener datos del servidor";
                         }//run
-                    });//runUniTthread
+                    });//runUniThread
                 }//else
                 return null;
             }else{
@@ -2237,6 +2237,7 @@ public class ActivityEnvTraspMultSuc extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menuoverflow4, menu);
         MenuItem itemOtro = menu.findItem(R.id.itOtro);
         itemOtro.setTitle("POR ALMACÉN");
+        itemOtro.setVisible(false);
         return true;
     }//onCreateOptionsMenu
 

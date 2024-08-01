@@ -40,8 +40,38 @@ public class AdapterInventario extends RecyclerView.Adapter<AdapterInventario.Vi
 
         if(index==position){
             holder.lyInv.setBackgroundResource(R.color.colorSelec);
+            /*if(datos.get(position).isSincronizado()){
+                holder.tvProd.setTextColor(Color.parseColor("#32997C"));
+                holder.tvCant.setTextColor(Color.parseColor("#32997C"));
+                holder.tvEscan.setTextColor(Color.parseColor("#32997C"));
+                holder.Ub.setTextColor(Color.parseColor("#32997C"));
+                holder.n.setTextColor(Color.parseColor("#32997C"));
+            }else{
+                holder.tvProd.setTextColor(Color.parseColor("#0E0E0E"));
+                holder.tvCant.setTextColor(Color.parseColor("#1E739A"));
+                holder.tvEscan.setTextColor(Color.parseColor("#043B72"));
+                holder.Ub.setTextColor(Color.parseColor("#0E0E0E"));
+                holder.n.setTextColor(Color.parseColor("#043B72"));
+            }//else
+            */
         }else{
             holder.lyInv.setBackgroundColor(0);
+            /*if(datos.get(position).isSincronizado()){
+                holder.lyInv.setBackgroundResource(R.color.ColorSinc);
+                holder.tvProd.setTextColor(Color.parseColor("#32997C"));
+                holder.tvCant.setTextColor(Color.parseColor("#32997C"));
+                holder.tvEscan.setTextColor(Color.parseColor("#32997C"));
+                holder.Ub.setTextColor(Color.parseColor("#32997C"));
+                holder.n.setTextColor(Color.parseColor("#32997C"));
+            }else{
+                holder.lyInv.setBackgroundColor(0);
+                holder.tvProd.setTextColor(Color.parseColor("#0E0E0E"));
+                holder.tvCant.setTextColor(Color.parseColor("#1E739A"));
+                holder.tvEscan.setTextColor(Color.parseColor("#043B72"));
+                holder.Ub.setTextColor(Color.parseColor("#0E0E0E"));
+                holder.n.setTextColor(Color.parseColor("#043B72"));
+            }//
+            */
         }//else
     }//onBindViewHolder
 

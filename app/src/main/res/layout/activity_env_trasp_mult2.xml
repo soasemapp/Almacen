@@ -53,7 +53,7 @@
                 android:id="@+id/btnBuscarFol"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/btn_background1"
+                android:background="@drawable/btn_background2"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="5dp"
                 android:text="@string/buscar"
@@ -431,7 +431,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1.5"
-                    android:background="@drawable/btn_background3"
+                    android:background="@drawable/btn_background1"
                     android:text="@string/buscar"
                     android:textSize="10dp"
                     android:maxLines="2"
@@ -440,7 +440,7 @@
                     app:iconGravity="end"
                     app:iconTint="@null"
                     app:iconSize="20dp"
-                    app:backgroundTint="@color/ColorGris"
+                    app:backgroundTint="@null"
                     android:layout_marginLeft="2dp"
                     android:enabled="false"/>
             </LinearLayout>

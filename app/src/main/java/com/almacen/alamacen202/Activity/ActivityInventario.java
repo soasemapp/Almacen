@@ -732,17 +732,7 @@ public class ActivityInventario extends AppCompatActivity {
         return cant;
     }//compararCant
 
-    public int compararCantidad(String prod,String ubi){//en caso de que no sea manual, se toma la cantidad que se tenia y se suma 1
-        int cant=1;
-        for(int i=0;i<listaInv.size();i++){
-            if(listaInv.get(i).getProducto().equals(prod) &&
-            listaInv.get(i).getUbi().equals(ubi)){
-                cant=Integer.parseInt(listaInv.get(i).getEscan())+1;
-                break;
-            }//if
-        }//for
-        return cant;
-    }//compararCant
+
 
     public String compararUbi(String prod){//buscar ubi
         String ubi="";
@@ -1484,6 +1474,74 @@ public class ActivityInventario extends AppCompatActivity {
         } catch (Exception ex) {}
     }//conectaAutoriza
 
+    private class AsyncResActualizaInvInd extends AsyncTask<Void, Integer, Void> {
+
+        private String folio,producto,cantidad,ubicacion;
+        private boolean conn=true;
+
+        public AsyncResActualizaInvInd(String folio,String producto,String cantidad,String ubicacion) {
+            this.folio = folio;
+            this.producto=producto;
+            this.cantidad=cantidad;
+            this.ubicacion=ubicacion;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mDialog.show();
+            mensaje="";
+        }//onPreExecute
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            conn=firtMet();
+            if(conn==true) {
+                if (conectaRes(producto,cantidad,ubicacion)==true) {
+                    mensaje="";
+                }else if(mensaje.equals("0")){
+                    mensaje="Folio Cerrado";
+                }//else if
+            }else{
+                mensaje="Problemas de conexión";
+            }//else
+            return  null;
+        }//doInBackground
+
+        @Override
+        protected void onPostExecute(Void aBoolean) {
+            super.onPostExecute(aBoolean);
+            mDialog.dismiss();
+            if(!mensaje.equals("")){
+                AlertDialog.Builder builder = new AlertDialog.Builder(ActivityInventario.this);
+                builder.setMessage(mensaje);
+                builder.setCancelable(false);
+                builder.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        finish();
+                    }
+                });//negative botton
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            }else if(mensaje.equals("")) {
+                Toast.makeText(ActivityInventario.this, "Sincronizado", Toast.LENGTH_SHORT).show();
+            }else{
+                AlertDialog.Builder builder = new AlertDialog.Builder(ActivityInventario.this);
+                builder.setTitle("Problemas de sincronización");
+                builder.setCancelable(false);
+                builder.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        finish();
+                    }
+                });//negative botton
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            }//else
+        }//onPost
+    }//AsyncResActualizaInv
+
     public void buscar(String prod,String cant,String ubic){
         String nuevo=prod.substring(0,3)+"";
         if(nuevo.equals("P01") || nuevo.equals("P02") || nuevo.equals("P03") || nuevo.equals("P04") || nuevo.equals("P05")
@@ -1575,7 +1633,7 @@ public class ActivityInventario extends AppCompatActivity {
                     //keyboard.showSoftInput(txtEscan, InputMethodManager.SHOW_IMPLICIT);
                     mostrarDetalleCod(i);
                 }else{
-                    Toast.makeText(this, "No se pudó actualizar este código", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "No se actualizó este código", Toast.LENGTH_SHORT).show();
                 }//else no se actualizo
                 break;
             }//if
@@ -1631,44 +1689,6 @@ public class ActivityInventario extends AppCompatActivity {
     }//mostrarDetalleCod
 
 
-    public void buscarEnSql(String prod,String cant){
-        String nuevo=prod.substring(0,3)+"";
-        if(nuevo.equals("P01") || nuevo.equals("P02") || nuevo.equals("P03") || nuevo.equals("P04") || nuevo.equals("P05")
-                || nuevo.equals("P06") || nuevo.equals("P07") || nuevo.equals("8") || nuevo.equals("P09") || nuevo.equals("P10")
-                || nuevo.equals("P11") || nuevo.equals("P12") || prod.substring(0,4).equals("http") || prod.substring(0,4).equals("HTTP")
-                || nuevo.equals("www") || nuevo.equals("WWW")){
-            bepp.play(sonido_error, 1, 1, 1, 0, 0);
-            AlertDialog.Builder alerta = new AlertDialog.Builder(ActivityInventario.this);
-            alerta.setMessage("Producto no válido").setCancelable(false).setNegativeButton("Ok", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    dialogInterface.cancel();
-                }
-            });
-            AlertDialog titulo = alerta.create();
-            titulo.setTitle("¡ERROR!");
-            titulo.show();
-        }else{
-            try{
-                @SuppressLint("Recycle") Cursor fila = db.rawQuery(
-                        "SELECT PRODUCTO,CANTIDAD from INVENTARIOALM WHERE PRODUCTO='"+prod+"'", null);
-                if (fila != null && fila.moveToFirst()) {
-                    String esc=fila.getString(1);
-                    //if(esc.equals("1")){
-
-                    //}else{
-                        //actualizarSql(prod,Integer.parseInt(cant)+"");
-                    //}
-                }else{
-                    //insertarSql(prod,0+"",cant);
-                }
-                fila.close();
-            }catch(Exception e){
-                Toast.makeText(ActivityInventario.this,e+"", Toast.LENGTH_SHORT).show();
-            }//catch
-            consultaSql();
-        }//else
-    }//consultaSql
 
     public void consultaSql(){
         try{
