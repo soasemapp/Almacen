@@ -177,37 +177,52 @@
                     android:textSize="12sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
+        <LinearLayout
+            android:id="@+id/DestinoUbicacion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/TXTUBICADEST"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
                 android:layout_marginTop="5dp"
+                android:layout_marginRight="5dp"
                 android:hint="Ubicacion Destino"
-                app:hintTextColor="@color/AzulBack"
                 android:textColorHint="@color/AzulBack"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 app:boxBackgroundMode="outline"
                 app:boxCornerRadiusTopEnd="10dp"
                 app:boxCornerRadiusTopStart="10dp"
-                android:visibility="gone">
+                app:hintTextColor="@color/AzulBack">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/EDUbicacionDest"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:autoSizeTextType="uniform"
-
-                    android:ems="10"
                     android:editable="false"
-                    android:textColor="@color/colorBlack"
+                    android:ems="10"
                     android:inputType="textMultiLine"
+                    android:textColor="@color/colorBlack"
                     android:textSize="12sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
-
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/Ubicaciones1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/btn_background1"
+                android:onClick="ubicaciones2"
+                android:text="Ubicaciones"
+                android:textColor="@color/ColorWhite"
+                android:textSize="14sp"
+                app:backgroundTint="@null" />
+        </LinearLayout>
             <View
                 android:layout_width="match_parent"
                 android:layout_height="3dp"

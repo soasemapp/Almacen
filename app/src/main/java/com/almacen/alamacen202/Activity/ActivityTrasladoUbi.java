@@ -62,7 +62,7 @@ public class ActivityTrasladoUbi extends AppCompatActivity {
     TextView MostrarUbicDEd;
     ArrayList<ListaUbicasSandG> listaUbicaciones = new ArrayList<>();
 
-    LinearLayout Ubicacionorigenlinear,ProducL;
+    LinearLayout Ubicacionorigenlinear,ProducL,DestinoUbicacion;
 
     ImageView imgVi;
 
@@ -104,6 +104,7 @@ public class ActivityTrasladoUbi extends AppCompatActivity {
         EDCantidad = findViewById(R.id.EDCANTIDAD);
         EDUbicacionDest = findViewById(R.id.EDUbicacionDest);
         Instrucciones = findViewById(R.id.Instruccionestxt);
+        DestinoUbicacion=findViewById(R.id.DestinoUbicacion);
 
         MostrarProEd = findViewById(R.id.edProMostrar);
         MostrarUbicOEd = findViewById(R.id.edUbiOrMostrar);
@@ -117,7 +118,7 @@ public class ActivityTrasladoUbi extends AppCompatActivity {
         TXTPRODVISI.setVisibility(View.VISIBLE);
         TXTUBICAORIVISI.setVisibility(View.GONE);
         TXTCANTIDADVISI.setVisibility(View.GONE);
-        TXTUBICADEST.setVisibility(View.GONE);
+        DestinoUbicacion.setVisibility(View.GONE);
 
         strusr = preference.getString("user", "null");
         strpass = preference.getString("pass", "null");
@@ -263,7 +264,7 @@ public class ActivityTrasladoUbi extends AppCompatActivity {
                         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                         imm.hideSoftInputFromWindow(EDUbicacionDest.getWindowToken(), 0);
                         TXTCANTIDADVISI.setVisibility(View.GONE);
-                        TXTUBICADEST.setVisibility(View.VISIBLE);
+                        DestinoUbicacion.setVisibility(View.VISIBLE);
                         EDUbicacionDest.requestFocus();
                         Instrucciones.setText("Ingrese ubicacion a cambiar");
                         MostrarCantEd.setText(Cantidad + " PZA");
@@ -295,7 +296,7 @@ public class ActivityTrasladoUbi extends AppCompatActivity {
                         UbicacionDestino = editable.toString();
                         EDProducto.requestFocus();
                         ProducL.setVisibility(View.VISIBLE);
-                        TXTUBICADEST.setVisibility(View.GONE);
+                        DestinoUbicacion.setVisibility(View.GONE);
                         TXTPRODVISI.setVisibility(View.VISIBLE);
                         Instrucciones.setText("Escanear el producto....");
                         MostrarUbicDEd.setText(UbicacionDestino);
@@ -309,7 +310,7 @@ public class ActivityTrasladoUbi extends AppCompatActivity {
                             if(ban == '\n'){
                                 UbicacionDestino = editable.toString();
                                 EDProducto.requestFocus();
-                                TXTUBICADEST.setVisibility(View.GONE);
+                                DestinoUbicacion.setVisibility(View.GONE);
                                 TXTPRODVISI.setVisibility(View.VISIBLE);
                                 Instrucciones.setText("Escanear el producto....");
                                 MostrarUbicDEd.setText(UbicacionDestino);
@@ -715,6 +716,56 @@ public class ActivityTrasladoUbi extends AppCompatActivity {
     }
 
 
+    private class ListUbicacion2 extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected void onPreExecute() {
+
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            Ubicaciones();
+            return null;
+        }
+
+
+        @RequiresApi(api = Build.VERSION_CODES.P)
+        @Override
+        protected void onPostExecute(Void result) {
+            String[] opciones = new String[listaUbicaciones.size()];
+
+            for (int i = 0; i < listaUbicaciones.size(); i++) {
+                opciones[i] = listaUbicaciones.get(i).getUbicaciones();
+            }
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(ActivityTrasladoUbi.this);
+            builder.setTitle("SELECCIONE UNA UBICACION");
+
+
+            builder.setItems(opciones, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    UbicacionDestino = listaUbicaciones.get(which).getUbicaciones();
+                    EDProducto.requestFocus();
+                    ProducL.setVisibility(View.VISIBLE);
+                    DestinoUbicacion.setVisibility(View.GONE);
+                    TXTPRODVISI.setVisibility(View.VISIBLE);
+                    Instrucciones.setText("Escanear el producto....");
+                    MostrarUbicDEd.setText(UbicacionDestino);
+                    ActivityTrasladoUbi.ModificarUbicDestino task = new ActivityTrasladoUbi.ModificarUbicDestino();
+                    task.execute();
+                }
+            });
+            // create and show the alert dialog
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        }
+    }
+
+
+
+
     private class ListUbicacion extends AsyncTask<Void, Void, Void> {
 
         @Override
@@ -796,6 +847,13 @@ public class ActivityTrasladoUbi extends AppCompatActivity {
     public void ubicaciones (View view){
         listaUbicaciones.clear();
         ActivityTrasladoUbi.ListUbicacion task = new ActivityTrasladoUbi.ListUbicacion();
+        task.execute();
+
+    }
+
+    public void ubicaciones2 (View view){
+        listaUbicaciones.clear();
+        ActivityTrasladoUbi.ListUbicacion2 task = new ActivityTrasladoUbi.ListUbicacion2();
         task.execute();
 
     }
