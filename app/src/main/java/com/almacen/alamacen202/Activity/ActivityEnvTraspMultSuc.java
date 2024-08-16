@@ -695,7 +695,6 @@ public class ActivityEnvTraspMultSuc extends AppCompatActivity {
             btnAtras.setEnabled(false);
             btnAtras.setBackgroundTintList(ColorStateList.
                     valueOf(getResources().getColor(R.color.ColorGris)));
-
         }else{
             btnAtras.setEnabled(true);
             btnAtras.setBackgroundTintList(null);
