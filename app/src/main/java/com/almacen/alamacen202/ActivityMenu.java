@@ -22,7 +22,6 @@ import android.widget.LinearLayout;
 import com.almacen.alamacen202.Activity.ActivityConsultaPA;
 import com.almacen.alamacen202.Activity.ActivityDifUbiExi;
 import com.almacen.alamacen202.Activity.ActivityEnvTraspMultSuc;
-import com.almacen.alamacen202.Activity.ActivityEnvTraspMultSuc2;
 import com.almacen.alamacen202.Activity.ActivityInventario;
 import com.almacen.alamacen202.Activity.ActivityInventarioXProd;
 import com.almacen.alamacen202.Activity.ActivityLiberaciones;
@@ -33,7 +32,6 @@ import com.almacen.alamacen202.Activity.ActivityResurtidoPicking;
 import com.almacen.alamacen202.Activity.ActivityRecepConten;
 import com.almacen.alamacen202.Activity.ActivityTrasladoUbi;
 import com.almacen.alamacen202.Activity.ActivityInventarioXfolioComp;
-import com.almacen.alamacen202.SetterandGetters.RecepListSucCont;
 import com.almacen.alamacen202.Sqlite.ConexionSQLiteHelper;
 import com.almacen.alamacen202.includes.HttpHandler;
 import com.almacen.alamacen202.includes.MyToolbar;
@@ -88,43 +86,6 @@ public class ActivityMenu extends AppCompatActivity {
                 setMessage("Espere un momento...").build();
         mDialog.setCancelable(false);
 
-
-
-        switch (StrServer) {
-            case "jacve.dyndns.org:9085":
-                urlImagenes = "https://www.jacve.mx/es-mx/img/products/xl/";
-                break;
-            case "autodis.ath.cx:9085":
-                urlImagenes = "https://www.autodis.mx/es-mx/img/products/xl/";
-                break;
-            case "cecra.ath.cx:9085":
-                urlImagenes = "https://www.cecra.mx/es-mx/img/products/xl/";
-                break;
-            case "guvi.ath.cx:9085":
-                urlImagenes = "https://www.guvi.mx/es-mx/img/products/xl/";
-                break;
-            case "cedistabasco.ddns.net:9085":
-                urlImagenes = "https://www.pressa.mx/es-mx/img/products/xl/";
-                break;
-            case "sprautomotive.servehttp.com:9090":
-                urlImagenes = "https://www.vipla.mx/es-mx/img/products/xl/";
-                break;
-            case "sprautomotive.servehttp.com:9095":
-                urlImagenes = "https://www.vipla.mx/es-mx/img/products/xl/";
-                break;
-            case "sprautomotive.servehttp.com:9080":
-                urlImagenes = "https://www.vipla.mx/es-mx/img/products/xl/";
-                break;
-            case "sprautomotive.servehttp.com:9085":
-                urlImagenes = "https://www.vipla.mx/es-mx/img/products/xl/";
-                break;
-            case "vazlocolombia.dyndns.org:9085":
-                urlImagenes = "https://vazlo.com.mx/assets/img/productos/chica/jpg/";
-                break;
-            default:
-                urlImagenes = "https://www.pressa.mx/es-mx/img/products/xl/";
-                break;
-        }
         extIm=getString(R.string.ext);
 
         lyAdicSPR = findViewById(R.id.lyAdicSPR);
@@ -140,6 +101,7 @@ public class ActivityMenu extends AppCompatActivity {
                         .into(imgVi);
                 lyAdicSPR.setVisibility(View.GONE);
                 ly2.setVisibility(View.VISIBLE);
+                urlImagenes = "https://www.jacve.mx/es-mx/img/products/xl/";
                 break;
             case "sprautomotive.servehttp.com:9085":
                 Picasso.with(getApplicationContext()).
@@ -150,6 +112,7 @@ public class ActivityMenu extends AppCompatActivity {
                         .into(imgVi);
                 lyAdicSPR.setVisibility(View.GONE);
                 ly2.setVisibility(View.VISIBLE);
+                urlImagenes = "https://www.vipla.mx/es-mx/img/products/xl/";
                 break;
             case "cecra.ath.cx:9085":
                 Picasso.with(getApplicationContext()).
@@ -160,6 +123,7 @@ public class ActivityMenu extends AppCompatActivity {
                         .into(imgVi);
                 lyAdicSPR.setVisibility(View.GONE);
                 ly2.setVisibility(View.VISIBLE);
+                urlImagenes = "https://www.cecra.mx/es-mx/img/products/xl/";
                 break;
             case "guvi.ath.cx:9085":
                 Picasso.with(getApplicationContext()).
@@ -170,6 +134,7 @@ public class ActivityMenu extends AppCompatActivity {
                         .into(imgVi);
                 lyAdicSPR.setVisibility(View.GONE);
                 ly2.setVisibility(View.VISIBLE);
+                urlImagenes = "https://www.guvi.mx/es-mx/img/products/xl/";
                 break;
             case "cedistabasco.ddns.net:9085":
                 Picasso.with(getApplicationContext()).
@@ -180,6 +145,7 @@ public class ActivityMenu extends AppCompatActivity {
                         .into(imgVi);
                 lyAdicSPR.setVisibility(View.GONE);
                 ly2.setVisibility(View.VISIBLE);
+                urlImagenes = "https://www.pressa.mx/es-mx/img/products/xl/";
                 break;
             case "cedistabasco.ddns.net:9080":
                 Picasso.with(getApplicationContext()).
@@ -200,6 +166,7 @@ public class ActivityMenu extends AppCompatActivity {
                         .into(imgVi);
                 lyAdicSPR.setVisibility(View.GONE);
                 ly2.setVisibility(View.VISIBLE);
+                urlImagenes = "https://www.autodis.mx/es-mx/img/products/xl/";
                 break;
             case "sprautomotive.servehttp.com:9090":
                 Conten.setBackgroundColor(Color.rgb(4, 59, 114));
@@ -209,7 +176,7 @@ public class ActivityMenu extends AppCompatActivity {
                         .fit()
                         .centerInside()
                         .into(imgVi);
-                urlImagenes=getString(R.string.urlImagenesSPR);
+                urlImagenes=getString(R.string.urlImagenesSPR)+"rodatech/";
                 extIm=getString(R.string.ext);
                 break;
             case "sprautomotive.servehttp.com:9095":
@@ -219,7 +186,7 @@ public class ActivityMenu extends AppCompatActivity {
                         .fit()
                         .centerInside()
                         .into(imgVi);
-                urlImagenes=getString(R.string.urlImagenesSPR);
+                urlImagenes=getString(R.string.urlImagenesSPR)+"partech/";
                 extIm=getString(R.string.ext);
                 break;
             case "sprautomotive.servehttp.com:9080":
@@ -229,7 +196,7 @@ public class ActivityMenu extends AppCompatActivity {
                         .fit()
                         .centerInside()
                         .into(imgVi);
-                urlImagenes=getString(R.string.urlImagenesSPR);
+                urlImagenes=getString(R.string.urlImagenesSPR)+"shark/";
                 extIm=getString(R.string.ext);
                 break;
             case "vazlocolombia.dyndns.org:9085":
@@ -241,6 +208,7 @@ public class ActivityMenu extends AppCompatActivity {
                         .into(imgVi);
                 lyAdicSPR.setVisibility(View.GONE);
                 ly2.setVisibility(View.VISIBLE);
+                urlImagenes = "https://vazlo.com.mx/assets/img/productos/chica/jpg/";
                 break;
             default:
                 Picasso.with(getApplicationContext()).
@@ -251,6 +219,7 @@ public class ActivityMenu extends AppCompatActivity {
                         .into(imgVi);
                 lyAdicSPR.setVisibility(View.GONE);
                 ly2.setVisibility(View.GONE);
+                urlImagenes = "https://www.pressa.mx/es-mx/img/products/xl/";
                 break;
         }//switch
         editor.putString("urlImagenes",urlImagenes);

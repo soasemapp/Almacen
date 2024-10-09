@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">Almacen Kepler</string>
     <string name="buscar">Buscar</string>
-    <string name="version_1_6">Version 1.12.9</string>
-    <string name="versionNum">1.12.9</string>
+    <string name="version_1_6">Version 1.12.13</string>
+    <string name="versionNum">1.12.13</string>
     <string name="usuario">Usuario</string>
     <string name="escanear">Escanear</string>
     <string name="comprometidas">COMPROMETIDAS</string>
@@ -48,8 +48,8 @@
     <string name="rellenar">Rellenar Celda</string>
     <!-- https://vazlo.com.mx/assets/img/productos/chica/jpg/-->
     <string name="urlImagenesGeneral">https://www.jacve.mx/es-mx/img/products/xl/</string><!--URL genereal imagenes -->
-    <string name="urlImagenesSPR">https://jacve.mx/es-mx/img/products/md/</string>
-    <!--<string name="urlImagenesSPR">https://sprautomotive.com/es_MX/res/img/products/md/</string>--><!--URL SPR imagenes -->
+    <!--<string name="urlImagenesSPR">https://jacve.mx/es-mx/img/products/md/</string>-->
+    <string name="urlImagenesSPR">https://sprautomotive.com/es_MX/res/img/products/md/</string>-->
     <string name="ext">/4.webp</string>
     <string name="rodatech">rodatech/</string>
     <string name="partech">partech/</string>

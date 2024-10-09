@@ -38,8 +38,8 @@ public class ActivityPerfil extends AppCompatActivity {
         preference = getSharedPreferences("Login", Context.MODE_PRIVATE);
         editor = preference.edit();
 
-        strusr = preference.getString("usuario", null);
-        strpass =preference.getString("pasword", null);
+        strusr = preference.getString("user", null);
+        strpass =preference.getString("pass", null);
         strname = preference.getString("name", null);
         strlname = preference.getString("lname", null);
         strtype =preference.getString("type", null);
@@ -50,7 +50,7 @@ public class ActivityPerfil extends AppCompatActivity {
         StrServer = preference.getString("Server", null);
         strtype2 =preference.getString("type2", null);
 
-        usr.setText("                                          " + strusr);
+        usr.setText(strusr.toString());
         password.setText("                                          " + strpass);
         name.setText(strname);
         apellido.setText(strlname);

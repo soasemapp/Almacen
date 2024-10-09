@@ -7,14 +7,11 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.net.ConnectivityManager;
@@ -44,25 +41,17 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.almacen.alamacen202.ActivityMenu;
-import com.almacen.alamacen202.Adapter.AdaptadorCajas;
 import com.almacen.alamacen202.Adapter.AdaptadorCajaxProd;
 import com.almacen.alamacen202.Adapter.AdaptadorEnvTraspasos;
-import com.almacen.alamacen202.Adapter.AdaptadorListAlmacenes;
-import com.almacen.alamacen202.Adapter.AdaptadorTraspasos;
-import com.almacen.alamacen202.Adapter.AdapterDifUbiExi;
 import com.almacen.alamacen202.Adapter.AdapterListaCajas;
 import com.almacen.alamacen202.Imprecion.BluetoothPrint;
 import com.almacen.alamacen202.R;
@@ -70,12 +59,6 @@ import com.almacen.alamacen202.SetterandGetters.CAJASSANDG;
 import com.almacen.alamacen202.SetterandGetters.CajaXProd;
 import com.almacen.alamacen202.SetterandGetters.EnvTraspasos;
 import com.almacen.alamacen202.SetterandGetters.ListaIncidenciasSandG;
-import com.almacen.alamacen202.SetterandGetters.Traspasos;
-import com.almacen.alamacen202.Sqlite.ConexionSQLiteHelper;
-import com.almacen.alamacen202.XML.XMLMensajeIncidencias;
-import com.almacen.alamacen202.XML.XMLRecepConsul;
-import com.almacen.alamacen202.XML.XMLRecepMultSuc;
-import com.almacen.alamacen202.XML.XMLReportInici;
 import com.almacen.alamacen202.includes.HttpHandler;
 import com.almacen.alamacen202.includes.MyToolbar;
 import com.google.android.material.textfield.TextInputLayout;
@@ -84,25 +67,11 @@ import com.squareup.picasso.Picasso;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.ksoap2.SoapEnvelope;
-import org.ksoap2.SoapFault;
-import org.ksoap2.serialization.SoapObject;
-import org.ksoap2.transport.HttpTransportSE;
-import org.xmlpull.v1.XmlPullParserException;
 
-import java.io.IOException;
-import java.lang.reflect.Array;
-import java.lang.reflect.Type;
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 
 import dmax.dialog.SpotsDialog;
@@ -1515,7 +1484,7 @@ public class ActivityEnvTraspMultSuc extends AppCompatActivity {
 
     private class AsyncInsertCajasE extends AsyncTask<Void, Void, String> {
 
-        private String folio,producto,cant,numCajas,part,usu,var,ProductoActual,newCant;
+        private String folio,producto,cant,numCajas,part,usu,var,ProductoActual,newCant,mensaje2,sobra;
         private boolean conn,sumar;
         int alTerminar;
 
@@ -1549,7 +1518,8 @@ public class ActivityEnvTraspMultSuc extends AppCompatActivity {
             if(conn==true){
                 String parametros="k_Sucursal="+strbran+"&k_Folio="+folio+
                         "&k_Producto="+producto+"&k_Cantidad="+cant+
-                        "&k_NumCajas="+numCajas+"&k_partida="+part+""+"&k_UUsuario="+usu+
+                        "&k_NumCajas="+numCajas+"&k_partida="+part+""+
+                        "&k_cantLim="+lista.get(posicion2).getCantidad()+
                         "&k_ubi="+txtUbi.getText().toString();
                 String url = "http://"+strServer+"/InsertCajasE?"+parametros;
                 String jsonStr = new HttpHandler().makeServiceCall(url,strusr,strpass);
@@ -1622,7 +1592,9 @@ public class ActivityEnvTraspMultSuc extends AppCompatActivity {
         final int[] nomCaja = {caja};
         String parametros="k_Sucursal="+suc+"&k_Folio="+folio+
                 "&k_Producto="+producto+"&k_Cantidad="+rep+
-                "&k_NumCajas="+ nomCaja[0] +"&k_partida="+part+"&k_UUsuario="+usu+"&k_ubi="+txtUbi.getText().toString();
+                "&k_NumCajas="+ nomCaja[0] +"&k_partida="+part+
+                "&k_cantLim="+lista.get(posicion2).getCantidad()+
+                "&k_ubi="+txtUbi.getText().toString();
         String url = "http://"+strServer+"/InsertCajasE?"+parametros;
         String jsonStr = new HttpHandler().makeServiceCall(url,strusr,strpass);
         if(jsonStr != null) {
@@ -2254,7 +2226,7 @@ public class ActivityEnvTraspMultSuc extends AppCompatActivity {
                 break;
             case R.id.itOtro:
                 if(primeroSinc(0)==false){
-                    startActivity(new Intent(ActivityEnvTraspMultSuc.this, ActivityEnvTraspMultSuc2.class));
+                    startActivity(new Intent(ActivityEnvTraspMultSuc.this, ActivityRecepAlm.class));
                     finish();
                 }//if
                 break;

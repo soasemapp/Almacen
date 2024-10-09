@@ -22,7 +22,9 @@
             android:layout_marginTop="10dp">
 
 
+
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tlFol"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -465,6 +467,7 @@
                         android:layout_width="2dp"
                         android:layout_height="match_parent"/>
                     <TextView
+                        android:id="@+id/tviEx"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1.8"
