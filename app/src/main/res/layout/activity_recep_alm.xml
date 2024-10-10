@@ -106,53 +106,28 @@
                         android:enabled="false"/>
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="2"
-                    android:hint="Total Pzas"
-                    android:textColorHint="@color/AzulBack"
-                    app:hintTextColor="@color/AzulBack"
-                    android:maxLines="1"
-                    app:boxBackgroundMode="outline"
-                    app:boxCornerRadiusTopEnd="10dp"
-                    app:boxCornerRadiusTopStart="10dp"
-                    app:startIconTint="@null"
-                    app:boxBackgroundColor="@color/ColorWhite"
-                    app:boxStrokeColor="@color/colorPrimary"
-                    android:visibility="gone">
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/txtTotPza"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:maxLines="1"
-                        android:text="0"
-                        android:textSize="15dp"
-                        android:textColor="@color/colorVerdeAzul"
-                        android:textStyle="bold"
-                        android:enabled="false"/>
-                </com.google.android.material.textfield.TextInputLayout>
+
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnImpr"
+                    android:id="@+id/btnBusc"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="2"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginRight="2dp"
-                    android:background="@drawable/btn_background1"
-                    android:maxLines="1"
-                    android:text="Imprimir"
-                    android:textAlignment="textStart"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.5"
+                    android:layout_gravity="center_vertical"
+                    android:background="@drawable/btn_background2"
+                    android:text="BUSCAR PRODUCTO"
+                    android:textSize="10dp"
+                    android:maxLines="2"
                     android:textColor="@color/ColorWhite"
-                    android:textSize="12dp"
-                    app:icon="@drawable/icons8_puerta_abierta_impresora_48"
-                    app:iconSize="18dp"
+                    app:icon="@drawable/icons8_lupa"
+                    app:iconGravity="end"
                     app:iconTint="@null"
-                    app:iconGravity="start"
+                    app:iconSize="20dp"
                     app:backgroundTint="@null"
-                    android:visibility="gone"/>
+                    android:layout_marginLeft="2dp"
+                    android:enabled="false"/>
             </LinearLayout>
+
 
 
 

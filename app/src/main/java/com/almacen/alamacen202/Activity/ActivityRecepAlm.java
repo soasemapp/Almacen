@@ -55,6 +55,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
 
 import dmax.dialog.SpotsDialog;
 
@@ -66,11 +67,11 @@ public class ActivityRecepAlm extends AppCompatActivity {
     private int posicion=0,posicion2=0,posG=-1,TOTP=0,RECEP=0;
     private String strusr,strpass,strbran,strServer,codeBar,mensaje,Producto="",serv,Folio="",impresora;
     private ArrayList<Traspasos> listaTrasp = new ArrayList<>();
-    private EditText txtProd,txtCantidad,txtCantSurt,txtTotPza,txtUbicT;
+    private EditText txtProd,txtCantidad,txtCantSurt,txtUbicT;
     private AutoCompleteTextView spAlm;
     private ImageView ivProd;
     private TextView tvProd;
-    private Button btnBuscar,btnAtras,btnAdelante,btnCorr,btnImpr;
+    private Button btnBuscar,btnAtras,btnAdelante,btnCorr,btnBusc;
     private RecyclerView rvTraspasos;
     private AdaptadorRecepAlm adapter;
     private AlertDialog mDialog;
@@ -82,6 +83,7 @@ public class ActivityRecepAlm extends AppCompatActivity {
     Context context = this;
     AlertDialog dialog6 = null;
     AlertDialog.Builder builder6;
+    private AlertDialog alertDialog=null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -130,10 +132,11 @@ public class ActivityRecepAlm extends AppCompatActivity {
         btnAdelante =findViewById(R.id.btnAdelante);
         ivProd      = findViewById(R.id.ivProd);
         btnCorr     = findViewById(R.id.btnCorr);
-        txtTotPza = findViewById(R.id.txtTotPza);
+        //txtTotPza = findViewById(R.id.txtTotPza);
         txtUbicT = findViewById(R.id.txtUbicT);
-        btnImpr = findViewById(R.id.btnImpr);
+        //btnImpr = findViewById(R.id.btnImpr);
         spAlm = findViewById(R.id.spAlm);
+        btnBusc = findViewById(R.id.btnBusc);
 
         bepp = new SoundPool(1, AudioManager.STREAM_MUSIC, 1);
         sonido_correcto = bepp.load(ActivityRecepAlm.this, R.raw.sonido_correct, 1);
@@ -144,9 +147,35 @@ public class ActivityRecepAlm extends AppCompatActivity {
         adapter = new AdaptadorRecepAlm(listaTrasp);
         keyboard = (InputMethodManager) getSystemService(ActivityRecepTraspMultSuc.INPUT_METHOD_SERVICE);
 
-        //txtProd.setInputType(InputType.TYPE_NULL);
+        txtProd.setInputType(InputType.TYPE_NULL);
         //txtProd.requestFocus();
 
+
+        btnBusc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(listaTrasp.size()>0 && listaTrasp.get(posicion).isSincronizado()==false){
+                    posicion2=posicion;
+                    try {
+                        String resp= String.valueOf(new AsyncActualizar(Folio,listaTrasp.get(posicion).getProducto(),
+                                listaTrasp.get(posicion).getCantSurt()+"",
+                                "change",false,Producto).execute().get());
+                        resp=resp;
+                        alertBusca();
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }else{
+                    if(listaTrasp.size()>0) {
+                        alertBusca();
+                    }else{
+                        Toast.makeText(context, "Sin datos para buscar", Toast.LENGTH_SHORT).show();
+                    }//else
+                }//else
+            }//onclcik
+        });
 
         txtProd.addTextChangedListener(new TextWatcher() {
             @Override
@@ -193,11 +222,19 @@ public class ActivityRecepAlm extends AppCompatActivity {
         btnBuscar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Folio="";
-                rvTraspasos.setAdapter(null);
-                limpiar();
-                posicion=0;
-                new AsyncReceConSinFol().execute();
+
+                if(listaTrasp.size()>0 && listaTrasp.get(posicion).isSincronizado()==false){
+                    posicion2=posicion;
+                    new AsyncActualizar(Folio,listaTrasp.get(posicion).getProducto(),
+                            listaTrasp.get(posicion).getCantSurt()+"",
+                            "change",false,Producto).execute();
+                }else {
+                    Folio="";
+                    rvTraspasos.setAdapter(null);
+                    limpiar();
+                    posicion=0;
+                    new AsyncReceConSinFol().execute();
+                }//else
             }//onclick
         });//btnGuardar setonclick
 
@@ -224,7 +261,7 @@ public class ActivityRecepAlm extends AppCompatActivity {
                     posicion2=posicion;
                     new AsyncActualizar(Folio,listaTrasp.get(posicion).getProducto(),
                             listaTrasp.get(posicion).getCantSurt()+"",
-                            "change",false,Producto,0).execute();
+                            "change",false,Producto).execute();
                 }else {
                     Toast.makeText(ActivityRecepAlm.this, "Sin cambios", Toast.LENGTH_SHORT).show();
                 }
@@ -233,7 +270,7 @@ public class ActivityRecepAlm extends AppCompatActivity {
 
 
 
-        btnImpr.setOnClickListener(new View.OnClickListener() {
+        /*btnImpr.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(listaTrasp.size()>0){//si hay datos para imprimir
@@ -241,7 +278,7 @@ public class ActivityRecepAlm extends AppCompatActivity {
                         posicion2=posicion;
                         new AsyncActualizar(Folio,listaTrasp.get(posicion).getProducto(),
                                 listaTrasp.get(posicion).getCantSurt()+"",
-                                "change",false,Producto,0).execute();
+                                "change",false,Producto).execute();
                     }else{
                         ImprimirTicketRec(RECEP);
                     }//else
@@ -252,7 +289,7 @@ public class ActivityRecepAlm extends AppCompatActivity {
                     builder.setTitle("AVISO").setMessage("Sin datos para imprimir").create().show();
                 }//else
             }//onclick
-        });
+        });*/
 
         new AsyncConsulAlm().execute();
     }//onCreate
@@ -287,6 +324,66 @@ public class ActivityRecepAlm extends AppCompatActivity {
         }//if
         return folio;
     }
+
+    public void alertBusca(){
+        btnBusc.setEnabled(false);
+        AlertDialog.Builder alert = new AlertDialog.Builder(ActivityRecepAlm.this);
+        LayoutInflater inflater = ActivityRecepAlm.this.getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_buscprod, null);
+        alert.setView(dialogView);
+        TextView tvTit = dialogView.findViewById(R.id.tvTit);
+        EditText txtBuscaP = dialogView.findViewById(R.id.txtBuscaP);
+        Button btnB = dialogView.findViewById(R.id.btnB);
+        tvTit.setText("Buscar Producto");
+
+
+        btnB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(!txtBuscaP.getText().toString().equals("")){
+                    String comparar=txtBuscaP.getText().toString().trim();
+                    boolean existe=false;
+                    for(int i=0;i<listaTrasp.size();i++){
+                        if(listaTrasp.get(i).getProducto().equals(comparar)){
+                            btnBusc.setEnabled(true);
+                            existe=true;
+                            alertDialog.dismiss();
+                            posicion=i;
+                            mostrarDetalleProd();
+                            break;
+                        }//if
+                    }
+                    if(existe==false){
+                        btnBusc.setEnabled(true);
+                        bepp.play(sonido_error, 1, 1, 1, 0, 0);
+                        AlertDialog.Builder builder = new AlertDialog.Builder(ActivityRecepAlm.this);
+                        builder.setTitle("AVISO");
+                        builder.setMessage("No existe "+Producto+" en la lista");
+                        builder.setCancelable(false);
+                        builder.setNegativeButton("OK",null);
+                        AlertDialog dialogg = builder.create();
+                        dialogg.show();
+                    }
+                }else{
+                    Toast.makeText(ActivityRecepAlm.this, "Campo Vacío", Toast.LENGTH_SHORT).show();
+                }//else
+            }//onclick
+        });//btnB
+
+        alert.setCancelable(false);
+        alert.setNegativeButton("CANCELAR", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                keyboard.hideSoftInputFromWindow(txtBuscaP.getWindowToken(), 0);
+                btnBusc.setEnabled(true);
+                txtProd.requestFocus();
+            }
+        });//cerrar
+
+        alertDialog = alert.create();
+        alertDialog.show();
+        txtBuscaP.requestFocus();
+    }//alertBusca
 
     public boolean firtMet() {//firtMet
         ConnectivityManager connectivityManager =
@@ -345,9 +442,8 @@ public class ActivityRecepAlm extends AppCompatActivity {
 
     public void cambio(String var,boolean sumar){
         if(!listaTrasp.get(posicion2).getProducto().equals(Producto) && posG!=-1 && listaTrasp.get(posicion2).isSincronizado()==false){//identificando que prod anterior no se sincronizó
-            //new AsyncAct(listaTrasp.get(posicion2).getProducto(),listaTrasp.get(posicion2).getCantSurt(),var,sumar,Producto).execute();
             new AsyncActualizar(Folio,listaTrasp.get(posicion2).getProducto(),
-                    listaTrasp.get(posicion2).getCantSurt(),var,sumar,Producto,0).execute();
+                    listaTrasp.get(posicion2).getCantSurt(),var,sumar,Producto).execute();
         }else{//cuando se escanea o por botones de adelante, atras y onclick en lista
             if(sumar==true){//al escanear
                 evaluarEscaneo(Producto);
@@ -389,7 +485,6 @@ public class ActivityRecepAlm extends AppCompatActivity {
         txtCantidad.setText(listaTrasp.get(posicion).getCantidad());
         txtCantSurt.setText((Integer.parseInt(listaTrasp.get(posicion).getCantSurt())+
                 Integer.parseInt(listaTrasp.get(posicion).getExist()))+"");//exist se tomara como campo que guarda lo que ya se escaneo y sesta en tabla de kepler
-        txtTotPza.setText(totPazas()+"");
         txtUbicT.setText(listaTrasp.get(posicion).getUbic());
 
         Picasso.with(getApplicationContext()).
@@ -423,7 +518,6 @@ public class ActivityRecepAlm extends AppCompatActivity {
         txtCantidad.setText("");
         txtCantSurt.setText("");
         ivProd.setImageResource(R.drawable.logokepler);
-        txtTotPza.setText("");
         txtUbicT.setText("");
         btnAtras.setEnabled(false);
         btnAtras.setBackgroundTintList(ColorStateList.
@@ -466,7 +560,7 @@ public class ActivityRecepAlm extends AppCompatActivity {
                     modificados=true;
                     if((recep+cantS)==cant){
                         posicion2=i;
-                        new AsyncActualizar(Folio,prod,cantS+"","change",false,Producto,1).execute();
+                        new AsyncActualizar(Folio,prod,cantS+"","change",false,Producto).execute();
                     }
                 }else{
                     bepp.play(sonido_error, 1, 1, 1, 0, 0);
@@ -512,8 +606,10 @@ public class ActivityRecepAlm extends AppCompatActivity {
         rvTraspasos.setAdapter(adapter);
         txtProd.setEnabled(true);
         txtProd.requestFocus();
+        btnBusc.setEnabled(true);
         if(posicion>=listaTrasp.size()){
             posicion=listaTrasp.size()-1;
+            btnBusc.setEnabled(false);
         }
         mostrarDetalleProd();
     }//ver lista
@@ -521,7 +617,6 @@ public class ActivityRecepAlm extends AppCompatActivity {
     private class AsyncReceConSinFol extends AsyncTask<Void, Void, Void> {
 
         private boolean conn;
-
 
         @Override
         protected void onPreExecute() {
@@ -597,16 +692,14 @@ public class ActivityRecepAlm extends AppCompatActivity {
 
         private String folio,producto,cantidad,var,ProductoActual,newCant,exist;
         private boolean conn=true,sumar;
-        private int alTerm;
         public AsyncActualizar(String folio,String producto, String cantidad,
-                               String var,boolean sumar,String ProductoActual,int alTerm) {
+                               String var,boolean sumar,String ProductoActual) {
             this.folio=folio;
             this.producto = producto;
             this.cantidad = cantidad;
             this.var=var;
             this.sumar=sumar;
             this.ProductoActual=ProductoActual;
-            this.alTerm=alTerm;
         }
 
         @Override
@@ -666,7 +759,18 @@ public class ActivityRecepAlm extends AppCompatActivity {
             }else if (mensaje.equals("SINCRONIZADO")) {
                 Toast.makeText(ActivityRecepAlm.this, producto+" Sincronizado", Toast.LENGTH_SHORT).show();
                 bepp.play(sonido_correcto, 1, 1, 1, 0, 0);
-                new AsyncReceConSinFol().execute();
+
+                try{
+                    String resultado= String.valueOf(new AsyncReceConSinFol().execute().get());
+                    resultado=resultado;
+                    if(sumar==true){//al escanear
+                        evaluarEscaneo(ProductoActual);
+                    }else{
+                        tipoCambio(var);
+                        mostrarDetalleProd();
+                    }
+                }catch(Exception e){}//catch
+
             }else if(mensaje.equals("PROBLEMAS AL REGISTRAR")){
                 mDialog.dismiss();
                 bepp.play(sonido_error, 1, 1, 1, 0, 0);
@@ -840,7 +944,7 @@ public class ActivityRecepAlm extends AppCompatActivity {
                     posicion2=posicion;
                     new AsyncActualizar(Folio,listaTrasp.get(posicion).getProducto(),
                             listaTrasp.get(posicion).getCantSurt()+"",
-                            "change",false,Producto,2).execute();
+                            "change",false,Producto).execute();
                 }else {
                     startActivity(new Intent(ActivityRecepAlm.this, ActivityRecepTraspMultSuc.class));
                     finish();
