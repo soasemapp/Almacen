@@ -7,24 +7,26 @@ public class EnvTraspasos {
     private String existencia;
     private String cantidad;
     private String partida;
+    private String cantSinc;
     private String cantSurt;
     private String almEnv;
     private String linea;
     boolean sincronizado;
 
     public EnvTraspasos(String num, String producto, String ubic, String existencia,
-                        String cantidad, String partida, String cantSurt,String almEnv,
-                        String linea,boolean sincronizado) {
+                        String cantidad, String partida, String cantSinc, String cantSurt,
+                        String almEnv, String linea, boolean sincronizado) {
         this.num = num;
         this.producto = producto;
         this.ubic = ubic;
         this.existencia = existencia;
         this.cantidad = cantidad;
         this.partida = partida;
+        this.cantSinc = cantSinc;
         this.cantSurt = cantSurt;
-        this.almEnv=almEnv;
-        this.linea=linea;
-        this.sincronizado=sincronizado;
+        this.almEnv = almEnv;
+        this.linea = linea;
+        this.sincronizado = sincronizado;
     }
 
     public String getNum() {
@@ -73,6 +75,14 @@ public class EnvTraspasos {
 
     public void setPartida(String partida) {
         this.partida = partida;
+    }
+
+    public String getCantSinc() {
+        return cantSinc;
+    }
+
+    public void setCantSinc(String cantSinc) {
+        this.cantSinc = cantSinc;
     }
 
     public String getCantSurt() {

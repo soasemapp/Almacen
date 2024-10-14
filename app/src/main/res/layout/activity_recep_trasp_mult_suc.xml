@@ -63,8 +63,7 @@
                 app:icon="@drawable/icons8_lupa"
                 app:iconTint="@null"
                 app:iconSize="20dp"
-                app:backgroundTint="@null"
-                app:backgroundTintMode="add"/>
+                app:backgroundTint="@null"/>
 
 
             <View
@@ -85,7 +84,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:background="@drawable/btn_background2"
-                    app:backgroundTint="@color/ColorGris"
+                    app:backgroundTint="@null"
                     android:enabled="false"
                     android:maxLines="1"
                     android:text="Anterior"
@@ -135,7 +134,7 @@
                     android:textAlignment="textStart"
                     android:textColor="@color/cardview_light_background"
                     android:textSize="8dp"
-                    app:backgroundTint="@color/ColorGris"
+                    app:backgroundTint="@null"
                     app:icon="@drawable/ic_baseline_arrow_forward_24"
                     app:iconGravity="end"
                     app:iconTint="@null" />
@@ -356,7 +355,7 @@
                     android:layout_margin="3dp"
                     android:layout_weight="1.5"
                     android:background="@drawable/btn_background3"
-                    app:backgroundTint="@color/ColorGris"
+                    app:backgroundTint="@null"
                     android:enabled="false"
                     android:maxLines="1"
                     android:text="Anterior"
@@ -383,7 +382,7 @@
                     app:iconSize="15dp"
                     app:iconGravity="start"
                     app:iconTint="@color/ColorWhite"
-                    app:backgroundTint="@color/ColorGris"
+                    app:backgroundTint="@null"
                     android:enabled="false"/>
 
                 <com.google.android.material.button.MaterialButton
@@ -401,7 +400,7 @@
                     app:icon="@drawable/ic_baseline_arrow_forward_24"
                     app:iconTint="@null"
                     app:iconGravity="end"
-                    app:backgroundTint="@color/ColorGris"
+                    app:backgroundTint="@null"
                     android:enabled="false"/>
             </LinearLayout>
 

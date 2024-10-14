@@ -32,31 +32,33 @@ public class AdaptadorEnvTraspasos extends RecyclerView.Adapter<AdaptadorEnvTras
 
     @Override
     public void onBindViewHolder(AdaptadorEnvTraspasos.ViewHolderEnvTraspasos holder, int position) {
+        int totSurt=Integer.parseInt(datos.get(position).getCantSurt())+
+                Integer.parseInt(datos.get(position).getCantSinc());
         holder.n.setText(datos.get(position).getNum());
         holder.tvItemP.setText(datos.get(position).getProducto());
         holder.tvItemU.setText(datos.get(position).getUbic());
         holder.tvItemC.setText(datos.get(position).getCantidad());
         holder.tvItemE.setText(datos.get(position).getExistencia());
-        holder.tvItemS.setText(datos.get(position).getCantSurt());
+        holder.tvItemS.setText(totSurt+"");
+
 
         if(index==position){
             holder.lyaoutEnv.setBackgroundResource(R.color.colorSelec);//seleccion
-            if(Integer.parseInt(datos.get(position).getCantSurt())>0 &&
-                    Integer.parseInt(datos.get(position).getCantSurt())==
-                            Integer.parseInt(datos.get(position).getCantidad())){//cuando ya essten el surtido completo y sincronizado
-                holder.n.setTextColor(Color.parseColor("#32997C"));
-                holder.tvItemP.setTextColor(Color.parseColor("#32997C"));
-                holder.tvItemU.setTextColor(Color.parseColor("#32997C"));
-                holder.tvItemC.setTextColor(Color.parseColor("#32997C"));
-                holder.tvItemE.setTextColor(Color.parseColor("#32997C"));
-                holder.tvItemS.setTextColor(Color.parseColor("#32997C"));
-            }else if(datos.get(position).isSincronizado()==false){//cuando se este surtiendo sin sincronizar
+            if(datos.get(position).isSincronizado()==false){//cuando se este surtiendo sin sincronizar
                 holder.n.setTextColor(Color.parseColor("#223CCA"));
                 holder.tvItemP.setTextColor(Color.parseColor("#223CCA"));
                 holder.tvItemU.setTextColor(Color.parseColor("#223CCA"));
                 holder.tvItemC.setTextColor(Color.parseColor("#223CCA"));
                 holder.tvItemE.setTextColor(Color.parseColor("#223CCA"));
                 holder.tvItemS.setTextColor(Color.parseColor("#223CCA"));
+            }
+            else if(totSurt>0 && totSurt== Integer.parseInt(datos.get(position).getCantidad())){//cuando ya essten el surtido completo y sincronizado
+                holder.n.setTextColor(Color.parseColor("#32997C"));
+                holder.tvItemP.setTextColor(Color.parseColor("#32997C"));
+                holder.tvItemU.setTextColor(Color.parseColor("#32997C"));
+                holder.tvItemC.setTextColor(Color.parseColor("#32997C"));
+                holder.tvItemE.setTextColor(Color.parseColor("#32997C"));
+                holder.tvItemS.setTextColor(Color.parseColor("#32997C"));
             }else{
                 holder.n.setTextColor(Color.parseColor("#043B72"));//normal
                 holder.tvItemP.setTextColor(Color.parseColor("#000000"));
@@ -66,9 +68,7 @@ public class AdaptadorEnvTraspasos extends RecyclerView.Adapter<AdaptadorEnvTras
                 holder.tvItemS.setTextColor(Color.parseColor("#32997C"));
             }//else si ya se termino de escanear
         }else{
-            if(Integer.parseInt(datos.get(position).getCantSurt())>0 &&//cuando un codigo este terminado
-                    Integer.parseInt(datos.get(position).getCantSurt())==
-                            Integer.parseInt(datos.get(position).getCantidad())){
+            if(totSurt>0 && totSurt== Integer.parseInt(datos.get(position).getCantidad())){//cuando un codigo este terminado
                 holder.lyaoutEnv.setBackgroundResource(R.color.ColorSinc);
             }else{
                 holder.lyaoutEnv.setBackgroundColor(0);

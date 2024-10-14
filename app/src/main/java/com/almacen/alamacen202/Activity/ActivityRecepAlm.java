@@ -229,11 +229,15 @@ public class ActivityRecepAlm extends AppCompatActivity {
                             listaTrasp.get(posicion).getCantSurt()+"",
                             "change",false,Producto).execute();
                 }else {
-                    Folio="";
-                    rvTraspasos.setAdapter(null);
-                    limpiar();
-                    posicion=0;
-                    new AsyncReceConSinFol().execute();
+                    if(!almE.equals("")){
+                        Folio="";
+                        rvTraspasos.setAdapter(null);
+                        limpiar();
+                        posicion=0;
+                        new AsyncReceConSinFol().execute();
+                    }else{
+                        Toast.makeText(context, "No hay almacén para buscar codigos", Toast.LENGTH_SHORT).show();
+                    }//else
                 }//else
             }//onclick
         });//btnGuardar setonclick

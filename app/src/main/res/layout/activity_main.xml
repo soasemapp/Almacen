@@ -169,10 +169,10 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_margin="40dp"
-                    android:background="@drawable/roundbutton"
-                    app:backgroundTint="@color/Amarillo"
+                    android:background="@drawable/btn_background2"
+                    app:backgroundTint="@null"
                     android:text="Ingresar"
-                    android:textColor="#000000" />
+                    android:textColor="@color/ColorWhite" />
 
             </LinearLayout>
         </LinearLayout>

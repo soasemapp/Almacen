@@ -77,8 +77,7 @@
                 app:icon="@drawable/icons8_lupa"
                 app:iconTint="@null"
                 app:iconSize="20dp"
-                app:backgroundTint="@null"
-                app:backgroundTintMode="add"/>
+                app:backgroundTint="@null"/>
             <View
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
@@ -130,7 +129,7 @@
                     app:iconGravity="textStart"
                     app:iconPadding="0dp"
                     android:background="@drawable/btn_background4"
-                    app:backgroundTint="@color/ColorGris"
+                    app:backgroundTint="@null"
                     android:layout_marginRight="5dp"
                     android:enabled="false"
                     android:tooltipText="Agregar Caja"/>
@@ -149,7 +148,7 @@
                     app:iconGravity="end"
                     app:iconTint="@null"
                     app:iconSize="20dp"
-                    app:backgroundTint="@color/ColorGris"
+                    app:backgroundTint="@null"
                     android:enabled="false"/>
             </LinearLayout>
             <View
@@ -271,7 +270,7 @@
                     android:text="Ver en Caja"
                     android:textSize="12dp"
                     android:textColor="@color/ColorWhite"
-                    app:backgroundTint="@color/ColorGris"
+                    app:backgroundTint="@null"
                     android:enabled="false"/>
 
 
@@ -373,7 +372,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:hint="Nuevo Surtido"
+                            android:hint="Surt Nuevo"
                             android:textColorHint="@color/AzulBack"
                             app:hintTextColor="@color/AzulBack"
                             app:boxBackgroundMode="outline"
@@ -452,7 +451,7 @@
                     android:layout_margin="3dp"
                     android:layout_weight="1.5"
                     android:background="@drawable/btn_background3"
-                    app:backgroundTint="@color/ColorGris"
+                    app:backgroundTint="@null"
                     android:enabled="false"
                     android:maxLines="1"
                     android:text="Anterior"
@@ -480,7 +479,7 @@
                     app:icon="@drawable/ic_baseline_arrow_forward_24"
                     app:iconTint="@null"
                     app:iconGravity="end"
-                    app:backgroundTint="@color/ColorGris"
+                    app:backgroundTint="@null"
                     android:enabled="false"/>
             </LinearLayout>
 
@@ -525,7 +524,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1.5"
-                    android:background="@drawable/btn_background3"
+                    android:background="@drawable/btn_background4"
                     android:text="@string/buscar"
                     android:textSize="10dp"
                     android:maxLines="2"
@@ -534,7 +533,7 @@
                     app:iconGravity="end"
                     app:iconTint="@null"
                     app:iconSize="20dp"
-                    app:backgroundTint="@color/ColorGris"
+                    app:backgroundTint="@null"
                     android:layout_marginLeft="2dp"
                     android:enabled="false"/>
             </LinearLayout>
