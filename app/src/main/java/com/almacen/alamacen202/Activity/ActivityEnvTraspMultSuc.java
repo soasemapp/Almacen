@@ -361,7 +361,7 @@ public class ActivityEnvTraspMultSuc extends AppCompatActivity {
                 }//if es diferente a vacio
             }//after
         });//txtProd textchange
-        
+
         txtProducto.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
@@ -496,11 +496,11 @@ public class ActivityEnvTraspMultSuc extends AppCompatActivity {
          */
 
         //PERMISOS PARA BLUETOOTH SOLO SE MUESTRA EN VERSIONES POSTERIORES DE ANDROID 13
-        ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.BLUETOOTH_CONNECT},
+        /*ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.BLUETOOTH_CONNECT},
                 PackageManager.PERMISSION_GRANTED);
 
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
-        StrictMode.setVmPolicy(builder.build());
+        StrictMode.setVmPolicy(builder.build());*/
 
         txtFolBusq.requestFocus();
         txtProducto.setInputType(InputType.TYPE_NULL);
@@ -1758,8 +1758,8 @@ public class ActivityEnvTraspMultSuc extends AppCompatActivity {
         int canti,numCajas,alTerminar;
 
         public AsyncInsertCajasEContenedores(String suc, String folio, String producto,int canti,
-                                 int numCajas, String part, String usu,String var,
-                                 boolean sumar,String ProductoActual,int alTerminar) {
+                                             int numCajas, String part, String usu,String var,
+                                             boolean sumar,String ProductoActual,int alTerminar) {
             this.suc = suc;
             this.folio = folio;
             this.producto = producto;

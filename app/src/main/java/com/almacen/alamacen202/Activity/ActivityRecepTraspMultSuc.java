@@ -347,11 +347,11 @@ public class ActivityRecepTraspMultSuc extends AppCompatActivity {
         });
 
         //PERMISOS PARA BLUETOOTH SOLO SE MUESTRA EN VERSIONES POSTERIORES DE ANDROID 13
-        ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.BLUETOOTH_CONNECT},
+        /*ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.BLUETOOTH_CONNECT},
                 PackageManager.PERMISSION_GRANTED);
 
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
-        StrictMode.setVmPolicy(builder.build());
+        StrictMode.setVmPolicy(builder.build());*/
     }//onCreate
 
 
@@ -490,7 +490,9 @@ public class ActivityRecepTraspMultSuc extends AppCompatActivity {
         //Producto=listaTrasp.get(posicion).getProducto();
         tvProd.setText(listaTrasp.get(posicion).getProducto());
         txtCantidad.setText(listaTrasp.get(posicion).getCantidad());
-        txtCantSurt.setText(listaTrasp.get(posicion).getCantSurt());
+        int surtReal=Integer.parseInt(listaTrasp.get(posicion).getCantSinc())+
+                Integer.parseInt(listaTrasp.get(posicion).getCantSurt());
+        txtCantSurt.setText(surtReal+"");
         txtTotPza.setText(totPazas() + "");
         txtUbicT.setText(listaTrasp.get(posicion).getUbic());
 
@@ -501,7 +503,7 @@ public class ActivityRecepTraspMultSuc extends AppCompatActivity {
                 .fit()
                 .centerInside()
                 .into(ivProd);
-        if (Integer.parseInt(listaTrasp.get(posicion).getCantidad()) == Integer.parseInt(listaTrasp.get(posicion).getCantSurt())) {
+        if (Integer.parseInt(listaTrasp.get(posicion).getCantidad()) == surtReal) {
             txtCantSurt.setTextColor(ColorStateList.valueOf(getResources().getColor(R.color.colorAccent)));
         } else {
             txtCantSurt.setTextColor(ColorStateList.valueOf(getResources().getColor(R.color.colorBlack)));
@@ -548,14 +550,15 @@ public class ActivityRecepTraspMultSuc extends AppCompatActivity {
                 posicion = i;
                 existe = true;
                 int cant = Integer.parseInt(listaTrasp.get(i).getCantidad());
-                int cantS = Integer.parseInt(listaTrasp.get(i).getCantSurt());
-                if ((cantS + 1) <= cant) {
+                int recep=Integer.parseInt(listaTrasp.get(i).getCantSinc());//cantidad de ya escaneados
+                int cantS=Integer.parseInt(listaTrasp.get(i).getCantSurt());
+                if (recep+(cantS+1)<=cant) {
                     cantS++;
                     listaTrasp.get(i).setCantSurt(cantS + "");
                     listaTrasp.get(i).setSincronizado(false);
                     RECEP++;
                     modificados = true;
-                    if (cantS == cant) {
+                    if ((recep+cantS)==cant) {
                         posicion2 = i;
                         new AsyncActualizar(Folio, prod, cantS + "", "change", false, Producto, 1).execute();
                     }
@@ -645,7 +648,7 @@ public class ActivityRecepTraspMultSuc extends AppCompatActivity {
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject dato = jsonArray.getJSONObject(i);//Conjunto de datos
                             listaTrasp.add(new Traspasos(num + "", dato.getString("PRODUCTO"), dato.getString("CANTIDAD"),
-                                    dato.getString("UBICACION"), dato.getString("RECEPCION"), dato.getString("EXISTENCIA"), true));
+                                    dato.getString("UBICACION"), dato.getString("RECEPCION"),"0", dato.getString("EXISTENCIA"), true));
                             num++;
                             mensaje = "";
                         }//for

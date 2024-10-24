@@ -169,7 +169,7 @@ public class ActivityInventario extends AppCompatActivity {
         keyboard = (InputMethodManager) getSystemService(ActivityInventario.INPUT_METHOD_SERVICE);
 
         txtProducto.requestFocus();
-        txtProducto.setInputType(InputType.TYPE_NULL);
+        //txtProducto.setInputType(InputType.TYPE_NULL);
         txtEscan.setEnabled(false);
         txtUbicc.setEnabled(true);
         txtUbicc.setInputType(InputType.TYPE_NULL);

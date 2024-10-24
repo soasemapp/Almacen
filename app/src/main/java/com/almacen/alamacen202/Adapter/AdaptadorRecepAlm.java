@@ -32,19 +32,25 @@ public class AdaptadorRecepAlm extends RecyclerView.Adapter<AdaptadorRecepAlm.Vi
 
     @Override
     public void onBindViewHolder(AdaptadorRecepAlm.ViewHolderEnvTraspasos holder, int position) {
+        int cant=Integer.parseInt(datos.get(position).getCantidad());
+        int cantSinc=Integer.parseInt(datos.get(position).getCantSinc());
+        int cantSurt=Integer.parseInt(datos.get(position).getCantSurt());
+
         holder.Producto.setText(datos.get(position).getProducto());
-        holder.Cantidad.setText(datos.get(position).getCantidad());
+        holder.Cantidad.setText(cant+"");
         holder.n.setText(datos.get(position).getNum());
-        holder.CantSurt.setText(datos.get(position).getCantSurt());
+        holder.CantSurt.setText(cantSurt+"");
         holder.ubi.setText(datos.get(position).getUbic());
         holder.ubi.setVisibility(View.GONE);
-        holder.itExist.setText(datos.get(position).getExist());
+        holder.itExist.setText(cantSinc+"");
+
+
+
 
         if(index==position){
             holder.lyaout.setBackgroundResource(R.color.colorSelec);//seleccion
-            if(Integer.parseInt(datos.get(position).getCantSurt())>0 &&
-                    Integer.parseInt(datos.get(position).getCantSurt())==
-                            Integer.parseInt(datos.get(position).getCantidad())){
+            if((cantSurt+cantSinc)>0 && (cantSurt+cantSinc)==cant &&
+                    datos.get(position).isSincronizado()==true){
                 holder.Producto.setTextColor(Color.parseColor("#32997C"));
                 holder.Cantidad.setTextColor(Color.parseColor("#32997C"));
                 holder.n.setTextColor(Color.parseColor("#32997C"));
@@ -67,9 +73,7 @@ public class AdaptadorRecepAlm extends RecyclerView.Adapter<AdaptadorRecepAlm.Vi
                 holder.itExist.setTextColor(Color.parseColor("#1E739A"));
             }//else si ya se termino de escanear
         }else{
-            if(Integer.parseInt(datos.get(position).getCantSurt())>0 &&
-                    Integer.parseInt(datos.get(position).getCantSurt())==
-                            Integer.parseInt(datos.get(position).getCantidad())){
+            if((cantSurt+cantSinc)>0 && (cantSurt+cantSinc)==cant){
                 holder.lyaout.setBackgroundResource(R.color.ColorSinc);
             }else{
                 holder.lyaout.setBackgroundColor(0);

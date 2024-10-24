@@ -30,6 +30,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -71,7 +73,8 @@ public class ActivityRecepAlm extends AppCompatActivity {
     private AutoCompleteTextView spAlm;
     private ImageView ivProd;
     private TextView tvProd;
-    private Button btnBuscar,btnAtras,btnAdelante,btnCorr,btnBusc;
+    private Button btnBuscar,btnAtras,btnAdelante,btnCorr,btnBusc,btnGuarda;
+    private CheckBox chManual;
     private RecyclerView rvTraspasos;
     private AdaptadorRecepAlm adapter;
     private AlertDialog mDialog;
@@ -137,6 +140,8 @@ public class ActivityRecepAlm extends AppCompatActivity {
         //btnImpr = findViewById(R.id.btnImpr);
         spAlm = findViewById(R.id.spAlm);
         btnBusc = findViewById(R.id.btnBusc);
+        btnGuarda = findViewById(R.id.btnGuarda);
+        chManual = findViewById(R.id.chManual);
 
         bepp = new SoundPool(1, AudioManager.STREAM_MUSIC, 1);
         sonido_correcto = bepp.load(ActivityRecepAlm.this, R.raw.sonido_correct, 1);
@@ -149,6 +154,49 @@ public class ActivityRecepAlm extends AppCompatActivity {
 
         txtProd.setInputType(InputType.TYPE_NULL);
         //txtProd.requestFocus();
+
+        chManual.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    btnGuarda.setEnabled(true);
+                    txtCantSurt.setEnabled(true);
+                    txtCantSurt.setText("");
+                    txtCantSurt.requestFocus();
+                }else{
+                    btnGuarda.setEnabled(false);
+                    txtCantSurt.setEnabled(false);
+                    txtCantSurt.clearFocus();
+                    if(listaTrasp.size()>0){
+                        mostrarDetalleProd();
+                    }
+                }
+            }
+        });//setonche
+
+        btnGuarda.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                keyboard.hideSoftInputFromWindow(txtCantSurt.getWindowToken(), 0);
+                if(!txtCantSurt.getText().toString().equals("") &&
+                        Integer.parseInt(txtCantSurt.getText().toString())>0){
+                    int cantsinc=Integer.parseInt(listaTrasp.get(posicion).getCantSinc());
+                    int cantsurt=Integer.parseInt(txtCantSurt.getText().toString());
+                    int cant=Integer.parseInt(listaTrasp.get(posicion).getCantidad());
+                    if((cantsinc+cantsurt)<=cant){
+                        listaTrasp.get(posicion).setCantSurt(cantsurt+"");
+                        listaTrasp.get(posicion).setSincronizado(false);
+                        verLista();
+                    }else{
+                        bepp.play(sonido_error, 1, 1, 1, 0, 0);
+                        Toast.makeText(ActivityRecepAlm.this, "Sobrepasa Cantidad", Toast.LENGTH_SHORT).show();
+                    }//else
+
+                }else{
+                    Toast.makeText(ActivityRecepAlm.this, "Cantidad en 0", Toast.LENGTH_SHORT).show();
+                }//else
+            }
+        });
 
 
         btnBusc.setOnClickListener(new View.OnClickListener() {
@@ -488,8 +536,7 @@ public class ActivityRecepAlm extends AppCompatActivity {
         tvProd.setText(listaTrasp.get(posicion).getProducto());
         txtCantidad.setText(listaTrasp.get(posicion).getCantidad());
         txtCantSurt.setText((Integer.parseInt(listaTrasp.get(posicion).getCantSurt())+
-                Integer.parseInt(listaTrasp.get(posicion).getExist()))+"");//exist se tomara como campo que guarda lo que ya se escaneo y sesta en tabla de kepler
-        txtUbicT.setText(listaTrasp.get(posicion).getUbic());
+                Integer.parseInt(listaTrasp.get(posicion).getCantSinc()))+"");//
 
         Picasso.with(getApplicationContext()).
                 load(urlImagenes +
@@ -554,7 +601,7 @@ public class ActivityRecepAlm extends AppCompatActivity {
                 posicion=i;
                 existe=true;
                 int cant=Integer.parseInt(listaTrasp.get(i).getCantidad());
-                int recep=Integer.parseInt(listaTrasp.get(i).getExist());//cantidad de ya escaneados
+                int recep=Integer.parseInt(listaTrasp.get(i).getCantSinc());//cantidad de ya escaneados
                 int cantS=Integer.parseInt(listaTrasp.get(i).getCantSurt());
                 if(recep+(cantS+1)<=cant){
                     cantS++;
@@ -591,7 +638,7 @@ public class ActivityRecepAlm extends AppCompatActivity {
         int c=0;
         for(int i=0;i<listaTrasp.size();i++){
             int cant=Integer.parseInt(listaTrasp.get(i).getCantidad());
-            int recep=Integer.parseInt(listaTrasp.get(i).getExist());//campo usado para guardar lo que ya fue surtido
+            int recep=Integer.parseInt(listaTrasp.get(i).getCantSinc());//campo usado para guardar lo que ya fue surtido
             int cantS=Integer.parseInt(listaTrasp.get(i).getCantSurt());
             if(cant==(cantS+recep)){
                 c++;
@@ -628,6 +675,7 @@ public class ActivityRecepAlm extends AppCompatActivity {
             if(!mDialog.isShowing()){
                 mDialog.show();
             }
+            chManual.setEnabled(false);
             rvTraspasos.setAdapter(null);
             limpiar();
         }//onPreExecute
@@ -648,8 +696,9 @@ public class ActivityRecepAlm extends AppCompatActivity {
                         listaTrasp.clear();
                         for(int i=0;i<jsonArray.length();i++){
                             JSONObject dato = jsonArray.getJSONObject(i);//Conjunto de datos
-                            listaTrasp.add(new Traspasos(num+"",dato.getString("PRODUCTO"),dato.getString("CANTIDAD"),
-                                    dato.getString("UBICACION"),"0",dato.getString("RECEPCION"),true));
+                            listaTrasp.add(new Traspasos(num+"",dato.getString("PRODUCTO")
+                                    ,dato.getString("CANTIDAD"),dato.getString("UBICACION"),
+                                    dato.getString("RECEPCION"),"0","0",true));
                             num++;
                             mensaje="";
                         }//for
@@ -681,6 +730,7 @@ public class ActivityRecepAlm extends AppCompatActivity {
             super.onPostExecute(aBoolean);
             if(mensaje.equals("")) {
                 mDialog.dismiss();
+                chManual.setEnabled(true);
                 verLista();
             }else{
                 mDialog.dismiss();

@@ -131,17 +131,30 @@
 
 
 
-            <TextView
-                android:id="@+id/tvProd"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textColor="@color/Amarillo"
-                android:textSize="18dp"
-                android:textStyle="bold"
-                android:maxLines="2"
-                android:gravity="center_vertical"
-                android:layout_marginTop="5dp"/>
+                android:orientation="horizontal"
+                android:layout_margin="5dp">
+                <TextView
+                    android:id="@+id/tvProd"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textColor="@color/Amarillo"
+                    android:textSize="18dp"
+                    android:textStyle="bold"
+                    android:maxLines="2"
+                    android:gravity="center_vertical"/>
+                <CheckBox
+                    android:id="@+id/chManual"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Manual"
+                    android:buttonTint="@color/AzulBack"
+                    android:enabled="false"/>
+            </LinearLayout>
+
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -206,9 +219,12 @@
                             android:clickable="true"
                             android:maxLength="5"
                             android:maxLines="1"
+                            android:inputType="number"
+                            android:digits="0123456789"
                             android:textColor="@color/colorBlack"
                             android:textSize="13dp"
-                            android:enabled="false" />
+                            android:enabled="false"
+                            android:imeOptions="actionDone"/>
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
@@ -224,6 +240,7 @@
                         app:boxCornerRadiusTopEnd="10dp"
                         app:boxCornerRadiusTopStart="10dp"
                         app:startIconTint="@null"
+                        android:visibility="gone"
                         app:boxBackgroundColor="@color/ColorWhite"
                         app:boxStrokeColor="@color/colorPrimary">
                         <com.google.android.material.textfield.TextInputEditText
@@ -237,6 +254,24 @@
                             android:textSize="13dp"
                             android:enabled="false" />
                     </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnGuarda"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="5dp"
+                        android:background="@drawable/btn_background2"
+                        android:maxLines="2"
+                        android:text="Guardar"
+                        android:textAlignment="textStart"
+                        android:textColor="@color/ColorWhite"
+                        android:textSize="8dp"
+                        app:icon="@drawable/icon_guarda"
+                        app:iconSize="15dp"
+                        app:iconGravity="start"
+                        app:iconTint="@null"
+                        app:backgroundTint="@null"
+                        android:enabled="false"/>
                 </LinearLayout>
                 <ImageView
                     android:id="@+id/ivProd"

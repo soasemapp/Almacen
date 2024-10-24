@@ -645,7 +645,7 @@ public class ActivityDifUbiExi extends AppCompatActivity {
                         }//else if
                         Thread.sleep(100);
                     } catch (InterruptedException e) {
-                        return null;
+                        break;
                     }//catch
                     progressDialog.setProgress(j);
                 }//for
