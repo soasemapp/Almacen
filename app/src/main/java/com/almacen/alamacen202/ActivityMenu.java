@@ -82,8 +82,8 @@ public class ActivityMenu extends AppCompatActivity {
         strusr = preference.getString("user", "null");
         strpass = preference.getString("pass", "null");
         versionApp=getString(R.string.versionNum);
-        mDialog = new SpotsDialog.Builder().setContext(ActivityMenu.this).
-                setMessage("Espere un momento...").build();
+        mDialog = new SpotsDialog(ActivityMenu.this);
+
         mDialog.setCancelable(false);
 
         extIm=getString(R.string.ext);

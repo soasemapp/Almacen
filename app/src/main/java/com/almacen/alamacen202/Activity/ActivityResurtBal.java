@@ -93,8 +93,8 @@ public class ActivityResurtBal extends AppCompatActivity {
         urlImagenes=preference.getString("urlImagenes", "null");
         extImg=preference.getString("ext", "null");
 
-        mDialog = new SpotsDialog.Builder().setContext(ActivityResurtBal.this).
-                setMessage("Espere un momento...").build();
+        mDialog = new SpotsDialog(ActivityResurtBal.this);
+
         mQueue = Volley.newRequestQueue(this);
 
         txtEscanP   = findViewById(R.id.txtEscanP);

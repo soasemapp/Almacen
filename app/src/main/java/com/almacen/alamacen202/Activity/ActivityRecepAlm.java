@@ -116,8 +116,8 @@ public class ActivityRecepAlm extends AppCompatActivity {
                 break;
         }
 
-        mDialog = new SpotsDialog.Builder().setContext(ActivityRecepAlm.this).
-                setMessage("Espere un momento...").build();
+        mDialog = new SpotsDialog(ActivityRecepAlm.this);
+
         mDialog.setCancelable(false);
 
         progressDialog = new ProgressDialog(ActivityRecepAlm.this);//parala barra de

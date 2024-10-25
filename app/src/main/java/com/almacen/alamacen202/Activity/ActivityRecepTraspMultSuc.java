@@ -153,8 +153,8 @@ public class ActivityRecepTraspMultSuc extends AppCompatActivity {
                 break;
         }
 
-        mDialog = new SpotsDialog.Builder().setContext(ActivityRecepTraspMultSuc.this).
-                setMessage("Espere un momento...").build();
+        mDialog = new SpotsDialog(ActivityRecepTraspMultSuc.this);
+
         mDialog.setCancelable(false);
 
         progressDialog = new ProgressDialog(ActivityRecepTraspMultSuc.this);//parala barra de

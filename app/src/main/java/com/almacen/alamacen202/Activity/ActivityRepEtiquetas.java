@@ -72,8 +72,8 @@ public class ActivityRepEtiquetas extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rep_etiq);
-        mDialog = new SpotsDialog.Builder().setContext(ActivityRepEtiquetas.this).
-                setMessage("Espere un momento...").build();
+        mDialog = new SpotsDialog(ActivityRepEtiquetas.this);
+
         mDialog.setCancelable(false);
 
         MyToolbar.show(this, "Reportar Incidencias", true);

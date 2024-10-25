@@ -100,8 +100,8 @@ public class ActivityResurtidoPicking extends AppCompatActivity {
         urlImagenes=preference.getString("urlImagenes", "null");
         extImg=preference.getString("ext", "null");
 
-        mDialog = new SpotsDialog.Builder().setContext(ActivityResurtidoPicking.this).
-                setMessage("Espere un momento...").build();
+        mDialog = new SpotsDialog(ActivityResurtidoPicking.this);
+
 
         btnBuscar   = findViewById(R.id.btnBusca);
         btnResurtir = findViewById(R.id.btnResurtir);

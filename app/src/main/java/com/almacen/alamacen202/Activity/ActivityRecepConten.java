@@ -145,8 +145,8 @@ public class ActivityRecepConten extends AppCompatActivity {
         urlImagenes=preference.getString("urlImagenes", "null");
         extImg=preference.getString("ext", "null");
 
-        mDialog = new SpotsDialog.Builder().setContext(ActivityRecepConten.this).
-                setMessage("Espere un momento...").build();
+        mDialog = new SpotsDialog(ActivityRecepConten.this);
+
         mDialog.setCancelable(false);
 
         txtFolCon   = findViewById(R.id.txtFolCon);

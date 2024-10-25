@@ -97,11 +97,10 @@ public class ActivityConsultaPA extends AppCompatActivity {
 
         MyToolbar.show(this, "BUSCAR PRODUCTO", true);
         preference = getSharedPreferences("Login", Context.MODE_PRIVATE);
-        mDialog = new SpotsDialog.Builder().setContext(ActivityConsultaPA.this).setMessage("Espere un momento...").build();
         editor = preference.edit();
 
-        mDialog = new SpotsDialog.Builder().setContext(ActivityConsultaPA.this).
-                setMessage("Espere un momento...").build();
+        mDialog = new SpotsDialog(ActivityConsultaPA.this);
+
 
         TitutloTable = findViewById(R.id.nomTabla);
         txtDescripcion = findViewById(R.id.txtDescripcion);

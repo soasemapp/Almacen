@@ -90,8 +90,8 @@ public class ActivityInventarioXfolioComp extends AppCompatActivity {
         urlImagenes=preference.getString("urlImagenes", "null");
         extImg=preference.getString("ext", "null");
 
-        mDialog = new SpotsDialog.Builder().setContext(ActivityInventarioXfolioComp.this).
-                setMessage("Espere un momento...").build();
+        mDialog = new SpotsDialog(ActivityInventarioXfolioComp.this);
+
 
         chbUbi          = findViewById(R.id.chbUbi);
         chbProd         = findViewById(R.id.chbProd);

@@ -91,7 +91,8 @@ public class ActivityTrasladoUbi extends AppCompatActivity {
         setContentView(R.layout.activity_traslado_ubi);
         preference = getSharedPreferences("Login", Context.MODE_PRIVATE);
         editor = preference.edit();
-        mDialog = new SpotsDialog.Builder().setContext(ActivityTrasladoUbi.this).setMessage("Espere un momento...").build();
+        mDialog = new SpotsDialog(ActivityTrasladoUbi.this);
+
         MyToolbar.show(this, "", true);
 
         imgVi = findViewById(R.id.productoImag);

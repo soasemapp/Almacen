@@ -134,8 +134,8 @@ public class ActivityInventario extends AppCompatActivity {
         strServer = preference.getString("Server", "null");
         strbran = preference.getString("codBra", "null");
         codeBar = preference.getString("codeBar", "null");
-        mDialog = new SpotsDialog.Builder().setContext(ActivityInventario.this).
-                setMessage("Espere un momento...").build();
+        mDialog = new SpotsDialog(ActivityInventario.this);
+
 
         bepp = new SoundPool(1, AudioManager.STREAM_MUSIC, 1);
         sonido_correcto = bepp.load(ActivityInventario.this, R.raw.sonido_correct, 1);

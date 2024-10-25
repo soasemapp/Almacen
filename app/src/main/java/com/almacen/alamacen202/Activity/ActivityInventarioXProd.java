@@ -83,8 +83,8 @@ public class ActivityInventarioXProd extends AppCompatActivity {
         urlImagenes=preference.getString("urlImagenes", "null");
         extImg=preference.getString("ext", "null");
 
-        mDialog = new SpotsDialog.Builder().setContext(ActivityInventarioXProd.this).
-                setMessage("Espere un momento...").build();
+        mDialog = new SpotsDialog(ActivityInventarioXProd.this);
+
 
         txtFolioProd   = findViewById(R.id.txtFolioProd);
         //btnBuscarProd = findViewById(R.id.btnBuscarProd);

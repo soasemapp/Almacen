@@ -134,8 +134,8 @@ public class ActivityEnvTraspMultSuc extends AppCompatActivity {
         urlImagenes=preference.getString("urlImagenes", "null");
         extImg=preference.getString("ext", "null");
 
-        mDialog = new SpotsDialog.Builder().setContext(ActivityEnvTraspMultSuc.this).
-                setMessage("Espere un momento...").build();
+        mDialog = new SpotsDialog(ActivityEnvTraspMultSuc.this);
+
         mDialog.setCancelable(false);
 
         progressDialog = new ProgressDialog(ActivityEnvTraspMultSuc.this);//parala barra de

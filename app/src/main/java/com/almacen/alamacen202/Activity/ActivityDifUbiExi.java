@@ -142,8 +142,8 @@ public class ActivityDifUbiExi extends AppCompatActivity {
         strServer = preference.getString("Server", "null");
         strbran = preference.getString("codBra", "null");
         codeBar = preference.getString("codeBar", "null");
-        mDialog = new SpotsDialog.Builder().setContext(ActivityDifUbiExi.this).
-                setMessage("Espere un momento...").build();
+        mDialog = new SpotsDialog(ActivityDifUbiExi.this);
+
         progressDialog = new ProgressDialog(ActivityDifUbiExi.this);//parala barra de
         progressDialog.setMessage("Procesando....");
         progressDialog.setIndeterminate(false);

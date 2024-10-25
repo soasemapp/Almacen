@@ -215,8 +215,8 @@ public class ActivityLiberaciones extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_liberaciones);
         MyToolbar.show(this, "", true);
-        mDialog = new SpotsDialog.Builder().setContext(ActivityLiberaciones.this).
-                setMessage("Espere un momento...").build();
+        mDialog = new SpotsDialog(ActivityLiberaciones.this);
+
         mDialog.setCancelable(false);
         preference = getSharedPreferences("Login", Context.MODE_PRIVATE);
         editor = preference.edit();
